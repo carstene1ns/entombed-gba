@@ -1,5 +1,4 @@
 /*
-	"$Id: fade.h,v 1.5 2005/12/05 22:04:41 wntrmute Exp $"
 
 	Header file for libgba palette fade routines
 
@@ -21,12 +20,8 @@
 	USA.
 
 	Please report all bugs and problems through the bug tracker at
-	"http://sourceforge.net/tracker/?group_id=114505&atid=668551".
+	"https://github.com/devkitPro/libgba/issues".
 
-	$Log: fade.h,v $
-	Revision 1.5  2005/12/05 22:04:41  wntrmute
-	added type to FadeToBlack inline
-	
 
 */
 
@@ -38,9 +33,6 @@
 //---------------------------------------------------------------------------------
 #ifndef _fade_h_
 #define _fade_h_
-
-#include <tonc.h>
-
 //---------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------
@@ -72,7 +64,6 @@ void	FadeToGrayScale(int gray, int FrameCount);
 void	SetPalette(u16 *Palette);
 
 static inline void FadeToBlack(int frames) { FadeToGrayScale(0,frames); }
-
 
 //---------------------------------------------------------------------------------
 #ifdef __cplusplus

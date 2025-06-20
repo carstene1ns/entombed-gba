@@ -1,5 +1,4 @@
 /*
-	"$Id: fade.c,v 1.4 2005/10/05 12:09:07 wntrmute Exp $"
 
 	libgba 256 color fade routines
 
@@ -21,9 +20,8 @@
 	USA.
 
 	Please report all bugs and problems through the bug tracker at
-	"http://sourceforge.net/tracker/?group_id=114505&atid=668551".
+	"https://github.com/devkitPro/libgba/issues".
 
-	"$Header: /cvsroot/devkitpro/libgba/src/fade.c,v 1.4 2005/10/05 12:09:07 wntrmute Exp $"
 
 */
 
@@ -34,17 +32,15 @@
 	FadeToPalette will also perform a cross fade effect
 
 ---------------------------------------------------------------------------------*/
-//#include "gba_video.h"
-//#include "gba_systemcalls.h"
-#include "fade.h"
-
 #include <tonc.h>
 #include <maxmod.h>
+#include "fade.h"
 
 //---------------------------------------------------------------------------------
 // Global variables
 //---------------------------------------------------------------------------------
 u16 CurrentPalette[512] EWRAM_BSS;
+
 //---------------------------------------------------------------------------------
 // fade table consists of color components & offsets in 8:8 form
 // Red offset, Red component ...
@@ -82,7 +78,6 @@ static void DoFade(u32 FadeCount) {
 
 
 	for (count=0; count<FadeCount;count++) {
-	
 		s16 *Src = FadeTable;
 		u16 *Dest = CurrentPalette;
 
@@ -143,7 +138,6 @@ void FadeToGrayScale(int gray, int FrameCount) {
 	}
 
 	DoFade( FrameCount);
-
 }
 
 //---------------------------------------------------------------------------------
@@ -188,4 +182,3 @@ void FadeToPalette(const u16 *NewPalette, int FrameCount) {
 	DoFade(FrameCount);
 
 }
-
