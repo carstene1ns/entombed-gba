@@ -7,7 +7,6 @@
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
 #include "projectiles.h"
-#include "utils.h" //Debug print functions
 #include "soundbank.h"
 
 std::vector <CEnemy> enemies; //Visible enemies class instance vector

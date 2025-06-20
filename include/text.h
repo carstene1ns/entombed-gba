@@ -1,9 +1,7 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-
 #include <tonc.h>
-#include "gfx/entombed_font.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,4 +21,3 @@ void txt_clrs(int x, int y, const char *str);
 #endif
 
 #endif
-

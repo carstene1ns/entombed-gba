@@ -1,5 +1,7 @@
 #include "text.h"
 
+#include "entombed_font_gfx.h"
+
 void txt_init(int bgnr, int sbb, int prio)
 {
 	int n;

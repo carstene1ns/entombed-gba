@@ -9,7 +9,6 @@
 #include "objPropertiesLUT.h"
 #include "map.h"
 #include "guns.h"
-#include "utils.h" //Debug print functions
 #include "soundbank.h"
 
 //Level data

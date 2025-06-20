@@ -8,7 +8,6 @@
 
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
-#include "utils.h" //Debug print functions
 #include "soundbank.h"
 
 std::vector <CProjectile> projectiles; //Projectiles class instance vector

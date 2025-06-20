@@ -12,7 +12,6 @@
 #include "moving_platforms.h"
 #include "moving_blocks.h"
 #include "sequences.h"
-#include "utils.h" //Debug print functions
 #include "text.h"
 #include "soundbank.h"
 

@@ -1,16 +1,15 @@
 #include "map.h"
 
 //Included code files
-//#include <stdlib.h>
 #include <string.h>
 #include <tonc.h>
 #include <maxmod.h>
 
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
-#include "utils.h" //Debug print functions
 #include "text.h"
 #include "fade.h"
+#include "itoa.h"
 #include "enemies.h"
 #include "projectiles.h"
 #include "moving_platforms.h"

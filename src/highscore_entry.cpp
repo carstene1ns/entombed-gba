@@ -7,7 +7,7 @@
 #include "globalvars.h"
 #include "text.h"
 #include "fade.h"
-#include "utils.h"
+#include "itoa.h"
 
 //Declarations
 

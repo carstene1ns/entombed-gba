@@ -5,6 +5,7 @@
 #include <maxmod.h>
 #include <vector>
 #include <stdlib.h>
+
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
 #include "moving_platforms.h"
@@ -17,7 +18,6 @@
 #include "sequences.h"
 #include "text.h"
 #include "fade.h" //For fading the palette on game start, end and between lives
-#include "utils.h" //VBAPrint debug functions
 #include "level_data.h"
 #include "soundbank.h"
 

@@ -6,7 +6,6 @@
 #include <vector>
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
-#include "utils.h" //Debug print functions
 
 std::vector <CPlatform> platforms; //Visible moving platforms class instance vector
 

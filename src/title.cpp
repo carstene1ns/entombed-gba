@@ -8,8 +8,8 @@
 #include "globalvars.h"
 #include "text.h"
 #include "fade.h"
+#include "itoa.h"
 #include "soundbank.h"
-#include "utils.h"
 
 //Graphics data
 #include "gfx/spr_title.h"
