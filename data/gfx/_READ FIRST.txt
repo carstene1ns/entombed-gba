@@ -1,0 +1,2 @@
+gfx.bat uses grit.exe to convert the graphics into .c and .h files that can be compiled into the game.
+You need to edit gfx.bat in a text editor to make each command point to your copy of grit.exe, which is in your devkitARM folder.

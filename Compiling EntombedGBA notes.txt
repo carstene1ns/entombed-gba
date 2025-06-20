@@ -1,0 +1,35 @@
+Firstly you'll need to install devkitPro and devkitARM. This is found at:
+http://sourceforge.net/projects/devkitpro/
+The file to download will be called devkitProUpdater.
+
+EntombedGBA uses the tonc library. Download the file at:
+http://www.coranac.com/files/tonc-code.zip
+
+Make a folder in your devkitPro directory and call it libtonc.
+From the tonc-code.zip file, extract the lib and the include folders into your newly created libtonc folder.
+Now go into your devkitARM folder, which should also be within the devkitPro folder.
+You'll need to open the gba_rules in a text editor, but not Notepad. Try Wordpad or Programmers Notepad or similar. Notepad doesn't recognize the line breaks in the file.
+
+Add the following line underneath the LIBGBA line:
+
+LIBTONC	:=	$(DEVKITPRO)/libtonc
+
+Note that the space after the := is a TAB.
+
+Save and close the gba_rules file.
+
+Now open msys.bat program from the devkitPro/msys folder.
+
+Navigate to the EntombedGBA directory. Remember that msys uses forward slashes for drives and folders, so lets take the following example:
+Say you have your EntombedGBA folder at C:\dev\gba\EntombedGBA
+In msys you would type: cd /c/dev/gba/EntombedGBA
+
+Now type: make
+If you did everything right, EntombedGBA will begin compiling and you'll end up with a file called EntombedGBA.gba that you can run in an emulator or put on a flash card.
+
+If you got an error that says "No such file or directory" make sure none of the parent folders have any spaces. 
+E.G. C:\dev\gba files\EntombedGBA  will not work. You could change it to C:\dev\gba_files\EntombedGBA to make it work.
+
+
+Or you could do what I did and set up an IDE like Eclipse to work with devkitPro and an emulator where you can do real-time error checking and line-by-line debugging etc. But I don't exactly remember how I managed to set all that up, I think it was a lot of trial and error and googling.
+
