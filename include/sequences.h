@@ -38,8 +38,8 @@ public:
     int m_delayCounter; //Can be changed when the player used the hourglass.
 
 	//constructor
-	CSequence(T_LEVELSTATE* ls, int _seqNum, int seqDataLen, int _dependsOnSeq,
-			  int _loop, int _alwaysOn, int _dataPos, bool _instant);
+	CSequence(T_LEVELSTATE* ls, int _seqNum, int seqDataLen, int _loop,
+		int _alwaysOn, int _dataPos, bool _instant);
 	//destructor
 	~CSequence();
 	void Update();

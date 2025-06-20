@@ -72,7 +72,7 @@ void SetPalette(u16 *Palette) {
 }
 
 //---------------------------------------------------------------------------------
-static void DoFade(u32 FadeCount) {
+static void DoFade(int FadeCount) {
 //---------------------------------------------------------------------------------
 	int r,g,b,index,count,color;
 

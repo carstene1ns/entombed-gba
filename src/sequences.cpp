@@ -17,7 +17,7 @@
 std::vector <CSequence> sequences; //Sequences class instance vector
 
 CSequence::CSequence(T_LEVELSTATE* ls, int _seqNum, int seqDataLen,
-		int _dependsOnSeq, int _loop, int _alwaysOn, int _dataPos, bool _instant)
+		int _loop, int _alwaysOn, int _dataPos, bool _instant)
 {
 
 	m_active = true;
@@ -449,7 +449,6 @@ void initiate_sequence(T_LEVELSTATE *ls, int seqNum, bool instant)
 	int n;
 	int seqDataLen;
 	int dataPos;
-	int dependsOnSeq;
 	bool loop;
 	int alwaysOn;
 
@@ -468,7 +467,7 @@ void initiate_sequence(T_LEVELSTATE *ls, int seqNum, bool instant)
 
 	//Read the sequence header
 	seqDataLen = map_sequences[dataPos++];
-	dependsOnSeq = map_sequences[dataPos++];
+	dataPos++; //unused dependsOnSeq = map_sequences[dataPos++];
 	loop = map_sequences[dataPos++];
 	alwaysOn = map_sequences[dataPos++];
 
@@ -479,12 +478,14 @@ void initiate_sequence(T_LEVELSTATE *ls, int seqNum, bool instant)
 	//(To add a sequence, either instant or (alwaysOn & loop) must be false)
 	if ((instant == false) || ((alwaysOn == false) && (loop == false)))
 	{
-		sequences.push_back(CSequence(ls, seqNum, seqDataLen, dependsOnSeq, loop, alwaysOn, dataPos, instant));
+		sequences.push_back(CSequence(ls, seqNum, seqDataLen, loop, alwaysOn, dataPos, instant));
 	}
 }
 
 void update_sequences(T_LEVELSTATE *ls)
 {
+	(void) ls;
+
 	//Iterate through the vector of active sequences, call the update method for each one.
 	for(std::vector<CSequence>::iterator it = sequences.begin(); it != sequences.end();)
 	{

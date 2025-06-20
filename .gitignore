@@ -1,0 +1,5 @@
+/build-*/
+*.gba
+
+*.zip
+!/original-archives/*.zip

@@ -27,6 +27,7 @@ CProjectile::CProjectile(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED 
 
 
 	//Find the next free oam entry
+	oam_index = 127;
 	int n;
 	bool oamFound;
 
@@ -412,6 +413,8 @@ void add_projectile(T_LEVELSTATE *ls, int _x, int _y, int _dx, int _dy, int _typ
 
 void update_projectiles(T_LEVELSTATE *ls)
 {
+	(void) ls;
+
 	//Use a for loop without an it++ in the for line. Allows us to delete the last element
 	//in the vector without crashing.
 	//See: http://stackoverflow.com/questions/9927163/erase-element-in-vector-while-iterating-the-same-vector

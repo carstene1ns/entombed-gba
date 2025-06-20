@@ -28,6 +28,7 @@ CEnemy::CEnemy(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _
 	m_ls = ls;
 
 	//Find the next free oam entry
+	oam_index = 127;
 	int n;
 	bool oamFound;
 

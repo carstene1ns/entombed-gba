@@ -22,14 +22,14 @@
 #include "soundbank.h"
 
 //Sprite data
-#include "gfx/spr_projectiles.h"
-#include "gfx/spr_enemies.h"
-#include "gfx/spr_urn.h"
-#include "gfx/spr_platform.h"
-#include "gfx/spr_gameover.h"
-#include "gfx/spr_coinscores.h"
-#include "gfx/spr_digits.h"
-#include "gfx/spr_blocks.h"
+#include "spr_projectiles_gfx.h"
+#include "spr_enemies_gfx.h"
+#include "spr_urn_gfx.h"
+#include "spr_platform_gfx.h"
+#include "spr_gameover_gfx.h"
+#include "spr_coinscores_gfx.h"
+#include "spr_digits_gfx.h"
+#include "spr_blocks_gfx.h"
 
 //GLOBALS
 EWRAM_DATA T_LEVELSTATE g_levelState; //Takes up 20kb so put in EWRAM
@@ -74,35 +74,35 @@ void CLevel::Init()
 	//Load the projectile sprite tiles (8 tiles)
 	//Use CBB (Character Base Block) 4 for the sprites. We'll put the arrow tiles after the player tiles (pos 512)
 	//The player graphics have 512 tiles
-	GRIT_CPY(&tile_mem[4][SPRTILES_PROJECTILES], spr_projectilesTiles);
+	GFX_CPY(&tile_mem[4][SPRTILES_PROJECTILES], spr_projectiles);
 
 	//Load the enemy tiles right after the projectile tiles + 1
-	GRIT_CPY(&tile_mem[4][SPRTILES_ENEMIES], spr_enemiesTiles);
+	GFX_CPY(&tile_mem[4][SPRTILES_ENEMIES], spr_enemies);
 
 	//Load the breaking urn sprite after the enemies sprite
 	//The enemies sprite has 16 frames = 256 tiles
-	GRIT_CPY(&tile_mem[4][SPRTILES_URN], spr_urnTiles);
+	GFX_CPY(&tile_mem[4][SPRTILES_URN], spr_urn);
 
 	//Load the moving platform sprite after the breaking urn sprite
 	// breaking urn sprite has 4 frames = 64 tiles
-	GRIT_CPY(&tile_mem[4][SPRTILES_PLATFORM], spr_platformTiles);
+	GFX_CPY(&tile_mem[4][SPRTILES_PLATFORM], spr_platform);
 
 	//Load the game over sprite after the moving platform sprite
 	//Moving platform has 1 frame, 8 tiles.
-	GRIT_CPY(&tile_mem[4][SPRTILES_GAMEOVER], spr_gameoverTiles);
+	GFX_CPY(&tile_mem[4][SPRTILES_GAMEOVER], spr_gameover);
 
 	//Load the coin scores sprites after the game over sprite
 	//Game over sprite has 3 frames, 24 tiles.
-	GRIT_CPY(&tile_mem[4][SPRTILES_COINSCORES], spr_coinscoresTiles);
+	GFX_CPY(&tile_mem[4][SPRTILES_COINSCORES], spr_coinscores);
 
 	//Load the hourglas digits sprites (16x16)
 	//Start from 888. (coin score sprites have 16 tiles)
-	GRIT_CPY(&tile_mem[4][SPRTILES_DIGITS], spr_digitsTiles);
+	GFX_CPY(&tile_mem[4][SPRTILES_DIGITS], spr_digits);
 
 	//Load the moving blocks sprites (32x16)
 	//Start from 928. (hourglass digit sprites have 40 tiles)
-	GRIT_CPY(&tile_mem[4][SPRTILES_BLOCKS], spr_blocksTiles);
-    
+	GFX_CPY(&tile_mem[4][SPRTILES_BLOCKS], spr_blocks);
+
 	//Initialise the level data offsets array (6 array offsets in total)
 	for (n = 0; n < 6; n++)
 	{

@@ -49,7 +49,7 @@ enum ELookDir
 #define SOUND_FRAME_WALK	15
 #define SOUND_FRAME_CLIMB	3
 
-const OBJ_ATTR m_playerObj[1] = { {0, ATTR1_SIZE_32, 0} };
+const OBJ_ATTR m_playerObj[1] = { {0, ATTR1_SIZE_32, 0, 0} };
 
 //Class definition for the player class
 class CPlayer

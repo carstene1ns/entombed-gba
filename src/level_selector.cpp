@@ -10,7 +10,7 @@
 #include "fade.h"
 
 //Graphics data
-#include "gfx/spr_levelselect.h"
+#include "spr_levelselect_gfx.h"
 
 //Declarations
 
@@ -39,7 +39,7 @@ void CLevelSelector::Init()
 	mmEffectCancelAll();
 
 	//Load the sprite tiles
-	GRIT_CPY(tile_mem[4], spr_levelselectTiles);
+	GFX_CPY(tile_mem[4], spr_levelselect);
 
 	//If level 5 is not completed yet, show the level selector
 	//otherwise we'll be showing the ending screen instead.

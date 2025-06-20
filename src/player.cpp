@@ -19,7 +19,7 @@
 #include "objPropertiesLUT.h"
 
 //Graphics data
-#include "gfx/spr_player.h"
+#include "spr_player_gfx.h"
 
 //******CPlayer class function implementations******
 //Public
@@ -53,7 +53,7 @@ void CPlayer::Init(T_LEVELSTATE *ls)
     //Load the player sprite palette and tiles
 	//Use CBB (Character Base Block) 4 for the sprites. We'll put the player tiles in from the first tile. ([4][0])
 	//The player graphics have 512 tiles
-	GRIT_CPY(tile_mem[4], spr_playerTiles);
+	GFX_CPY(tile_mem[4], spr_player);
 
 	obj_set_attr(obj,
 	 ATTR0_SQUARE |              // Square, regular sprite

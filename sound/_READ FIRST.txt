@@ -1,2 +1,0 @@
-sound.bat uses mmutil.exe and bin2s to convert the sounds into .s and .h files that can be compiled into the game.
-You need to edit sound.bat in a text editor to make each command point to your copy of mmutil.exe and bin2s.exe, which are in your devkitARM folder.

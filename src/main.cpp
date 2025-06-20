@@ -16,8 +16,9 @@ c * Includes
 #include "soundbank_bin.h"
 
 //Background and sprite palettes.
-#include "gfx/pal_bg.h"
-#include "gfx/pal_oam.h"
+#include "pal_bg.h"
+#include "pal_oam.h"
+#include "pal_font.h"
 
 /*********************************************************************************
  * Globals
@@ -49,9 +50,9 @@ int main(void)
 	CLevel* Level; //Game level class instance
 
 	//Set the palettes
-	GRIT_CPY(pal_bg_mem, pal_bgPal);
-	GRIT_CPY(pal_obj_mem, pal_oamPal);
-	GRIT_CPY(pal_bg_mem + 240, entombed_fontPal); //Palbank 16
+	memcpy16(pal_bg_mem, pal_bg, pal_bg_size/2);
+	memcpy16(pal_obj_mem, pal_oam, pal_oam_size/2);
+	memcpy16(pal_bg_mem + 240, pal_font, pal_font_size/2); //Palbank 15
 	//Initialise the text system (background 0, SBB 26, prio 0)
 	txt_init(0, 26, 0); //Text
 

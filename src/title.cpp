@@ -12,7 +12,7 @@
 #include "soundbank.h"
 
 //Graphics data
-#include "gfx/spr_title.h"
+#include "spr_title_gfx.h"
 
 //Declarations
 
@@ -60,7 +60,7 @@ void CTitle::Init()
 {
 
     //Load sprite data for the intro sequence
-	GRIT_CPY(tile_mem[4], spr_titleTiles);
+	GFX_CPY(tile_mem[4], spr_title);
 
     //Set registers
 	REG_DISPCNT= DCNT_MODE0 | DCNT_BG0 | DCNT_BG1 | DCNT_BG2 | DCNT_OBJ | DCNT_OBJ_1D;

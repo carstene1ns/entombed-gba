@@ -17,8 +17,8 @@
 #include "soundbank.h"
 
 //Graphics data
-#include "gfx/tilemap_walls.h"
-#include "gfx/tilemap_fixtures.h"
+#include "tilemap_walls_gfx.h"
+#include "tilemap_fixtures_gfx.h"
 
 //Level data
 #include "level_data.h"
@@ -72,8 +72,8 @@ void CMap::Init(T_LEVELSTATE *ls)
     //to do with having the wrong byte alignment. See tonc 5.4.6. for details.
     //Load the wall tiles that correspond to the map property value.
     //TODO: Possibly use GRIT_CPY instead
-    memcpy16(tile_mem[0], &tilemap_wallsTiles[m_ls->wallTiles * 1024], 1024);
-	memcpy16(tile_mem[1], tilemap_fixturesTiles, tilemap_fixturesTilesLen);
+    memcpy16(tile_mem[0], &tilemap_walls_gfx[m_ls->wallTiles * 1024 * sizeof(u16)], 1024);
+	GFX_CPY(tile_mem[1], tilemap_fixtures);
 
 	//Initialise the text system (background 0, SBB 26, prio 0)
 	txt_init(0, 26, 0); //Text
