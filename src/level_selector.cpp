@@ -2,12 +2,12 @@
 
 #include <tonc.h>
 #include <vector>
-#include <maxmod.h>
 
 #include "gameDefines.h"
 #include "globalvars.h"
 #include "text.h"
 #include "fade.h"
+#include "sfx.h"
 
 //Graphics data
 #include "spr_levelselect_gfx.h"
@@ -39,7 +39,7 @@ void CLevelSelector::Init()
 	mmEffectCancelAll();
 
 	//Load the sprite tiles
-	GFX_CPY(tile_mem[4], spr_levelselect);
+	LZ77UnCompVram(spr_levelselect_gfx, tile_mem[4]);
 
 	//If level 5 is not completed yet, show the level selector
 	//otherwise we'll be showing the ending screen instead.
@@ -446,6 +446,4 @@ void CLevelSelector::ShowEndScreen(int page)
 		txt_puts(0,144, "                              ");
 		txt_puts(0,152, "                              ");
 	}
-
-
 }

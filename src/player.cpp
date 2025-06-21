@@ -2,7 +2,6 @@
 
 //Included code files
 #include <tonc.h>
-#include <maxmod.h>
 
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
@@ -13,7 +12,7 @@
 #include "moving_blocks.h"
 #include "sequences.h"
 #include "text.h"
-#include "soundbank.h"
+#include "sfx.h"
 
 //Lookup table for object property counts
 #include "objPropertiesLUT.h"
@@ -53,7 +52,7 @@ void CPlayer::Init(T_LEVELSTATE *ls)
     //Load the player sprite palette and tiles
 	//Use CBB (Character Base Block) 4 for the sprites. We'll put the player tiles in from the first tile. ([4][0])
 	//The player graphics have 512 tiles
-	GFX_CPY(tile_mem[4], spr_player);
+	LZ77UnCompVram(spr_player_gfx, tile_mem[4]);
 
 	obj_set_attr(obj,
 	 ATTR0_SQUARE |              // Square, regular sprite

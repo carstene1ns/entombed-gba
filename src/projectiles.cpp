@@ -4,11 +4,10 @@
 #include <stdlib.h>
 #include <tonc.h>
 #include <vector>
-#include <maxmod.h>
 
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
-#include "soundbank.h"
+#include "sfx.h"
 
 std::vector <CProjectile> projectiles; //Projectiles class instance vector
 

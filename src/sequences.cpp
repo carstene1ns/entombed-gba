@@ -2,14 +2,14 @@
 
 //Included code files
 #include <tonc.h>
-#include <maxmod.h>
 #include <vector>
+
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
 #include "objPropertiesLUT.h"
 #include "map.h"
 #include "guns.h"
-#include "soundbank.h"
+#include "sfx.h"
 
 //Level data
 #include "level_data.h"

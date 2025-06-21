@@ -2,7 +2,6 @@
 
 //Included code files
 #include <tonc.h>
-#include <maxmod.h>
 #include <vector>
 #include <stdlib.h>
 
@@ -19,7 +18,7 @@
 #include "text.h"
 #include "fade.h" //For fading the palette on game start, end and between lives
 #include "level_data.h"
-#include "soundbank.h"
+#include "sfx.h"
 
 //Sprite data
 #include "spr_projectiles_gfx.h"
@@ -74,34 +73,34 @@ void CLevel::Init()
 	//Load the projectile sprite tiles (8 tiles)
 	//Use CBB (Character Base Block) 4 for the sprites. We'll put the arrow tiles after the player tiles (pos 512)
 	//The player graphics have 512 tiles
-	GFX_CPY(&tile_mem[4][SPRTILES_PROJECTILES], spr_projectiles);
+	LZ77UnCompVram(spr_projectiles_gfx, &tile_mem[4][SPRTILES_PROJECTILES]);
 
 	//Load the enemy tiles right after the projectile tiles + 1
-	GFX_CPY(&tile_mem[4][SPRTILES_ENEMIES], spr_enemies);
+	LZ77UnCompVram(spr_enemies_gfx, &tile_mem[4][SPRTILES_ENEMIES]);
 
 	//Load the breaking urn sprite after the enemies sprite
 	//The enemies sprite has 16 frames = 256 tiles
-	GFX_CPY(&tile_mem[4][SPRTILES_URN], spr_urn);
+	LZ77UnCompVram(spr_urn_gfx, &tile_mem[4][SPRTILES_URN]);
 
 	//Load the moving platform sprite after the breaking urn sprite
 	// breaking urn sprite has 4 frames = 64 tiles
-	GFX_CPY(&tile_mem[4][SPRTILES_PLATFORM], spr_platform);
+	LZ77UnCompVram(spr_platform_gfx, &tile_mem[4][SPRTILES_PLATFORM]);
 
 	//Load the game over sprite after the moving platform sprite
 	//Moving platform has 1 frame, 8 tiles.
-	GFX_CPY(&tile_mem[4][SPRTILES_GAMEOVER], spr_gameover);
+	LZ77UnCompVram(spr_gameover_gfx, &tile_mem[4][SPRTILES_GAMEOVER]);
 
 	//Load the coin scores sprites after the game over sprite
 	//Game over sprite has 3 frames, 24 tiles.
-	GFX_CPY(&tile_mem[4][SPRTILES_COINSCORES], spr_coinscores);
+	LZ77UnCompVram(spr_coinscores_gfx, &tile_mem[4][SPRTILES_COINSCORES]);
 
 	//Load the hourglas digits sprites (16x16)
 	//Start from 888. (coin score sprites have 16 tiles)
-	GFX_CPY(&tile_mem[4][SPRTILES_DIGITS], spr_digits);
+	LZ77UnCompVram(spr_digits_gfx, &tile_mem[4][SPRTILES_DIGITS]);
 
 	//Load the moving blocks sprites (32x16)
 	//Start from 928. (hourglass digit sprites have 40 tiles)
-	GFX_CPY(&tile_mem[4][SPRTILES_BLOCKS], spr_blocks);
+	LZ77UnCompVram(spr_blocks_gfx, &tile_mem[4][SPRTILES_BLOCKS]);
 
 	//Initialise the level data offsets array (6 array offsets in total)
 	for (n = 0; n < 6; n++)

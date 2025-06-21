@@ -4,9 +4,6 @@
 #include <tonc.h>
 #include <vector>
 
-// GRIT_CPY replacement for CMake building
-#define GFX_CPY(dst, name) memcpy16(dst, name##_gfx, name##_gfx_size/2)
-
 //Game states
 #define GS_WAIT 0
 #define GS_TITLEBEGIN 1

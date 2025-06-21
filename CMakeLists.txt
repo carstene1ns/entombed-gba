@@ -67,35 +67,34 @@ target_compile_options(entombed PRIVATE
 )
 
 # gfx
-# TODO: maybe use -gzl to save some rom space?
 grit_add_binary_target(entombed_font gfx/entombed_font.bmp       # Font (8x8) - Has own palette
-	NO_MAP OUTPUT_PAL "pal_font" OPTIONS -pn16)
+	NO_MAP OUTPUT_PAL "pal_font" OPTIONS -pn16 -gzl)
 grit_add_binary_target(tilemap_walls gfx/tilemap_walls.bmp       # Walls (32x16), Background palette - Black is transparent
-	NO_MAP OUTPUT_PAL "pal_bg" OPTIONS -pn32 -Mw4 -Mh2)
+	NO_MAP OUTPUT_PAL "pal_bg" OPTIONS -pn32 -gzl -Mw4 -Mh2)
 grit_add_binary_target(spr_player gfx/spr_player.bmp             # Player (32x32), Sprite palette - Black is transparent
-	NO_MAP OUTPUT_PAL "pal_oam" OPTIONS -pn16 -Mw4 -Mh4)
+	NO_MAP OUTPUT_PAL "pal_oam" OPTIONS -pn16 -gzl -Mw4 -Mh4)
 grit_add_binary_target(tilemap_fixtures gfx/tilemap_fixtures.bmp # Fixtures (32x16)
-	NO_MAP NO_PALETTE OPTIONS -Mw4 -Mh2)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw4 -Mh2)
 grit_add_binary_target(spr_title gfx/spr_title.bmp               # Title screen (32x32)
-	NO_MAP NO_PALETTE OPTIONS -Mw4 -Mh4)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw4 -Mh4)
 grit_add_binary_target(spr_levelselect gfx/spr_levelselect.bmp   # Level selector (32x32)
-	NO_MAP NO_PALETTE OPTIONS -Mw4 -Mh4)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw4 -Mh4)
 grit_add_binary_target(spr_projectiles gfx/spr_projectiles.bmp   # Projectiles (8x8)
-	NO_MAP NO_PALETTE)
+	NO_MAP NO_PALETTE OPTIONS -gzl)
 grit_add_binary_target(spr_enemies gfx/spr_enemies.bmp           # Enemies (32x32)
-	NO_MAP NO_PALETTE OPTIONS -Mw4 -Mh4)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw4 -Mh4)
 grit_add_binary_target(spr_platform gfx/spr_platform.bmp         # Moving platform (32x16)
-	NO_MAP NO_PALETTE OPTIONS -Mw4 -Mh2)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw4 -Mh2)
 grit_add_binary_target(spr_urn gfx/spr_urn.bmp                   # Breaking urn (32x32)
-	NO_MAP NO_PALETTE OPTIONS -Mw4 -Mh4)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw4 -Mh4)
 grit_add_binary_target(spr_gameover gfx/spr_gameover.bmp         # Game over (32x16)
-	NO_MAP NO_PALETTE OPTIONS -Mw4 -Mh2)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw4 -Mh2)
 grit_add_binary_target(spr_coinscores gfx/spr_coinscores.bmp     # Coin scores (32x8)
-	NO_MAP NO_PALETTE OPTIONS -Mw4 -Mh1)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw4 -Mh1)
 grit_add_binary_target(spr_digits gfx/spr_digits.bmp             # Hourglass digit (16x16)
-	NO_MAP NO_PALETTE OPTIONS -Mw2 -Mh2)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw2 -Mh2)
 grit_add_binary_target(spr_blocks gfx/spr_blocks.bmp             # Moving blocks (32x16)
-	NO_MAP NO_PALETTE OPTIONS -Mw4 -Mh2)
+	NO_MAP NO_PALETTE OPTIONS -gzl -Mw4 -Mh2)
 dkp_add_embedded_binary_library(entombed-graphics
 	entombed_font tilemap_walls spr_player tilemap_fixtures
 	spr_title spr_levelselect spr_projectiles spr_enemies spr_platform

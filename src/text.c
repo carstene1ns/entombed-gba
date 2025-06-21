@@ -5,7 +5,7 @@
 void txt_init(int bgnr, int sbb, int prio)
 {
     //memcpy16(pal_bg_mem + 240, pal_font, pal_font_size/2); //Palbank 15
-    memcpy16(tile_mem[2], entombed_font_gfx, entombed_font_gfx_size/2);
+	LZ77UnCompVram(entombed_font_gfx, tile_mem[2]);
 
     //Copy palbank 15 to palbank 14 but with faded values. This way
     //we can have faded text on the level selector for levels that
@@ -113,4 +113,3 @@ void txt_clrs(int x, int y, const char *str)
 			dst[x++] = SE_PALBANK(15);
 	}	
 }
-

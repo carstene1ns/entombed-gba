@@ -3,7 +3,6 @@
 //Included code files
 #include <string.h>
 #include <tonc.h>
-#include <maxmod.h>
 
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
@@ -14,7 +13,7 @@
 #include "projectiles.h"
 #include "moving_platforms.h"
 #include "moving_blocks.h"
-#include "soundbank.h"
+#include "sfx.h"
 
 //Graphics data
 #include "tilemap_walls_gfx.h"
@@ -68,12 +67,11 @@ void CMap::Init(T_LEVELSTATE *ls)
     ResetMap();
 	
 	//Load the background graphics data
-	//Use memcpy16 here, because if you use memcpy you get a bug which is probably
-    //to do with having the wrong byte alignment. See tonc 5.4.6. for details.
     //Load the wall tiles that correspond to the map property value.
-    //TODO: Possibly use GRIT_CPY instead
-    memcpy16(tile_mem[0], &tilemap_walls_gfx[m_ls->wallTiles * 1024 * sizeof(u16)], 1024);
-	GFX_CPY(tile_mem[1], tilemap_fixtures);
+	u16 wall_tile_tmp[5120];
+	LZ77UnCompWram(tilemap_walls_gfx, wall_tile_tmp);
+	memcpy16(tile_mem[0], &wall_tile_tmp[m_ls->wallTiles * 1024], 1024);
+	LZ77UnCompVram(tilemap_fixtures_gfx, tile_mem[1]);
 
 	//Initialise the text system (background 0, SBB 26, prio 0)
 	txt_init(0, 26, 0); //Text
@@ -92,8 +90,6 @@ void CMap::Init(T_LEVELSTATE *ls)
 				ATTR0_SQUARE | ATTR0_4BPP | ATTR0_HIDE, ATTR1_SIZE_16, ATTR2_PALBANK(0)
 				| ATTR2_PRIO(0) | ATTR2_ID(SPRTILES_DIGITS)); //Digit 0, hidden
 	obj_set_pos(&g_obj_buffer[HOURGLASS_DIGIT_OAM + 1],40,128);
-
-
 }
 
 void CMap::Update()

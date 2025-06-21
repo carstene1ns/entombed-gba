@@ -4,7 +4,6 @@ c * Includes
 #include "main.h"
 
 #include <tonc.h>
-#include <maxmod.h>
 #include <string.h>
 
 #include "gameDefines.h"
@@ -13,7 +12,7 @@ c * Includes
 #include "level_selector.h"
 #include "level.h"
 #include "highscore_entry.h"
-#include "soundbank_bin.h"
+#include "sfx.h"
 
 //Background and sprite palettes.
 #include "pal_bg.h"
@@ -229,4 +228,3 @@ int LoadScores()
 }
 
 /* END OF FILE */
-

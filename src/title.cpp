@@ -2,14 +2,13 @@
 
 #include <string.h>
 #include <tonc.h>
-#include <maxmod.h>
 
 #include "gameDefines.h"
 #include "globalvars.h"
 #include "text.h"
 #include "fade.h"
 #include "itoa.h"
-#include "soundbank.h"
+#include "sfx.h"
 
 //Graphics data
 #include "spr_title_gfx.h"
@@ -60,7 +59,7 @@ void CTitle::Init()
 {
 
     //Load sprite data for the intro sequence
-	GFX_CPY(tile_mem[4], spr_title);
+	LZ77UnCompVram(spr_title_gfx, tile_mem[4]);
 
     //Set registers
 	REG_DISPCNT= DCNT_MODE0 | DCNT_BG0 | DCNT_BG1 | DCNT_BG2 | DCNT_OBJ | DCNT_OBJ_1D;

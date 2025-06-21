@@ -3,11 +3,10 @@
 #include <stdlib.h>
 #include <tonc.h>
 #include <vector>
-#include <maxmod.h>
 
 #include "gameDefines.h" //Global game defines
 #include "projectiles.h"
-#include "soundbank.h"
+#include "sfx.h"
 
 std::vector <TGun> guns; //Guns vector
 

@@ -1,13 +1,12 @@
 #include "enemies.h"
 
 #include <tonc.h>
-#include <maxmod.h>
 #include <vector>
 
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
 #include "projectiles.h"
-#include "soundbank.h"
+#include "sfx.h"
 
 std::vector <CEnemy> enemies; //Visible enemies class instance vector
 
@@ -401,4 +400,3 @@ void reset_enemies(T_LEVELSTATE *ls)
 }
 
 std::vector <CEnemy>& getEnemies() {return enemies;}
-
