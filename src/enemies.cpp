@@ -88,10 +88,6 @@ CEnemy::CEnemy(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _
 
 }
 
-CEnemy::~CEnemy()
-{
-}
-
 void CEnemy::Update()
 {
 
@@ -142,32 +138,31 @@ void CEnemy::Update()
 		}
 
 		//Check for any arrows that are colliding with this enemy
-		for(std::vector<CProjectile>::iterator it = projectiles.begin(); it != projectiles.end();)
+		for(auto& projectile : projectiles)
 		{
 			//Check if the projectile is an arrow
-			if (it->type < 2)
+			if (projectile.type < 2)
 			{
 				//See if the bullet intersects the enemy's bounding box.
 				//NB: projectile and enemy coordinates are both relative to the screen
 				//Check for collisions with the front point of the arrow.
-				arrowXPoint = it->type==0 ? 0:15;
-				if (  ( ((it->x>>8) + arrowXPoint) >= ((x>>8) + ENEMY_BBOX_LEFT) ) &&
-					  (((it->x>>8) + arrowXPoint) <= ((x>>8) + ENEMY_BBOX_RIGHT)) &&
-					  (((it->y>>8) + 1) >= ((y>>8) + ENEMY_BBOX_TOP)) &&
-					  (((it->y>>8) + 1) <= ((y>>8) + 31))  ) //Bottom
+				arrowXPoint = projectile.type==0 ? 0:15;
+				if (  ( ((projectile.x>>8) + arrowXPoint) >= ((x>>8) + ENEMY_BBOX_LEFT) ) &&
+					  (((projectile.x>>8) + arrowXPoint) <= ((x>>8) + ENEMY_BBOX_RIGHT)) &&
+					  (((projectile.y>>8) + 1) >= ((y>>8) + ENEMY_BBOX_TOP)) &&
+					  (((projectile.y>>8) + 1) <= ((y>>8) + 31))  ) //Bottom
 				{
 					//This bullet intersects the enemy's bounding box so reduce the enemy's hitpoints
 					//by 1 * the number of player bows.
 					hitPoints-=m_ls->bows;
 
 					//Deactivate the arrow
-					it->active = false;
+					projectile.active = false;
 
 					//Set the enemy to flashing
 					flashCounter = ENEMY_FLASH_FRAMES;
 				}
 			}
-			++it;
 		}
 
 		//If it's a snake, if it's firing counter is 0 and the player is level with the snake then
@@ -379,10 +374,11 @@ void scroll_enemies(int x, int y)
 {
 	//Update the projectiles positions by x and y, which will be got from map.cpp and is the amount
 	//the map scrolled on this vbl.
-	for(std::vector<CEnemy>::iterator it = enemies.begin(); it != enemies.end();it++)
+	for(auto& enemy : enemies)
 	{
 		//Update the coordinates.
-		it->x-=(x<<8); it->y-=(y<<8);
+		enemy.x-=(x<<8);
+		enemy.y-=(y<<8);
 	}
 }
 

@@ -80,10 +80,6 @@ CBlock::CBlock(T_LEVELSTATE* ls, FIXED _x, FIXED _y, int _type, int _startDir, i
 	obj_set_pos(obj, x>>8, y>>8); 
 }
 
-CBlock::~CBlock()
-{
-}
-
 void CBlock::Update()
 {
 	POINT distFromViewport; //Block's's distance from centre of map viewport
@@ -323,11 +319,9 @@ void CBlock::Update()
 				i++;
 			}
 			//Now check the active moving blocks that are within range of the player.
-			for(std::vector<CBlock>::iterator it = blocks.begin(); it != blocks.end();it++)
+			for(const auto& block : blocks)
 			{
-				//Update the coordinates.
-				//it->x-=(x<<8); it->y-=(y<<8);
-				if ( (((it->x>>8) + m_ls->vp.x) == tilePos.x*32) &&  (((it->y>>8) + m_ls->vp.y) == (tilePos.y+1)*16))
+				if ( (((block.x>>8) + m_ls->vp.x) == tilePos.x*32) &&  (((block.y>>8) + m_ls->vp.y) == (tilePos.y+1)*16))
 				{
 					blockedDirs[2] = true;
 				}
@@ -479,10 +473,11 @@ void scroll_blocks(int x, int y)
 {
 	//Update the moving block positions by x and y, which will be got from map.cpp and is the amount
 	//the map scrolled on this vbl.
-	for(std::vector<CBlock>::iterator it = blocks.begin(); it != blocks.end();it++)
+	for(auto& block : blocks)
 	{
 		//Update the coordinates.
-		it->x-=(x<<8); it->y-=(y<<8);
+		block.x-=(x<<8);
+		block.y-=(y<<8);
 	}
 }
 

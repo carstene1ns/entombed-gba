@@ -15,7 +15,6 @@
 class CMap
 {
 private:
-
     T_LEVELSTATE* m_ls; //Pointer to the level data
     SCR_ENTRY m_tileList[1024]; //Stores the list of 8x8 tiles as calculated by the
                                 //getGBATiles function
@@ -50,15 +49,8 @@ private:
     void UrnBroke();
 
 public:
-
-    //Properties
-
-    //Member functions
-
     //constructor
 	CMap();
-	//destructor
-	~CMap();
 	
     //Member functions
     void Init(T_LEVELSTATE *ls);
@@ -77,4 +69,3 @@ int LookupMapObject(T_LEVELSTATE *ls, int x, int y, int layer);
 int LookupCheckpoint(T_LEVELSTATE *ls, int x, int y);
 
 #endif
-

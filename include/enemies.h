@@ -6,7 +6,6 @@
 #include <vector>
 #include "gameDefines.h" //Global game defines
 
-
 //Defines
 #define SHOOT_DELAY 180 //3 seconds between shots for snake by default, but can vary.
 #define SNAKE_BULLET_SPEED 0x100 //Speed of snake's bullet
@@ -22,11 +21,9 @@
 //Class definition for the enemies class
 class CEnemy
 {
-
 private:
 	bool IsInRange(); //Check whether this enemy is within range of the player.
 	                  //If not then it doesn't need to be processed.
-
 
 	int type;
 public:
@@ -48,10 +45,7 @@ public:
 							//motion when it reaches 0.
 	//constructor
 	CEnemy(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _type, int _xMin, int _xMax, int _hitPoints, int _fireRate, int _obj_index);
-	//destructor
-	~CEnemy();
 	void Update();
-
 };
 
 //Non-class function prototypes
@@ -61,4 +55,3 @@ void reset_enemies(T_LEVELSTATE *ls);
 std::vector <CEnemy>& getEnemies();
 
 #endif
-

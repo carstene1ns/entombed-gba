@@ -6,15 +6,12 @@
 #include <vector>
 #include "gameDefines.h" //Global game defines
 
-
 // === CONSTANTS ======================================================
 #define BALL_ACCELERATION 0x0E
 
 //Class definition for the projectiles class
 class CProjectile 
 {
-
-private:
 public:
     T_LEVELSTATE* m_ls;
 
@@ -28,8 +25,6 @@ public:
 
 	//constructor
 	CProjectile(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _type, int _lifespan, int _weight);
-	//destructor
-	~CProjectile();
 	void Update();
 };
 
@@ -41,4 +36,3 @@ void reset_projectiles(T_LEVELSTATE *ls);
 std::vector <CProjectile>& getProjectiles();
 
 #endif
-

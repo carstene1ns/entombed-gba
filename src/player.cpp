@@ -40,11 +40,6 @@ CPlayer::CPlayer()
 
 }
 
-CPlayer::~CPlayer()
-{
-    
-}
-
 void CPlayer::Init(T_LEVELSTATE *ls)
 {
 	OBJ_ATTR *obj = &g_obj_buffer[0];
@@ -1032,20 +1027,20 @@ void CPlayer::player_test_collisions()
     }
      
     //Check projectile collisions
-    for(std::vector<CProjectile>::iterator it = projectiles.begin(); it != projectiles.end();)
+	for(auto& projectile : projectiles)
 	{
     	//Check if the projectile is a bullet (gun/snake/ball)
-    	if (it->type > 1)
+		if (projectile.type > 1)
     	{
     		//Get the bullet centre for this bullet type
-    		if (it->type == 2) //Gun
+			if (projectile.type == 2) //Gun
     		{
     			bulCentreX = 4;
     			bulCentreY = 1;
     		}
     		else
     		{
-    			if (it->type == 3) //Snake bullet
+				if (projectile.type == 3) //Snake bullet
 				{
 					bulCentreX = 1;
 					bulCentreY = 1;
@@ -1064,10 +1059,10 @@ void CPlayer::player_test_collisions()
     		//Check for collisions with the centre of the bullet rather than
     		//the bullet's bounding box to make things easier. I may check against
     		//the bullet's bounding box in the future.
-    		if ((((it->x>>8) + bulCentreX) >= (m_ls->playerPos.x>>8) - m_ls->vp.x + PLAYER_BBOX_LEFT) &&
-    			(((it->x>>8) + bulCentreX) <= (m_ls->playerPos.x>>8) - m_ls->vp.x + PLAYER_BBOX_RIGHT) &&
-    			(((it->y>>8) + bulCentreY) >= (m_ls->playerPos.y>>8) - m_ls->vp.y + 9) && //Top
-    			(((it->y>>8) + bulCentreY) <= (m_ls->playerPos.y>>8) - m_ls->vp.y + 32)) //Bottom
+			if ((((projectile.x>>8) + bulCentreX) >= (m_ls->playerPos.x>>8) - m_ls->vp.x + PLAYER_BBOX_LEFT) &&
+				(((projectile.x>>8) + bulCentreX) <= (m_ls->playerPos.x>>8) - m_ls->vp.x + PLAYER_BBOX_RIGHT) &&
+				(((projectile.y>>8) + bulCentreY) >= (m_ls->playerPos.y>>8) - m_ls->vp.y + 9) && //Top
+				(((projectile.y>>8) + bulCentreY) <= (m_ls->playerPos.y>>8) - m_ls->vp.y + 32)) //Bottom
     		{
     			//This bullet intersects the player's bounding box so set the player
     			//state to dying and deactivate the bullet.
@@ -1076,28 +1071,27 @@ void CPlayer::player_test_collisions()
     			{
 					player_set_state(PLAYER_STATE_DYING);
 					m_jumpCounter = 24;
-					it->active = false;
+					projectile.active = false;
 					mmEffect(SFX_PLAYER_DIE);
     			}
     		}
     	}
-    	++it;
 	}
 
     //Check for collisions with visible enemies
-    for(std::vector<CEnemy>::iterator it = enemies.begin(); it != enemies.end();)
+	for(const auto& enemy : enemies)
 	{
     	//Make sure the enemy is not in the process of dying
-    	if (it->isDying == false)
+		if (enemy.isDying == false)
     	{
 			//See if the enemy's bounding box intersects the player's bounding box.
 			//If so then set the player state to dying.
 			//NB: Enemy positions are relative to the screen, the player
 			//position is relative to the map so we subtract the viewport value.
-			if ((((it->x>>8) + ENEMY_BBOX_RIGHT) >= ((m_ls->playerPos.x>>8) - m_ls->vp.x) + PLAYER_BBOX_LEFT) &&
-				(((it->x>>8) + ENEMY_BBOX_LEFT) <= ((m_ls->playerPos.x>>8) - m_ls->vp.x) + PLAYER_BBOX_RIGHT) &&
-				(((it->y>>8) + 30) >= ((m_ls->playerPos.y>>8) - m_ls->vp.y) + 7) &&
-				(((it->y>>8) + ENEMY_BBOX_TOP) <= ((m_ls->playerPos.y>>8) - m_ls->vp.y) + 31))
+			if ((((enemy.x>>8) + ENEMY_BBOX_RIGHT) >= ((m_ls->playerPos.x>>8) - m_ls->vp.x) + PLAYER_BBOX_LEFT) &&
+				(((enemy.x>>8) + ENEMY_BBOX_LEFT) <= ((m_ls->playerPos.x>>8) - m_ls->vp.x) + PLAYER_BBOX_RIGHT) &&
+				(((enemy.y>>8) + 30) >= ((m_ls->playerPos.y>>8) - m_ls->vp.y) + 7) &&
+				(((enemy.y>>8) + ENEMY_BBOX_TOP) <= ((m_ls->playerPos.y>>8) - m_ls->vp.y) + 31))
 			{
 				//This enemy intersects the player's bounding box so set the player
 				//state to dying.
@@ -1110,20 +1104,19 @@ void CPlayer::player_test_collisions()
 				}
 			}
     	}
-		++it;
 	}
 
     //Check for collisions with visible moving blocks
-	for(std::vector<CBlock>::iterator it = blocks.begin(); it != blocks.end();)
+	for(const auto& block : blocks)
 	{
 		//See if the block's bounding box intersects the player's bounding box.
 		//If so then set the player state to dying.
 		//NB: Block positions are relative to the screen, the player
 		//position is relative to the map so we subtract the viewport value.
-		if ((((it->x>>8) + 32) >= ((m_ls->playerPos.x>>8) - m_ls->vp.x) + PLAYER_BBOX_LEFT) &&
-			((it->x>>8) <= ((m_ls->playerPos.x>>8) - m_ls->vp.x) + PLAYER_BBOX_RIGHT) &&
-			(((it->y>>8) + 16) >= ((m_ls->playerPos.y>>8) - m_ls->vp.y) + 7) &&
-			((it->y>>8) <= ((m_ls->playerPos.y>>8) - m_ls->vp.y) + 31))
+		if ((((block.x>>8) + 32) >= ((m_ls->playerPos.x>>8) - m_ls->vp.x) + PLAYER_BBOX_LEFT) &&
+			((block.x>>8) <= ((m_ls->playerPos.x>>8) - m_ls->vp.x) + PLAYER_BBOX_RIGHT) &&
+			(((block.y>>8) + 16) >= ((m_ls->playerPos.y>>8) - m_ls->vp.y) + 7) &&
+			((block.y>>8) <= ((m_ls->playerPos.y>>8) - m_ls->vp.y) + 31))
 		{
 			//This block intersects the player's bounding box so set the player
 			//state to dying.
@@ -1135,11 +1128,10 @@ void CPlayer::player_test_collisions()
 				mmEffect(SFX_PLAYER_DIE);
 			}
 		}
-		++it;
 	}
 
     //Check moving platform collisions
-	for(std::vector<CPlatform>::iterator it = platforms.begin(); it != platforms.end();)
+	for(auto& platform : platforms)
 	{
 
 		//If the player is not currently dying.
@@ -1151,22 +1143,21 @@ void CPlayer::player_test_collisions()
 		//so that you only go on a moving platform if you're not on a block already.
 		//Fixed with checking that down direction isn't blocked, but still maybe not
 		//perfect.
-		if (((it->x>>8) <= (m_ls->playerPos.x>>8) - m_ls->vp.x + PLAYER_BBOX_RIGHT) &&
-			(((it->x>>8) + 32) >= (m_ls->playerPos.x>>8) - m_ls->vp.x + PLAYER_BBOX_LEFT) &&
-			((it->y>>8) == (m_ls->playerPos.y>>8) - m_ls->vp.y + 32) && (m_state != PLAYER_STATE_DYING)
+		if (((platform.x>>8) <= (m_ls->playerPos.x>>8) - m_ls->vp.x + PLAYER_BBOX_RIGHT) &&
+			(((platform.x>>8) + 32) >= (m_ls->playerPos.x>>8) - m_ls->vp.x + PLAYER_BBOX_LEFT) &&
+			((platform.y>>8) == (m_ls->playerPos.y>>8) - m_ls->vp.y + 32) && (m_state != PLAYER_STATE_DYING)
 			&& (m_blockedDirs[3] == 0))
 		{
 			//Set the down direction to blocked, and set the player as touching
 			//this platform.
 			m_blockedDirs[3] = 1;
-			it->playerTouchingPlatform = true;
+			platform.playerTouchingPlatform = true;
 		}
 		else
 		{
 			//The player is not touching this platform
-			it->playerTouchingPlatform = false;
+			platform.playerTouchingPlatform = false;
 		}
-		++it;
 	}
 }
 

@@ -1,7 +1,6 @@
 #ifndef SEQUENCES_H
 #define SEQUENCES_H
 
-
 #include <tonc.h>
 #include <vector>
 #include "gameDefines.h" //Global game defines
@@ -12,7 +11,6 @@
 //Class definition for the projectiles class
 class CSequence
 {
-
 private:
 	T_LEVELSTATE* m_ls;
 	int m_seqNum;
@@ -40,11 +38,8 @@ public:
 	//constructor
 	CSequence(T_LEVELSTATE* ls, int _seqNum, int seqDataLen, int _loop,
 		int _alwaysOn, int _dataPos, bool _instant);
-	//destructor
-	~CSequence();
 	void Update();
 	void ReadChanges(bool finalise);
-
 };
 
 //Non-class function prototypes
@@ -57,4 +52,3 @@ void delay_sequences(int seconds);
 std::vector <CSequence>& getSequences();
 
 #endif
-

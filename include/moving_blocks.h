@@ -5,7 +5,6 @@
 #include <vector>
 #include "gameDefines.h" //Global game defines
 
-
 //Defines
 #define BLOCK_ROCK 0
 #define BLOCK_HOT 1
@@ -14,7 +13,6 @@
 //Class definition for the moving blocks class
 class CBlock
 {
-
 private:
 	bool IsInRange(); //Check whether this block is within range of the player.
 	                  //If not then it doesn't need to be processed.
@@ -33,8 +31,6 @@ public:
 
 	//constructor
 	CBlock(T_LEVELSTATE* ls, FIXED _x, FIXED _y, int _type, int _startDir, int _lifespan, int _movingDown, int _obj_index);
-	//destructor
-	~CBlock();
 	void Update();
 };
 

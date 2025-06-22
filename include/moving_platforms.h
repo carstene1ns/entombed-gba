@@ -8,7 +8,6 @@
 //Class definition for the moving platforms class
 class CPlatform
 {
-
 private:
 	bool IsInRange(); //Check whether this platform is within range of the player.
 	                  //If not then it doesn't need to be processed.
@@ -25,10 +24,7 @@ public:
 
 	//constructor
 	CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _xMin, int _xMax, int _obj_index);
-	//destructor
-	~CPlatform();
 	void Update();
-
 };
 
 //Non-class function prototypes
@@ -37,5 +33,5 @@ void update_platforms(T_LEVELSTATE *ls);
 void scroll_platforms(int x, int y);
 void reset_platforms(T_LEVELSTATE *ls);
 std::vector <CPlatform>& getPlatforms();
-#endif
 
+#endif

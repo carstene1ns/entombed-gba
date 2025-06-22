@@ -8,7 +8,6 @@
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
 
-
 // === CONSTANTS ======================================================
 
 //NB the following speed defines are based on 24.8 fixed point maths, so the speed gets
@@ -56,65 +55,61 @@ class CPlayer
 {
 private:
 
-    //Properties
-    T_LEVELSTATE* m_ls; //Stores the player position since this needs to be
-                        //shared with other modules
+	//Properties
+	T_LEVELSTATE* m_ls; //Stores the player position since this needs to be
+	//shared with other modules
 
-    FIXED		m_vx, m_vy;		//!< Velocity
-    u16			m_state;		//!< Sprite state
-    u8			m_dir;		//!< Look direction
-    u8			m_obj_id;		//!< Object index
-    FIXED		m_ani_frame;	//!< Animation frame counter
-    FIXED		m_soundFrame;   //Frame counter for playing movement samples
+	FIXED		m_vx, m_vy;		//!< Velocity
+	u16			m_state;		//!< Sprite state
+	u8			m_dir;		//!< Look direction
+	u8			m_obj_id;		//!< Object index
+	FIXED		m_ani_frame;	//!< Animation frame counter
+	FIXED		m_soundFrame;   //Frame counter for playing movement samples
 
-    int m_blockedDirs[4]; //Left, right, up, down
-    bool m_blockedByDoor[2]; //If a door is stopping us from moving left or right
-    int m_layer2Collisions[6][3]; //Which layer 2 tiles 6 points of the player are
-                                 //touching. tile index, bx and by are stored.
-    bool m_touchingLadder; //True if we're currently touching a ladder
-    bool m_topOfLadder;    //True if we're at the top of a ladder
-    int m_lookDownCounter;
-    
-    mm_sfxhand sndMoveHandle;
+	int m_blockedDirs[4]; //Left, right, up, down
+	bool m_blockedByDoor[2]; //If a door is stopping us from moving left or right
+	int m_layer2Collisions[6][3]; //Which layer 2 tiles 6 points of the player are
+	                              //touching. tile index, bx and by are stored.
+	bool m_touchingLadder; //True if we're currently touching a ladder
+	bool m_topOfLadder;    //True if we're at the top of a ladder
+	int m_lookDownCounter;
+
+	mm_sfxhand sndMoveHandle;
 
 
-    //Member functions
-   	void player_input();
-   	void player_move();
-   	void player_animate();
-   	
-   	//Animation types
-   	void player_ani_stand();
-    void player_ani_walk();
-    void player_ani_climb();
-    void player_ani_fireArrow();
-    void player_ani_die();
-    
-    //Collision testing functions
-    void player_test_collisions();
-    void ProcessLayer2Collisions();
-    
+	//Member functions
+	void player_input();
+	void player_move();
+	void player_animate();
+
+	//Animation types
+	void player_ani_stand();
+	void player_ani_walk();
+	void player_ani_climb();
+	void player_ani_fireArrow();
+	void player_ani_die();
+
+	//Collision testing functions
+	void player_test_collisions();
+	void ProcessLayer2Collisions();
+
 public:
 
-    //Properties
-    bool m_lookingDown; //Whether the 'Look down' button is currently held.
-    int m_jumpCounter; //Counts down from the desired height of a jump (also used in
-                       //the death sequence)
-    
-    //Member functions
-    void player_set_state(u32 state);
+	//Properties
+	bool m_lookingDown; //Whether the 'Look down' button is currently held.
+	int m_jumpCounter; //Counts down from the desired height of a jump (also used in
+	                   //the death sequence)
 
-    //constructor
+	//Member functions
+	void player_set_state(u32 state);
+
+	//constructor
 	CPlayer();
-	//destructor
-	~CPlayer();
 	
 	void Init(T_LEVELSTATE *ls);
-    void Update();
-   	void DeInit();
-   	void ResetPlayer();
-   	
+	void Update();
+	void DeInit();
+	void ResetPlayer();
 };
 
 #endif
-

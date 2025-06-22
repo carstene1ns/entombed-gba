@@ -59,10 +59,6 @@ CSequence::CSequence(T_LEVELSTATE* ls, int _seqNum, int seqDataLen,
 	}
 }
 
-CSequence::~CSequence()
-{
-}
-
 void CSequence::Update()
 {
 
@@ -594,11 +590,11 @@ void initiate_always_on_sequences(T_LEVELSTATE *ls)
 
 void delay_sequences(int seconds)
 {
-	for(std::vector<CSequence>::iterator it = sequences.begin(); it != sequences.end(); it++)
+	for(auto& sequence : sequences)
 	{
-		if (!it->m_alwaysOn)
+		if (!sequence.m_alwaysOn)
 		{
-			it->m_delayCounter += (seconds*60);
+			sequence.m_delayCounter += (seconds*60);
 		}
 	}
 }

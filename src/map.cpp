@@ -41,11 +41,6 @@ CMap::CMap()
     m_urnHitPoints = 0;
 }
 
-CMap::~CMap()
-{
-    //Do deconstructor stuff
-}
-
 void CMap::Init(T_LEVELSTATE *ls)
 {
 	
@@ -1611,44 +1606,44 @@ void CMap::Teleport()
 	if (objIndex >= 0)
 	{
 		//Store the sprite positions.
-		for(std::vector<CEnemy>::iterator it = enemies.begin(); it != enemies.end();it++)
+		for(auto& enemy : enemies)
 		{
-			it->active = false;
-			m_ls->mapSprites[it->obj_index].visible = false;
-			if (m_ls->mapSprites[it->obj_index].available == true)
+			enemy.active = false;
+			m_ls->mapSprites[enemy.obj_index].visible = false;
+			if (m_ls->mapSprites[enemy.obj_index].available == true)
 			{
 				//Store position and direction.
-				m_ls->mapSprites[it->obj_index].x = ((it->x>>8) + m_ls->vp.x);
-				m_ls->mapSprites[it->obj_index].y = ((it->y>>8) + m_ls->vp.y);
-				m_ls->mapSprites[it->obj_index].properties[3] = (it->dx > 0) ? 1 : 0;
+				m_ls->mapSprites[enemy.obj_index].x = ((enemy.x>>8) + m_ls->vp.x);
+				m_ls->mapSprites[enemy.obj_index].y = ((enemy.y>>8) + m_ls->vp.y);
+				m_ls->mapSprites[enemy.obj_index].properties[3] = (enemy.dx > 0) ? 1 : 0;
 				
 			}
 		}
-		for(std::vector<CPlatform>::iterator it = platforms.begin(); it != platforms.end();it++)
+		for(auto& platform : platforms)
 		{
-			it->active = false;
-			m_ls->mapSprites[it->obj_index].visible = false;
-			if (m_ls->mapSprites[it->obj_index].available == true)
+			platform.active = false;
+			m_ls->mapSprites[platform.obj_index].visible = false;
+			if (m_ls->mapSprites[platform.obj_index].available == true)
 			{
 				//Store position and direction.
-				m_ls->mapSprites[it->obj_index].x = ((it->x>>8) + m_ls->vp.x);
-				m_ls->mapSprites[it->obj_index].y = ((it->y>>8) + m_ls->vp.y);
-				m_ls->mapSprites[it->obj_index].properties[3] = (it->dx > 0) ? 1 : 0;
+				m_ls->mapSprites[platform.obj_index].x = ((platform.x>>8) + m_ls->vp.x);
+				m_ls->mapSprites[platform.obj_index].y = ((platform.y>>8) + m_ls->vp.y);
+				m_ls->mapSprites[platform.obj_index].properties[3] = (platform.dx > 0) ? 1 : 0;
 				
 			}
 		}
-		for(std::vector<CBlock>::iterator it = blocks.begin(); it != blocks.end();it++)
+		for(auto& block : blocks)
 		{
-			it->active = false;
-			m_ls->mapSprites[it->obj_index].visible = false;
-			if (m_ls->mapSprites[it->obj_index].available == true)
+			block.active = false;
+			m_ls->mapSprites[block.obj_index].visible = false;
+			if (m_ls->mapSprites[block.obj_index].available == true)
 			{
 				//Store position, remaining lifespan and directions.
-				m_ls->mapSprites[it->obj_index].x = ((it->x>>8) + m_ls->vp.x);
-				m_ls->mapSprites[it->obj_index].y = ((it->y>>8) + m_ls->vp.y);
-				m_ls->mapSprites[it->obj_index].properties[1] = it->lastXDir;
-				m_ls->mapSprites[it->obj_index].properties[2] = it->lifespanCounter;
-				m_ls->mapSprites[it->obj_index].properties[3] = (it->dy > 0) ? 1 : 0;
+				m_ls->mapSprites[block.obj_index].x = ((block.x>>8) + m_ls->vp.x);
+				m_ls->mapSprites[block.obj_index].y = ((block.y>>8) + m_ls->vp.y);
+				m_ls->mapSprites[block.obj_index].properties[1] = block.lastXDir;
+				m_ls->mapSprites[block.obj_index].properties[2] = block.lifespanCounter;
+				m_ls->mapSprites[block.obj_index].properties[3] = (block.dy > 0) ? 1 : 0;
 			}
 		}
 

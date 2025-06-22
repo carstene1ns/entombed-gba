@@ -116,10 +116,6 @@ CProjectile::CProjectile(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED 
 
 }
 
-CProjectile::~CProjectile()
-{
-}
-
 void CProjectile::Update()
 {
 	POINT distFromViewport; //Projectile's distance from centre of map viewport
@@ -448,10 +444,11 @@ void scroll_projectiles(int x, int y)
 {
 	//Update the projectiles positions by x and y, which will be got from map.cpp and is the amount
 	//the map scrolled on this vbl.
-	for(std::vector<CProjectile>::iterator it = projectiles.begin(); it != projectiles.end();it++)
+	for(auto& projectile : projectiles)
 	{
 		//Update the coordinates.
-		it->x-=(x<<8); it->y-=(y<<8);
+		projectile.x-=(x<<8);
+		projectile.y-=(y<<8);
 	}
 }
 

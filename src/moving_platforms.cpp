@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <tonc.h>
 #include <vector>
+
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
 
@@ -53,10 +54,6 @@ CPlatform::CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy,
 
 	//Set object coords
 	obj_set_pos(obj, x>>8, y>>8);
-}
-
-CPlatform::~CPlatform()
-{
 }
 
 void CPlatform::Update()
@@ -208,10 +205,11 @@ void scroll_platforms(int x, int y)
 {
 	//Update the moving platform positions by x and y, which will be got from map.cpp and is the amount
 	//the map scrolled on this vbl.
-	for(std::vector<CPlatform>::iterator it = platforms.begin(); it != platforms.end();it++)
+	for(auto& platform : platforms)
 	{
 		//Update the coordinates.
-		it->x-=(x<<8); it->y-=(y<<8);
+		platform.x-=(x<<8);
+		platform.y-=(y<<8);
 	}
 }
 
