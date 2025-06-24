@@ -17,9 +17,8 @@
 std::vector <CSequence> sequences; //Sequences class instance vector
 
 CSequence::CSequence(T_LEVELSTATE* ls, int _seqNum, int seqDataLen,
-		int _loop, int _alwaysOn, int _dataPos, bool _instant)
+                     int _loop, int _alwaysOn, int _dataPos, bool _instant)
 {
-
 	m_active = true;
 	//Pointer to global level state
 	m_ls = ls;
@@ -61,7 +60,6 @@ CSequence::CSequence(T_LEVELSTATE* ls, int _seqNum, int seqDataLen,
 
 void CSequence::Update()
 {
-
 	int n;
 
 	//If delayFlash is true, reduce the flashCounter.
@@ -95,7 +93,6 @@ void CSequence::Update()
 		{
 			mmEffect(SFX_CHANGE);
 		}
-
 
 		//If there is a stage after this then read the its properties
 		if (m_dataPos < m_seqDataEnd)
@@ -153,7 +150,6 @@ void CSequence::Update()
 		m_delayCounter--;
 	}
 
-
 }
 
 void CSequence::ReadChanges(bool finalise)
@@ -187,22 +183,22 @@ void CSequence::ReadChanges(bool finalise)
 		//Now we figure out what to do with it
 		//If layer >= 1 and type !=  then subtract 7 because
 		//we start past the wall tiles on layer 1 & 3.
-		if ((layer >= 1) && (type>0))
+		if ((layer >= 1) && (type > 0))
 		{
-			type-=7;
+			type -= 7;
 		}
 
 		//If this is a tile that can be erased by a moving block, check the
 		//erasedTiles array to see if it has been erased.
 		//Applies to spikes/spears and ladders.
 		if ((layer == 1) && ((type >= 5 && type <= 9) || (type == TILE_PLATFORM1) ||
-			(type == TILE_PLATFORM2) || (type == TILE_LADDER)))
+		                     (type == TILE_PLATFORM2) || (type == TILE_LADDER)))
 		{
 			m = 0;
-			while ( (m_ls->erasedTiles[m].type > 0) && (m < 20))
+			while ((m_ls->erasedTiles[m].type > 0) && (m < 20))
 			{
-				if ( (m_ls->erasedTiles[m].pos.x == x) && (m_ls->erasedTiles[m].pos.y == y) &&
-					 (m_ls->erasedTiles[m].type == type) )
+				if ((m_ls->erasedTiles[m].pos.x == x) && (m_ls->erasedTiles[m].pos.y == y) &&
+				    (m_ls->erasedTiles[m].type == type))
 				{
 					type = 0;
 				}
@@ -213,7 +209,6 @@ void CSequence::ReadChanges(bool finalise)
 			}
 		}
 
-
 		//If finalise is false, we'll only care about wall and fixture tile changes
 		if (finalise == false)
 		{
@@ -223,24 +218,25 @@ void CSequence::ReadChanges(bool finalise)
 				//non-solid change at that position to that tile's current tile index.
 				if (!m_flashOn)
 				{
-	                m_ls->mapChanges[m_ls->mapChangeCount].layer = layer;
-	                m_ls->mapChanges[m_ls->mapChangeCount].tileIndex = m_ls->mapData[layer][(y*80) + x].tileIndex;
-	                m_ls->mapChanges[m_ls->mapChangeCount].solid = 0;
-	                m_ls->mapChanges[m_ls->mapChangeCount].x = x;
-	                m_ls->mapChanges[m_ls->mapChangeCount].y = y;
-	                m_ls->mapChangeCount++;
+					m_ls->mapChanges[m_ls->mapChangeCount].layer = layer;
+					m_ls->mapChanges[m_ls->mapChangeCount].tileIndex = m_ls->mapData[layer][(y * 80) + x].tileIndex;
+					m_ls->mapChanges[m_ls->mapChangeCount].solid = 0;
+					m_ls->mapChanges[m_ls->mapChangeCount].x = x;
+					m_ls->mapChanges[m_ls->mapChangeCount].y = y;
+					m_ls->mapChangeCount++;
 
-	                //If the change was a double-height tile, set the tile below
-	                //as well. (Door, urn, exit)
-	                if ((type == TILE_DOOR_CLOSED_TOP) || (type == TILE_URN_TOP) || (type == TILE_EXIT_TOP))
-	                {
-	                	m_ls->mapChanges[m_ls->mapChangeCount].layer = layer;
-						m_ls->mapChanges[m_ls->mapChangeCount].tileIndex = m_ls->mapData[layer][((y+1)*80) + x].tileIndex;
+					//If the change was a double-height tile, set the tile below
+					//as well. (Door, urn, exit)
+					if ((type == TILE_DOOR_CLOSED_TOP) || (type == TILE_URN_TOP) || (type == TILE_EXIT_TOP))
+					{
+						m_ls->mapChanges[m_ls->mapChangeCount].layer = layer;
+						m_ls->mapChanges[m_ls->mapChangeCount].tileIndex = m_ls->mapData[layer][((
+						        y + 1) * 80) + x].tileIndex;
 						m_ls->mapChanges[m_ls->mapChangeCount].solid = 0;
 						m_ls->mapChanges[m_ls->mapChangeCount].x = x;
 						m_ls->mapChanges[m_ls->mapChangeCount].y = (y + 1);
 						m_ls->mapChangeCount++;
-	                }
+					}
 				}
 				else
 				{
@@ -258,13 +254,13 @@ void CSequence::ReadChanges(bool finalise)
 					{
 						case TILE_DOOR_CLOSED_TOP: //Door(Closed) top
 							m = TILE_DOOR_CLOSED_BOTTOM;
-						break;
+							break;
 						case TILE_URN_TOP: //Urn top
 							m = TILE_URN_BOTTOM;
-						break;
+							break;
 						case TILE_EXIT_TOP: //Exit top
 							m = TILE_EXIT_BOTTOM;
-						break;
+							break;
 					}
 					if (m > 0)
 					{
@@ -280,7 +276,7 @@ void CSequence::ReadChanges(bool finalise)
 			if (layer >= 1)
 			{
 				//Skip up and past any sprite objects and properties
-				m_dataPos+=objPropertiesLUT[type] & CONTENTS_MASK;
+				m_dataPos += objPropertiesLUT[type] & CONTENTS_MASK;
 				//Skip past any contents data and properties, if any
 				if ((objPropertiesLUT[type]) >> CONTENTS_BIT == 1)
 				{
@@ -290,7 +286,7 @@ void CSequence::ReadChanges(bool finalise)
 					if (map_sequences[m_dataPos] > 7)
 					{
 						//Skip past any properties.
-						m_dataPos+=(objPropertiesLUT[map_sequences[m_dataPos]-7]);
+						m_dataPos += (objPropertiesLUT[map_sequences[m_dataPos] - 7]);
 					}
 					//Skip past the contents type value as well.
 					m_dataPos++;
@@ -299,7 +295,7 @@ void CSequence::ReadChanges(bool finalise)
 		}
 		else
 		{
-			 //Else finalise so we'll be taking care of map objects/properties and
+			//Else finalise so we'll be taking care of map objects/properties and
 			//sprites as well as applying solid map tile changes.
 			if (layer <= 1)
 			{
@@ -317,13 +313,13 @@ void CSequence::ReadChanges(bool finalise)
 				{
 					case TILE_DOOR_CLOSED_TOP: //Door(Closed) top
 						m = TILE_DOOR_CLOSED_BOTTOM;
-					break;
+						break;
 					case TILE_URN_TOP: //Urn top
 						m = TILE_URN_BOTTOM;
-					break;
+						break;
 					case TILE_EXIT_TOP: //Exit top
 						m = TILE_EXIT_BOTTOM;
-					break;
+						break;
 				}
 				if (m > 0)
 				{
@@ -341,7 +337,7 @@ void CSequence::ReadChanges(bool finalise)
 				{
 					//If this location had properties previously,
 					//look up and remove the entry in m_ls->mapObjects
-					objIndex = LookupMapObject(m_ls, x,y,1);
+					objIndex = LookupMapObject(m_ls, x, y, 1);
 					if (objIndex > -1)
 					{
 						m_ls->mapObjects.erase(m_ls->mapObjects.begin() + objIndex);
@@ -356,7 +352,7 @@ void CSequence::ReadChanges(bool finalise)
 					//If this tile type has properties/contents add them to
 					//the mapObjects vector.
 					if (((objPropertiesLUT[type] & CONTENTS_MASK) > 0) ||
-						((objPropertiesLUT[type]) >> CONTENTS_BIT == 1))
+					    ((objPropertiesLUT[type]) >> CONTENTS_BIT == 1))
 					{
 						//First clear the tempObject properties and contents data
 						tempObject.Contents.type = 0;
@@ -371,7 +367,7 @@ void CSequence::ReadChanges(bool finalise)
 						tempObject.y = y;
 						tempObject.layer = 1;
 						//Read the object properties, if any.
-						for (m=0; m < (objPropertiesLUT[type] & CONTENTS_MASK); m++)
+						for (m = 0; m < (objPropertiesLUT[type] & CONTENTS_MASK); m++)
 						{
 							tempObject.properties[m] = map_sequences[m_dataPos++];
 						}
@@ -380,10 +376,13 @@ void CSequence::ReadChanges(bool finalise)
 						{
 							tempObject.Contents.type = map_sequences[m_dataPos++];
 							//Subtract 7 if above 7, since it would be a layer 1 tile
-							if (tempObject.Contents.type > 7) {tempObject.Contents.type -= 7;}
+							if (tempObject.Contents.type > 7)
+							{
+								tempObject.Contents.type -= 7;
+							}
 							//Read the contents object properties, if any
 							//(Contents type at previous dataPos.)
-							for (m=0; m< (objPropertiesLUT[map_sequences[m_dataPos-1]] & CONTENTS_MASK); m++)
+							for (m = 0; m < (objPropertiesLUT[map_sequences[m_dataPos - 1]] & CONTENTS_MASK); m++)
 							{
 								tempObject.Contents.properties[m] = map_sequences[m_dataPos++];
 							}
@@ -394,9 +393,11 @@ void CSequence::ReadChanges(bool finalise)
 						//If this was a gun, add it to the guns vector so
 						//it can fire if necessary.
 						if ((type == TILE_GUN_L) || (type == TILE_GUN_R)
-						|| (type == TILE_BALLGUN_L) || (type == TILE_BALLGUN_R))
-						{	//Convert from tile coordinates to map coordinates
-							gun.xPos = x*32; gun.yPos = y*16;
+						    || (type == TILE_BALLGUN_L) || (type == TILE_BALLGUN_R))
+						{
+							//Convert from tile coordinates to map coordinates
+							gun.xPos = x * 32;
+							gun.yPos = y * 16;
 							gun.bullets = tempObject.properties[0];
 							gun.interval = tempObject.properties[1];
 							gun.timer = tempObject.properties[1];
@@ -418,7 +419,7 @@ void CSequence::ReadChanges(bool finalise)
 				//make it available.
 				//NB: mapSprites array stores locations in
 				//map coordinates, so multiply x*32 and y*16
-				objIndex = LookupMapObject(m_ls, x*32,y*16,3);
+				objIndex = LookupMapObject(m_ls, x * 32, y * 16, 3);
 				if (objIndex > -1)
 				{
 					m_ls->mapSprites[objIndex].available = true;
@@ -483,7 +484,7 @@ void update_sequences(T_LEVELSTATE *ls)
 	(void) ls;
 
 	//Iterate through the vector of active sequences, call the update method for each one.
-	for(std::vector<CSequence>::iterator it = sequences.begin(); it != sequences.end();)
+	for (std::vector<CSequence>::iterator it = sequences.begin(); it != sequences.end();)
 	{
 		//Check whether this sequence is active
 		if (it->m_active == true)
@@ -571,15 +572,15 @@ void initiate_always_on_sequences(T_LEVELSTATE *ls)
 	}
 
 	//map_sequences type is short so /2 on sizeof
-	if ((sizeof(map_sequences)/2)>0)
+	if ((sizeof(map_sequences) / 2) > 0)
 	{
 		while (dataPos < dataEnd)
 		{
 			//Read the next sequence data length value
 			seqLength = map_sequences[dataPos];
-			if (map_sequences[dataPos+3])
+			if (map_sequences[dataPos + 3])
 			{
-				initiate_sequence(ls,seqNum,false);
+				initiate_sequence(ls, seqNum, false);
 			}
 			//Go to the start of the next sequence data
 			dataPos += seqLength;
@@ -590,13 +591,16 @@ void initiate_always_on_sequences(T_LEVELSTATE *ls)
 
 void delay_sequences(int seconds)
 {
-	for(auto& sequence : sequences)
+	for (auto& sequence : sequences)
 	{
 		if (!sequence.m_alwaysOn)
 		{
-			sequence.m_delayCounter += (seconds*60);
+			sequence.m_delayCounter += (seconds * 60);
 		}
 	}
 }
 
-std::vector <CSequence>& getSequences() {return sequences;}
+std::vector <CSequence> &getSequences()
+{
+	return sequences;
+}

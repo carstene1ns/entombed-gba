@@ -24,26 +24,25 @@
 #define TITLEBGNO 2
 
 //Sprite graphics tile numbers
-#define SPRTILES_PROJECTILES 512 //After player tiles. 8 tiles, 4 frames.
-                                 //8x8, but arrows use 2 tiles each.
+#define SPRTILES_PROJECTILES 512 /*After player tiles. 8 tiles, 4 frames.
+                                   8x8, but arrows use 2 tiles each.*/
 #define SPRTILES_ENEMIES 520 //256 tiles, 16 frames, 32x32
 #define SPRTILES_URN 776 //64 tiles, 4 frames, 32x32
 #define SPRTILES_PLATFORM 840 //8 tiles, 1 frame, 32x16
-#define SPRTILES_GAMEOVER 848 //24 tiles, 3 frames, 32x16.
-                              //The 3 frames get combined into one image.
+#define SPRTILES_GAMEOVER 848 /*24 tiles, 3 frames, 32x16.
+                                The 3 frames get combined into one image.*/
 #define SPRTILES_COINSCORES 872 //16 tiles, 4 frames, 32x8
 #define SPRTILES_DIGITS 888 //40 tiles, 10 frames, 16x16
 #define SPRTILES_BLOCKS 928 //24 tiles, 3 frames, 32x16
-
 
 //Urn sprite constant
 #define URN_OAM 1
 
 //Projectile constants
 #define MAX_PROJECTILES 10
-#define PROJECTILE_FIRST_OAM (URN_OAM + 1) //First sprite entry for projectiles,
-                               //after the breaking urn sprite.Pplayer sprite
-                               //uses index 0.
+//First sprite entry for projectiles, after the breaking urn sprite.
+//Player sprite uses index 0.
+#define PROJECTILE_FIRST_OAM (URN_OAM + 1)
 
 //Sprite object constants
 #define MAX_SPRITES 72
@@ -65,8 +64,8 @@
 //Level data defines
 #define DATA_OFFSETS 6 //Total number of array data offsets in the level data per level
 #define MAX_PROPERTIES 5 //Max number of properties an object can have
-#define MAX_CHECKPOINT_SEQUENCES 10 //Max number of sequences that can be activated
-                                    //when loading a checkpoint
+#define MAX_CHECKPOINT_SEQUENCES 10 /*Max number of sequences that can be activated
+                                      when loading a checkpoint*/
 
 //Layer 2 tile defines
 #define TILE_SPEARS 9
@@ -117,46 +116,45 @@ typedef struct THighScore
 
 typedef struct POINT_FIXED
 {
-	FIXED x,y;
+	FIXED x, y;
 } POINT_FIXED;
 
 typedef struct VIEWPORT
 {
-   int x, xmin, xmax, xpage;
-   int y, ymin, ymax, ypage;
+	int x, xmin, xmax, xpage;
+	int y, ymin, ymax, ypage;
 } VIEWPORT;
-
 
 typedef struct BGTYPE
 {
 	union
 	{
-		u32 state;			//!< Background state
+		u32 state;          //!< Background state
 		struct
 		{
 			u16 flags;
 			u16 cnt;
 		};
 	};
-    // Destination data
-    SCR_ENTRY *dst_map;		//!< Screenblock pointer	
-    // Source data
-    SCR_ENTRY *src_map;		//!< Source map address
-    u32 src_map_width;		//!< Source map width
-    u32 src_map_height;		//!< Source map height
-    FIXED map_x;			//!< X-coord on map (.8f)
-    FIXED map_y;			//!< Y-coord on map (.8f)
-    u32 layer;              //Map layer number
+	// Destination data
+	SCR_ENTRY* dst_map;     //!< Screenblock pointer
+	// Source data
+	SCR_ENTRY* src_map;     //!< Source map address
+	u32 src_map_width;      //!< Source map width
+	u32 src_map_height;     //!< Source map height
+	FIXED map_x;            //!< X-coord on map (.8f)
+	FIXED map_y;            //!< Y-coord on map (.8f)
+	u32 layer;              //Map layer number
 } BGTYPE;
 
 typedef struct MAPPOS
 {
 	u8 tileIndex;
-	u8 visibleTileIndex; //When a block is in the process ofchanging, this will be set
-						 //to whatever it's changing to when it's flashing. Once
-						 //the change is done, tileIndex will be set to this.
+	u8 visibleTileIndex; /*When a block is in the process of changing, this will be set
+	                       to whatever it's changing to when it's flashing. Once
+	                       the change is done, tileIndex will be set to this.*/
 } MAPPOS;
-    
+
 typedef struct MAPCHANGETYPE
 {
 	u8 layer;
@@ -168,16 +166,16 @@ typedef struct MAPCHANGETYPE
 
 typedef struct TContentsObject
 {
-	int type;						//!< Object type
-	int properties[MAX_PROPERTIES];	//!< Array of property values
+	int type;                       //!< Object type
+	int properties[MAX_PROPERTIES]; //!< Array of property values
 } TContentsObject;
 
 typedef struct TMapObject
 {
-	int			x, y;						//!< Position
-	int			layer;						//!< & layer
-	int			properties[MAX_PROPERTIES];	//!< Array of property values
-	TContentsObject	Contents;			//!< Contents object, if any.
+	int			x, y;                       //!< Position
+	int			layer;                      //!< & layer
+	int			properties[MAX_PROPERTIES]; //!< Array of property values
+	TContentsObject	Contents;               //!< Contents object, if any.
 
 } TMapObject;
 
@@ -192,29 +190,28 @@ typedef struct TCheckpoint
 	int sequences[MAX_CHECKPOINT_SEQUENCES];
 } TCheckpoint;
 
-
 //TSprite struct will be used to store the locations of enemies and
 //moving platforms. When a sprite goes out of visible range, it's
 //position on the map will be stored in one of these structs.
 typedef struct TSprite
 {
-	int		type;						//!< Sprite tile type
-	int		x,y;						//!< Map tile position.
-	int		properties[MAX_PROPERTIES]; //!< This sprite's properties.
-	bool	visible;					//!< True when in visible range
-	bool	available;					//!< True=active on the map
-										//	 False if dead or in container(enemies)
-										//   False if in a sequence that hasn't
-										//   been activated yet.
-	int		obj_id;						//!< Index of the object within its
-										//   visible sprite vector.
+	int type;                       //!< Sprite tile type
+	int x, y;                       //!< Map tile position.
+	int properties[MAX_PROPERTIES]; //!< This sprite's properties.
+	bool visible;                   //!< True when in visible range
+	bool available;                 /*!< True=active on the map
+	                                     False if dead or in container(enemies)
+	                                     False if in a sequence that hasn't
+	                                     been activated yet.*/
+	int obj_id;                     /*!< Index of the object within its
+	                                     visible sprite vector.*/
 } TSprite;
 
 //TCoinScoreSprite struct is used to store data on the score
 //sprites that appear when a coin is collected. Used in map.cpp.
 typedef struct TCoinScoreSprite
 {
-	FIXED x,y;
+	FIXED x, y;
 	int type;
 	int delay;
 } TCoinScoreSprite;
@@ -236,35 +233,35 @@ typedef struct T_LEVELSTATE
 	BGTYPE bg[2];
 	MAPPOS mapData[2][3840];
 	u8 shadows[3840];
-	MAPCHANGETYPE mapChanges[256]; //A list of map changes, upto 256 at a time
-							//layer, tile index, bx, by
+	MAPCHANGETYPE mapChanges[256]; /*A list of map changes, upto 256 at a time
+	                                 layer, tile index, bx, by*/
 	int mapChangeCount; //How many map changes there are in total this frame
 	POINT_FIXED mapOffset; //Position the map is centred on
-	std::vector <TMapObject> mapObjects; //Map object vector. Stores properties
-	                                     //and contents for map objects.
+	std::vector <TMapObject> mapObjects; /*Map object vector. Stores properties
+	                                       and contents for map objects.*/
 	TCheckpoint checkpoint;	//Player starting data after loss of life.
-	int checkpointCount; //How many checkpoints have been reached. Score
-	                     //1000 * this number each time.
+	int checkpointCount; /*How many checkpoints have been reached. Score
+	                       1000 * this number each time.*/
 	//Shared player data
-	POINT playerStartPos; //Start location at beginning of level or from the last
-	                      //checkpoint.
+	POINT playerStartPos; /*Start location at beginning of level or from the last
+	                        checkpoint.*/
 	POINT_FIXED playerPos; //Current player position
-	POINT urnWasHit; //When an arrow hits an urn. This gets set to the tile position
-	                 //of the urn that was hit. It's then processed in map.cpp
+	POINT urnWasHit; /*When an arrow hits an urn. This gets set to the tile position
+	                   of the urn that was hit. It's then processed in map.cpp*/
 	POINT teleporterTouched; //Position of the teleporter that was last touched by the player.
 	TCoinScoreSprite coinScoreSprites[MAX_COIN_SCORE_SPRITES]; //Score sprites when a coin is collected
-	TErasedTile	erasedTiles[20]; //Keeps track of layer 1 tiles that got erased by blocks so we can modify
-			                     //any sequence changes that were affected.
+	TErasedTile
+	erasedTiles[20]; /*Keeps track of layer 1 tiles that got erased by blocks so we can modify
+	                   any sequence changes that were affected.*/
 	int bows;
 	int arrows;
 	int keys;
 	int seconds; //Total hourglass seconds
 	int selectedSeconds; //Number of hourglass seconds that we've selected to use
 	int currentSecond; //The currentky displayed hourglass second.
-	int secondsCounter; //For displaying the hourglass seconds digits on scren
-	                    //Counted in frames. Adds a few extra frames to keep "00" on screen
-	                    //for a short time after the seconds are used.
-
+	int secondsCounter; /*For displaying the hourglass seconds digits on screen
+	                      Counted in frames. Adds a few extra frames to keep "00" on screen
+	                      for a short time after the seconds are used.*/
 
 	//Array of free oam indices for projectiles
 	bool projectileOamIsFree[MAX_PROJECTILES];
@@ -283,9 +280,6 @@ typedef struct T_LEVELSTATE
 	bool blockOamIsFree[MAX_VISIBLE_BLOCKS];
 
 	int levelStatus; //The game status during a level
-
-
 } T_LEVELSTATE;
 
 #endif
-

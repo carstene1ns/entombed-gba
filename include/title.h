@@ -16,17 +16,17 @@
 class CTitle
 {
 private:
-    //Properties
+	//Properties
 
 	//Member functions
 
 public:
-    //Properties
-	u16 *m_paletteBuffer;
-	THighScore *m_highScores;
+	//Properties
+	u16* m_paletteBuffer;
+	THighScore* m_highScores;
 	bool m_gameStarted;
-	int m_titleSection; //Whether we're on the title screen,
-						//high scores or instructions.
+	int m_titleSection; /*Whether we're on the title screen,
+	                     high scores or instructions.*/
 	bool m_gotoNextSection;
 
 	bool m_titleBarAppeared;
@@ -46,12 +46,9 @@ public:
 	int m_cheatModePos;
 	int m_selectHeldFrames;
 
-
 	//member functions
 	//constructor
 	CTitle();
-	//destructor
-	~CTitle();
 	void Init(); //Initialises the titlescreen
 	void InitHelpText();
 	void Update(); //Updates the titlescreen
@@ -63,10 +60,10 @@ public:
 	void PlaceSprite(int oam, int sprite, int x, int y);
 	void CheatTest();
 	void ResetScores();
-
 };
 
 //Non-class function prototypes
-int TitleMain(CTitle *Title, u16 *palBuffer, THighScore* highScores); //Main loop for when at the title screen
+//Main loop for when at the title screen
+int TitleMain(CTitle *Title, u16 *palBuffer, THighScore* highScores);
 
 #endif

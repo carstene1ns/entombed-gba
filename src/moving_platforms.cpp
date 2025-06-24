@@ -10,9 +10,16 @@
 
 std::vector <CPlatform> platforms; //Visible moving platforms class instance vector
 
-CPlatform::CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _xMin, int _xMax, int _obj_index)
+CPlatform::CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _xMin,
+                     int _xMax, int _obj_index)
 {
-	x = _x<<8; y = _y<<8; dx = _dx; dy = _dy; xMin = _xMin; xMax = _xMax;
+	x = _x << 8;
+	y = _y << 8;
+	dx = _dx;
+	dy = _dy;
+	xMin = _xMin;
+	xMax = _xMax;
+
 	active = true;
 	oam_index = 0;
 	obj_index = _obj_index;
@@ -20,7 +27,6 @@ CPlatform::CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy,
 
 	//Pointer to global level state
 	m_ls = ls;
-
 
 	//Find the next free oam entry
 	int n;
@@ -44,16 +50,16 @@ CPlatform::CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy,
 
 	OBJ_ATTR *obj = &g_obj_buffer[oam_index];
 	obj_set_attr(obj,
-	 ATTR0_WIDE |              // Wide, regular sprite
-	 ATTR0_4BPP |              //16 colours
-	 ATTR0_MODE(0),            //Un-hide the sprite
-	 ATTR1_SIZE_32,            // 32x16p
-	 ATTR2_PALBANK(0) |
-	 ATTR2_PRIO(2) |
-	 ATTR2_ID(SPRTILES_PLATFORM));
+	             ATTR0_WIDE |              // Wide, regular sprite
+	             ATTR0_4BPP |              //16 colours
+	             ATTR0_MODE(0),            //Un-hide the sprite
+	             ATTR1_SIZE_32,            // 32x16p
+	             ATTR2_PALBANK(0) |
+	             ATTR2_PRIO(2) |
+	             ATTR2_ID(SPRTILES_PLATFORM));
 
 	//Set object coords
-	obj_set_pos(obj, x>>8, y>>8);
+	obj_set_pos(obj, x >> 8, y >> 8);
 }
 
 void CPlatform::Update()
@@ -63,8 +69,8 @@ void CPlatform::Update()
 	OBJ_ATTR *obj =  &g_obj_buffer[oam_index];
 
 	//See if the platform went out of range, and remove oam if it has
-	distFromViewport.x = ((x>>8) + m_ls->vp.x) - (m_ls->vp.x + 120);
-	distFromViewport.y = ((y>>8) + m_ls->vp.y) - (m_ls->vp.y + 80);
+	distFromViewport.x = ((x >> 8) + m_ls->vp.x) - (m_ls->vp.x + 120);
+	distFromViewport.y = ((y >> 8) + m_ls->vp.y) - (m_ls->vp.y + 80);
 	//128 pixels off the screen horizontally 64 vertically
 	if ((ABS(distFromViewport.x) > 248) || (ABS(distFromViewport.y) > 144))
 	{
@@ -73,22 +79,22 @@ void CPlatform::Update()
 		if (m_ls->mapSprites[obj_index].available == true)
 		{
 			//Store the last position and direction
-			m_ls->mapSprites[obj_index].x = ((x>>8) + m_ls->vp.x);
-			m_ls->mapSprites[obj_index].y = ((y>>8) + m_ls->vp.y);
+			m_ls->mapSprites[obj_index].x = ((x >> 8) + m_ls->vp.x);
+			m_ls->mapSprites[obj_index].y = ((y >> 8) + m_ls->vp.y);
 			m_ls->mapSprites[obj_index].properties[3] = (dx > 0) ? 1 : 0;
 		}
 	}
 	//See if we're at xMin or xMax and need to turn around
 	//xMin and xMax are map pixel coords
 	//Need to convert platform x coord from relative to screen to relative to map.
-	if ( ( ((x>>8) + m_ls->vp.x) <= xMin ) && (dx < 0))
+	if ((((x >> 8) + m_ls->vp.x) <= xMin) && (dx < 0))
 	{
 		//Turn right
 		dx = ABS(dx); //Set x speed to positive value
 	}
 	else
 	{
-		if ((((x>>8) + m_ls->vp.x) >= xMax) && (dx > 0))
+		if ((((x >> 8) + m_ls->vp.x) >= xMax) && (dx > 0))
 		{
 			//Turn left
 			dx = 0 - dx; //Set x speed to negative value
@@ -96,10 +102,11 @@ void CPlatform::Update()
 	}
 
 	//Update the position
-	x += dx; y += dy;
+	x += dx;
+	y += dy;
 
 	//Set object coords
-	obj_set_pos(obj, x>>8, y>>8);
+	obj_set_pos(obj, x >> 8, y >> 8);
 
 	//If the player is touching this platform, add the
 	//platform velocity to the players positon
@@ -110,14 +117,14 @@ void CPlatform::Update()
 		//Scroll the map if necessary
 		//If vp.x is 0 or 2560 then set mapOffsetX to playerSpr.x. This avoids problems
 		//when we're at the very edge of the map.
-		if ( (m_ls->vp.x == 0) || (m_ls->vp.x == 2560) )
+		if ((m_ls->vp.x == 0) || (m_ls->vp.x == 2560))
 		{
 			m_ls->mapOffset.x = m_ls->playerPos.x;
 		}
 		//If going right
 		if (dx > 0)
 		{
-			if (((m_ls->playerPos.x>>8) - m_ls->vp.x) >= 120)
+			if (((m_ls->playerPos.x >> 8) - m_ls->vp.x) >= 120)
 			{
 
 				m_ls->mapOffset.x += dx;
@@ -125,7 +132,7 @@ void CPlatform::Update()
 		}
 		else //going left
 		{
-			if ( ((m_ls->playerPos.x>>8) - m_ls->vp.x) <= 80)
+			if (((m_ls->playerPos.x >> 8) - m_ls->vp.x) <= 80)
 			{
 				m_ls->mapOffset.x += dx;
 			}
@@ -136,17 +143,17 @@ void CPlatform::Update()
 void update_platforms(T_LEVELSTATE *ls)
 {
 	int n;
-	int x,y;
+	int x, y;
 	int speed;
 	POINT distFromViewport; //Platform's distance from centre of map viewport
 
 	//Make sure we don't already have too many visible platforms
 	if (platforms.size() <= MAX_VISIBLE_PLATFORMS)
 	{
-		for (n=0; n < ls->totalSprites; n++)
+		for (n = 0; n < ls->totalSprites; n++)
 		{
 			if ((ls->mapSprites[n].type == TILE_MOVING_PLATFORM)
-			  && (ls->mapSprites[n].visible == false) && (ls->mapSprites[n].available == true))
+			    && (ls->mapSprites[n].visible == false) && (ls->mapSprites[n].available == true))
 			{
 				//See if it's position is in range
 				distFromViewport.x = ls->mapSprites[n].x - (ls->vp.x + 120);
@@ -167,12 +174,13 @@ void update_platforms(T_LEVELSTATE *ls)
 					}
 					else
 					{
-						speed = (ls->mapSprites[n].properties[3] == 0) ? 0 - ls->mapSprites[n].properties[4] : ls->mapSprites[n].properties[4];
+						speed = (ls->mapSprites[n].properties[3] == 0) ? 0 - ls->mapSprites[n].properties[4] :
+						        ls->mapSprites[n].properties[4];
 						//Give it some extra speed
 						speed = speed << 7;
 					}
-					platforms.push_back(CPlatform(ls,x,y,speed,0,ls->mapSprites[n].properties[1],
-							ls->mapSprites[n].properties[2],n));
+					platforms.push_back(CPlatform(ls, x, y, speed, 0, ls->mapSprites[n].properties[1],
+					                              ls->mapSprites[n].properties[2], n));
 					ls->mapSprites[n].visible = true;
 				}
 			}
@@ -180,7 +188,7 @@ void update_platforms(T_LEVELSTATE *ls)
 	}
 
 	//Iterate through the visible platforms vector
-	for(std::vector<CPlatform>::iterator it = platforms.begin(); it != platforms.end();)
+	for (std::vector<CPlatform>::iterator it = platforms.begin(); it != platforms.end();)
 	{
 		//Check whether this enemy is active
 		if (it->active == true)
@@ -205,11 +213,11 @@ void scroll_platforms(int x, int y)
 {
 	//Update the moving platform positions by x and y, which will be got from map.cpp and is the amount
 	//the map scrolled on this vbl.
-	for(auto& platform : platforms)
+	for (auto& platform : platforms)
 	{
 		//Update the coordinates.
-		platform.x-=(x<<8);
-		platform.y-=(y<<8);
+		platform.x -= (x << 8);
+		platform.y -= (y << 8);
 	}
 }
 
@@ -218,7 +226,7 @@ void reset_platforms(T_LEVELSTATE *ls)
 	int n;
 
 	platforms.clear();
-	for (n=0;n<MAX_VISIBLE_PLATFORMS;n++)
+	for (n = 0; n < MAX_VISIBLE_PLATFORMS; n++)
 	{
 		ls->platformOamIsFree[n] = true;
 		//Hide the object
@@ -226,4 +234,7 @@ void reset_platforms(T_LEVELSTATE *ls)
 	}
 }
 
-std::vector <CPlatform>& getPlatforms(){return platforms;}
+std::vector <CPlatform> &getPlatforms()
+{
+	return platforms;
+}

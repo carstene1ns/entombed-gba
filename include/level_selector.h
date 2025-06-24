@@ -12,7 +12,7 @@ typedef struct TLevelText
 class CLevelSelector
 {
 private:
-    //Properties
+	//Properties
 	std::vector <TLevelText> m_levelText; //Level text vector. 5 lines of 27 characters each.
 	//Original game has 35 characters per line (280 pixels) and has 40 pixels left.
 	//I need to keep 24 pixels free for the player sprite. That means I have  216 pixels,
@@ -21,32 +21,27 @@ private:
 	//Member functions
 
 public:
-    //Properties
+	//Properties
 	int m_highlightedLevel;
 	int m_selectedLevel;
 	u32 m_selectPos; //Level that the player sprite is next to
 	u32 m_page; //Level page number. There are up to 3 levels per page.
-	u16 *m_paletteBuffer;
+	u16* m_paletteBuffer;
 	u32 m_endScreenPage;
 
 	//member functions
 	//constructor
 	CLevelSelector();
-	//destructor
-	~CLevelSelector();
 	void Init(); //Initialises the level selector
 	void Update(); //Updates the level selector
-	void DeInit(); //De-initialises the level selector
 	void InitLevelText();
 	void DisplayLevels();
 	void ShowEndScreen(int page); //After level 5 is complete, shows the ending text
-
 };
 
 //Non-class function prototypes
 
 //Main loop for when at the level selector
 int LevelSelectorMain(CLevelSelector *LevelSelector, u16 *palBuffer);
-
 
 #endif

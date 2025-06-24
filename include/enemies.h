@@ -22,12 +22,12 @@
 class CEnemy
 {
 private:
-	bool IsInRange(); //Check whether this enemy is within range of the player.
-	                  //If not then it doesn't need to be processed.
+	bool IsInRange(); /*Check whether this enemy is within range of the player.
+	                    If not then it doesn't need to be processed.*/
 
 	int type;
 public:
-    T_LEVELSTATE* m_ls;
+	T_LEVELSTATE* m_ls;
 	FIXED x, y;
 	FIXED dx, dy;
 	int xMin, xMax;
@@ -40,11 +40,12 @@ public:
 	FIXED animFrame;
 	int flashCounter;
 	bool isDying;
-	int dyingMotionCounter; //Counts down from a value to zero each frame when enemy
-							//is dying. Enemy has upward motion when above 0 and downward
-							//motion when it reaches 0.
+	int dyingMotionCounter; /*Counts down from a value to zero each frame when enemy
+	                          is dying. Enemy has upward motion when above 0 and downward
+	                          motion when it reaches 0.*/
 	//constructor
-	CEnemy(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _type, int _xMin, int _xMax, int _hitPoints, int _fireRate, int _obj_index);
+	CEnemy(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _type, int _xMin, int _xMax,
+	       int _hitPoints, int _fireRate, int _obj_index);
 	void Update();
 };
 
@@ -52,6 +53,6 @@ public:
 void update_enemies(T_LEVELSTATE *ls);
 void scroll_enemies(int x, int y);
 void reset_enemies(T_LEVELSTATE *ls);
-std::vector <CEnemy>& getEnemies();
+std::vector <CEnemy> &getEnemies();
 
 #endif

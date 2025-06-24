@@ -17,33 +17,32 @@ class CLevel
 {
 private:
 
-    //Properties
+	//Properties
 	CPlayer* Player; //Player class instance
 	CMap* Map; //Game map class instance
-    
-    //Member functions
+
+	//Member functions
 	void SetupLevel(int mapNum);
-    
+
 public:
 
-    //Properties
-    u16 *m_paletteBuffer;
-    bool m_fadedIn;
-    bool m_teleported;
-    bool m_levelEnded;
-    int m_cheatSelected;
-    std::vector <CProjectile> projectiles; //Projectiles class instance vector
+	//Properties
+	u16* m_paletteBuffer;
+	bool m_fadedIn;
+	bool m_teleported;
+	bool m_levelEnded;
+	int m_cheatSelected;
+	std::vector <CProjectile> projectiles; //Projectiles class instance vector
 
-    //constructor
+	//constructor
 	CLevel();
 	//destructor
 	~CLevel();
-	
-    //Member functions
-    void Init();
-    void Update();
-   	void DeInit();
-   	void Reset();
+
+	//Member functions
+	void Init();
+	void Update();
+	void Reset();
 };
 
 //Non-class function prototypes

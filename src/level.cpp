@@ -38,22 +38,22 @@ EWRAM_DATA T_LEVELSTATE g_levelState; //Takes up 20kb so put in EWRAM
 //******CLevel class function implementations******
 CLevel::CLevel()
 {
-    //Create the Map instance
-    Map = new CMap;
+	//Create the Map instance
+	Map = new CMap;
 
-    //Create the Player instance
-    Player = new CPlayer;
+	//Create the Player instance
+	Player = new CPlayer;
 
-    //Initialise member properties
-    m_levelEnded = false;
-    
-    g_levelState.levelStatus = ST_PLAYING_LEVEL;
-    
-    m_paletteBuffer = 0;
-    m_fadedIn = false;
-    m_teleported = false;
+	//Initialise member properties
+	m_levelEnded = false;
 
-    m_cheatSelected = 0;
+	g_levelState.levelStatus = ST_PLAYING_LEVEL;
+
+	m_paletteBuffer = 0;
+	m_fadedIn = false;
+	m_teleported = false;
+
+	m_cheatSelected = 0;
 
 }
 
@@ -67,7 +67,6 @@ CLevel::~CLevel() //Destructor
 
 void CLevel::Init()
 {
-
 	int n;
 
 	//Load the projectile sprite tiles (8 tiles)
@@ -135,27 +134,27 @@ void CLevel::Init()
 
 	g_levelState.secondsCounter = 0;
 
-    //Call the player initialisation method from player.cpp
+	//Call the player initialisation method from player.cpp
 	//Pass projectiles, enemies and moving platforms vectors
-    Player->Init(&g_levelState);
+	Player->Init(&g_levelState);
 
-    //Call the map initialisation method from map.cpp
-    Map->Init(&g_levelState);
-	
-    //Reset the sprite data
+	//Call the map initialisation method from map.cpp
+	Map->Init(&g_levelState);
+
+	//Reset the sprite data
 	reset_projectiles(&g_levelState);
 	reset_enemies(&g_levelState);
 	reset_platforms(&g_levelState);
 	reset_blocks(&g_levelState);
 
-    //Initialise the guns
-    init_guns(&g_levelState);
+	//Initialise the guns
+	init_guns(&g_levelState);
 
-    //Initiate any sequences that are always on
-    initiate_always_on_sequences(&g_levelState);
+	//Initiate any sequences that are always on
+	initiate_always_on_sequences(&g_levelState);
 
-    //Fade the palette in from black after the first level update
-    m_fadedIn = false;
+	//Fade the palette in from black after the first level update
+	m_fadedIn = false;
 
 }
 
@@ -165,21 +164,21 @@ void CLevel::Update()
 
 	if (g_levelState.game_paused == false)
 	{
-	    //If a teleport was touched, fade the screen call the teleport
+		//If a teleport was touched, fade the screen call the teleport
 		//procedure and let the program know we need to fade in again.
-	    if ((g_levelState.teleporterTouched.x > -1) && (g_levelState.teleporterTouched.y > -1))
-	    {
+		if ((g_levelState.teleporterTouched.x > -1) && (g_levelState.teleporterTouched.y > -1))
+		{
 			//Play a sound
-	    	mmEffectCancelAll();
+			mmEffectCancelAll();
 			mmEffect(SFX_TELEPORT);
 
 			FadeToBlack(10);
 			//Set the player to standing and reset jump counter
 			Player->m_jumpCounter = 0;
 			Player->player_set_state(PLAYER_STATE_STAND);
-	    	Map->Teleport();
-	    	m_teleported = true;
-	    }
+			Map->Teleport();
+			m_teleported = true;
+		}
 
 		//Call the player update routine if not game over
 		if (g_lives >= 0)
@@ -252,19 +251,19 @@ void CLevel::Update()
 					{
 						txt_puts(96, 72, "INF LIVES ON ");
 					}
-				break;
+					break;
 				case 1:
 					txt_puts(96, 72, "ADD BOW      ");
-				break;
+					break;
 				case 2:
 					txt_puts(96, 72, "ADD ARROW    ");
-				break;
+					break;
 				case 3:
 					txt_puts(96, 72, "ADD KEY      ");
-				break;
+					break;
 				case 4:
 					txt_puts(96, 72, "ADD SECOND   ");
-				break;
+					break;
 				case 5: //Big jumps
 					if (g_cheatEnabled[2] == false)
 					{
@@ -274,7 +273,7 @@ void CLevel::Update()
 					{
 						txt_puts(96, 72, "BIG JUMPS ON ");
 					}
-				break;
+					break;
 				case 6:
 					if (g_cheatEnabled[3] == false)
 					{
@@ -284,7 +283,7 @@ void CLevel::Update()
 					{
 						txt_puts(96, 72, "NO HIT ON    ");
 					}
-				break;
+					break;
 			}
 		}
 
@@ -300,7 +299,7 @@ void CLevel::Update()
 				g_levelState.levelStatus = ST_LIFE_LOST;
 			}
 			//Set the pause menu text to transparent characters
-			for (ix = 96; ix <= 200; ix+= 8)
+			for (ix = 96; ix <= 200; ix += 8)
 			{
 				txt_putc(ix, 72, (111 + 32)); //Cheat text
 				txt_putc(ix, 80, (111 + 32)); //Paused text
@@ -313,36 +312,51 @@ void CLevel::Update()
 		{
 			//Move to the next cheat
 			m_cheatSelected++;
-			if (m_cheatSelected > 6) {m_cheatSelected = 0;}
+			if (m_cheatSelected > 6)
+			{
+				m_cheatSelected = 0;
+			}
 		}
 		if ((key_hit(KEY_R)) && (g_cheatEnabled[0] == true))
 		{
 			switch (m_cheatSelected)
 			{
-			case 0: //Lives
-				g_cheatEnabled[1] == false ? g_cheatEnabled[1] = true
-						                   : g_cheatEnabled[1] = false;
-			break;
-			case 1: //Add Bow
-				if (g_levelState.bows < 5) {g_levelState.bows++;}
-			break;
-			case 2: //Add Arrow
-				if (g_levelState.arrows < 10) {g_levelState.arrows++;}
-			break;
-			case 3: //Add Key
-				if (g_levelState.keys < 5){g_levelState.keys++;}
-			break;
-			case 4: //Add Second
-				if (g_levelState.seconds < 10){g_levelState.seconds++;}
-			break;
-			case 5: //Big jumps
-				g_cheatEnabled[2] == false ? g_cheatEnabled[2] = true
-										   : g_cheatEnabled[2] = false;
-			break;
-			case 6: //No hit (enemy/spikes/fire/water/bullets don't kill)
-				g_cheatEnabled[3] == false ? g_cheatEnabled[3] = true
-										   : g_cheatEnabled[3] = false;
-			break;
+				case 0: //Lives
+					g_cheatEnabled[1] == false ? g_cheatEnabled[1] = true
+					    : g_cheatEnabled[1] = false;
+					break;
+				case 1: //Add Bow
+					if (g_levelState.bows < 5)
+					{
+						g_levelState.bows++;
+					}
+					break;
+				case 2: //Add Arrow
+					if (g_levelState.arrows < 10)
+					{
+						g_levelState.arrows++;
+					}
+					break;
+				case 3: //Add Key
+					if (g_levelState.keys < 5)
+					{
+						g_levelState.keys++;
+					}
+					break;
+				case 4: //Add Second
+					if (g_levelState.seconds < 10)
+					{
+						g_levelState.seconds++;
+					}
+					break;
+				case 5: //Big jumps
+					g_cheatEnabled[2] == false ? g_cheatEnabled[2] = true
+					    : g_cheatEnabled[2] = false;
+					break;
+				case 6: //No hit (enemy/spikes/fire/water/bullets don't kill)
+					g_cheatEnabled[3] == false ? g_cheatEnabled[3] = true
+					    : g_cheatEnabled[3] = false;
+					break;
 			}
 		}
 	}
@@ -350,17 +364,16 @@ void CLevel::Update()
 
 void CLevel::Reset()
 {
-
 	int n;
 	bool sequencesDone;
 	//Get a reference to the sequences vector so we can
 	//process any checkpoint sequences.
-	std::vector <CSequence>& sequences = getSequences();
+	std::vector <CSequence> &sequences = getSequences();
 
-    //Fade the palette to black
-    FadeToBlack(30);
+	//Fade the palette to black
+	FadeToBlack(30);
 
-    //Reset sprite data
+	//Reset sprite data
 	reset_projectiles(&g_levelState);
 	reset_enemies(&g_levelState);
 	reset_platforms(&g_levelState);
@@ -372,25 +385,25 @@ void CLevel::Reset()
 		g_levelState.coinScoreSprites[n].type = -1;
 	}
 
-    //Reset the player
-    Player->ResetPlayer();
-    
-    //Reset the map
-    Map->ResetMap();
+	//Reset the player
+	Player->ResetPlayer();
 
-    //Initiate any sequences activated by the current checkpoint
+	//Reset the map
+	Map->ResetMap();
+
+	//Initiate any sequences activated by the current checkpoint
 	if (g_levelState.checkpoint.sequences[0] > -1)
 	{
 		initiate_checkpoint_sequences(&g_levelState);
 
 		//If any checkpoint sequences were initiated, update them
 		//until all stages for each one are done.
-		sequencesDone = false; //Set initially to false to we go through
-							   //the while loop at least once
+		sequencesDone = false; /*Set initially to false to we go through
+		                         the while loop at least once*/
 		while (sequencesDone == false)
 		{
-			sequencesDone = true; //If at least one active sequence is found this will
-								  //be reset to false
+			sequencesDone = true; /*If at least one active sequence is found this will
+			                        be reset to false*/
 			if (sequences.size() > 0)
 			{
 				update_sequences(&g_levelState);
@@ -400,44 +413,43 @@ void CLevel::Reset()
 		}
 	}
 
-    //Reset the guns
-    init_guns(&g_levelState);
+	//Reset the guns
+	init_guns(&g_levelState);
 
-    //Initiate any sequences that are always on
-    initiate_always_on_sequences(&g_levelState);
+	//Initiate any sequences that are always on
+	initiate_always_on_sequences(&g_levelState);
 
-    //Copy the sprite objects
-    mmFrame();
-    VBlankIntrWait();
-    oam_copy(oam_mem, g_obj_buffer, MAX_SPRITES);
+	//Copy the sprite objects
+	mmFrame();
+	VBlankIntrWait();
+	oam_copy(oam_mem, g_obj_buffer, MAX_SPRITES);
 
-    //Fade the palette in from black after the first level update
-    m_fadedIn = false;
-
+	//Fade the palette in from black after the first level update
+	m_fadedIn = false;
 }
 
 int LevelMain(CLevel* Level, int mapNum, u16 *palBuffer)
 {
-    int done = 0;
-    int n;
-    int gameover_y = -32<<8;
+	int done = 0;
+	int n;
+	int gameover_y = -32 << 8;
 
-    //Set the level number in levelstate
-    Level->m_paletteBuffer = palBuffer;
-    g_levelState.levelNum = mapNum;
+	//Set the level number in levelstate
+	Level->m_paletteBuffer = palBuffer;
+	g_levelState.levelNum = mapNum;
 
-    //Call the init procedure
-    Level->Init();
-    
-    //Main game loop
-    while (!done)
-    {
+	//Call the init procedure
+	Level->Init();
+
+	//Main game loop
+	while (!done)
+	{
 		switch (g_levelState.levelStatus)
 		{
 			case ST_PLAYING_LEVEL:
 				//Update the level
 				Level->Update();
-			break;
+				break;
 
 			case ST_LIFE_LOST:
 				//Reduce the player's lives if the cheat is disabled
@@ -462,7 +474,7 @@ int LevelMain(CLevel* Level, int mapNum, u16 *palBuffer)
 					Level->Reset();
 					g_levelState.levelStatus = ST_PLAYING_LEVEL;
 				}
-			break;
+				break;
 
 			case ST_LEVEL_COMPLETED:
 				//Mark the level as completed in the array
@@ -473,7 +485,7 @@ int LevelMain(CLevel* Level, int mapNum, u16 *palBuffer)
 
 				//End the loop
 				done = 1;
-			break;
+				break;
 
 			case ST_ALL_LIVES_LOST:
 
@@ -481,20 +493,20 @@ int LevelMain(CLevel* Level, int mapNum, u16 *palBuffer)
 				for (n = 0; n < 3; n++)
 				{
 					obj_set_attr(&g_obj_buffer[GAME_OVER_OAM + n],
-							ATTR0_WIDE | ATTR0_4BPP | ATTR0_MODE(0), ATTR1_SIZE_32, ATTR2_PALBANK(0)
-							| ATTR2_PRIO(0) | ATTR2_ID(SPRTILES_GAMEOVER + (n*8)));
+					             ATTR0_WIDE | ATTR0_4BPP | ATTR0_MODE(0), ATTR1_SIZE_32, ATTR2_PALBANK(0)
+					             | ATTR2_PRIO(0) | ATTR2_ID(SPRTILES_GAMEOVER + (n * 8)));
 					obj_set_pos(&g_obj_buffer[n + GAME_OVER_OAM],
-								72 + (n * 32), gameover_y>>8);
+					            72 + (n * 32), gameover_y >> 8);
 				}
 
 				//Move the game over sprite down the screen
-				while ((gameover_y>>8) < 64 )
+				while ((gameover_y >> 8) < 64)
 				{
 					gameover_y += GAME_OVER_FALL_SPEED;
 					for (n = 0; n < 3; n++)
 					{
 						obj_set_pos(&g_obj_buffer[n + GAME_OVER_OAM],
-									72 + (n * 32), gameover_y>>8);
+						            72 + (n * 32), gameover_y >> 8);
 					}
 					Level->Update();
 				}
@@ -531,7 +543,7 @@ int LevelMain(CLevel* Level, int mapNum, u16 *palBuffer)
 
 				done = 1;
 
-			break;
+				break;
 		}
 
 		//Check if the game was ended
@@ -552,6 +564,7 @@ int LevelMain(CLevel* Level, int mapNum, u16 *palBuffer)
 			//End the loop
 			done = 1;
 		}
-    }
-    return 0;
+	}
+
+	return 0;
 }

@@ -21,20 +21,23 @@ add_executable(entombed
 	ext/fade.h
 	ext/itoa.cpp
 	ext/itoa.h
+	generated/layer2tileLUT.c
+	generated/layer2tileLUT.h
+	generated/level_data.c
+	generated/level_data.h
+	generated/objPropertiesLUT.c
+	generated/objPropertiesLUT.h
 	include/enemies.h
 	include/gameDefines.h
 	include/globalvars.h
 	include/guns.h
 	include/highscore_entry.h
-	include/layer2tileLUT.h
 	include/level.h
-	include/level_data.h
 	include/level_selector.h
 	include/main.h
 	include/map.h
 	include/moving_blocks.h
 	include/moving_platforms.h
-	include/objPropertiesLUT.h
 	include/player.h
 	include/projectiles.h
 	include/sequences.h
@@ -44,22 +47,19 @@ add_executable(entombed
 	src/enemies.cpp
 	src/guns.cpp
 	src/highscore_entry.cpp
-	src/layer2tileLUT.c
 	src/level.cpp
-	src/level_data.c
 	src/level_selector.cpp
 	src/main.cpp
 	src/map.cpp
 	src/moving_blocks.cpp
 	src/moving_platforms.cpp
-	src/objPropertiesLUT.c
 	src/player.cpp
 	src/projectiles.cpp
 	src/sequences.cpp
 	src/sfx.cpp
 	src/text.c
 	src/title.cpp)
-target_include_directories(entombed PRIVATE ext include)
+target_include_directories(entombed PRIVATE ext generated include)
 target_compile_options(entombed PRIVATE
 	-Wall -Wextra
 	$<$<CONFIG:Release,RelWithDebInfo>:-mlong-calls -fomit-frame-pointer -ffast-math>
@@ -164,3 +164,30 @@ set(CPACK_ARCHIVE_ROM_FILE_NAME "${CPACK_ARCHIVE_FILE_NAME}")
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY ON)
 set(CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY ON)
 include(CPack)
+
+# source code formatting
+if(NOT ASTYLE_FOUND)
+	find_program(ASTYLE_EXECUTABLE astyle)
+	if(ASTYLE_EXECUTABLE)
+		message(STATUS "Found source code formatter: astyle")
+		set(ASTYLE_FOUND 1 CACHE INTERNAL "Astyle has been found")
+	endif()
+endif()
+if(ASTYLE_EXECUTABLE)
+	separate_arguments(ASTYLE_OPTIONS UNIX_COMMAND
+		"--options=none --project=none --suffix=none --style=break
+		--indent=tab=4 --indent-switches --indent-preproc-block
+		--min-conditional-indent=0 --squeeze-lines=1 --max-code-length=100
+		--pad-oper --pad-comma --pad-header --unpad-paren
+		--align-pointer=type --align-reference=name")
+	add_custom_target(source-format
+		COMMAND ${ASTYLE_EXECUTABLE} ${ASTYLE_OPTIONS}
+			"${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+			"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+			"${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
+		COMMENT "Applying source code format..." VERBATIM)
+else()
+	add_custom_target(source-format
+		COMMAND ${CMAKE_COMMAND} -E false
+		COMMENT "No source code formatter enabled!" VERBATIM)
+endif()

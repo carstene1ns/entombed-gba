@@ -14,7 +14,7 @@ class CSequence
 private:
 	T_LEVELSTATE* m_ls;
 	int m_seqNum;
-    int m_seqDataEnd;
+	int m_seqDataEnd;
 	int m_currentStage;
 	int m_stageDataLen;
 	int m_dataPos; //Stores the current position in the sequence data
@@ -25,19 +25,19 @@ private:
 	int m_delayFlash;
 	//int m_toggleSequence; //Deal with this at a later time
 
-	bool m_instant; //If true, there will be no delays between stages.
-	                //Used when starting from a checkpoint when
-	                //sequences need to be pre-set.
+	bool m_instant; /*If true, there will be no delays between stages.
+	                  Used when starting from a checkpoint when
+	                  sequences need to be pre-set.*/
 
 public:
 	bool m_active;
-	int m_alwaysOn; //The hourglass cannot delay always on sequences so these
-					//must be publically known.
-    int m_delayCounter; //Can be changed when the player used the hourglass.
+	int m_alwaysOn; /*The hourglass cannot delay always on sequences so these
+	                  must be publically known.*/
+	int m_delayCounter; //Can be changed when the player used the hourglass.
 
 	//constructor
 	CSequence(T_LEVELSTATE* ls, int _seqNum, int seqDataLen, int _loop,
-		int _alwaysOn, int _dataPos, bool _instant);
+	          int _alwaysOn, int _dataPos, bool _instant);
 	void Update();
 	void ReadChanges(bool finalise);
 };
@@ -49,6 +49,6 @@ void initiate_checkpoint_sequences(T_LEVELSTATE *ls);
 void initiate_always_on_sequences(T_LEVELSTATE *ls);
 void reset_sequences();
 void delay_sequences(int seconds);
-std::vector <CSequence>& getSequences();
+std::vector <CSequence> &getSequences();
 
 #endif

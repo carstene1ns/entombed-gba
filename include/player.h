@@ -33,10 +33,9 @@
 #define LOOK_DOWN_MAX 40 //40 pixels further down than usual
 
 enum ELookDir
-{	
-	LOOK_LEFT= 0, LOOK_RIGHT, CLIMB_LEFT, CLIMB_RIGHT
+{
+	LOOK_LEFT = 0, LOOK_RIGHT, CLIMB_LEFT, CLIMB_RIGHT
 };
-
 
 #define PLAYER_STATE_STAND	0x0100
 #define PLAYER_STATE_WALK	0x0200
@@ -56,8 +55,8 @@ class CPlayer
 private:
 
 	//Properties
-	T_LEVELSTATE* m_ls; //Stores the player position since this needs to be
-	//shared with other modules
+	T_LEVELSTATE* m_ls; /*Stores the player position since this needs to be
+	                      shared with other modules*/
 
 	FIXED		m_vx, m_vy;		//!< Velocity
 	u16			m_state;		//!< Sprite state
@@ -68,14 +67,13 @@ private:
 
 	int m_blockedDirs[4]; //Left, right, up, down
 	bool m_blockedByDoor[2]; //If a door is stopping us from moving left or right
-	int m_layer2Collisions[6][3]; //Which layer 2 tiles 6 points of the player are
-	                              //touching. tile index, bx and by are stored.
+	int m_layer2Collisions[6][3]; /*Which layer 2 tiles 6 points of the player are
+	                                touching. tile index, bx and by are stored.*/
 	bool m_touchingLadder; //True if we're currently touching a ladder
 	bool m_topOfLadder;    //True if we're at the top of a ladder
 	int m_lookDownCounter;
 
 	mm_sfxhand sndMoveHandle;
-
 
 	//Member functions
 	void player_input();
@@ -97,18 +95,17 @@ public:
 
 	//Properties
 	bool m_lookingDown; //Whether the 'Look down' button is currently held.
-	int m_jumpCounter; //Counts down from the desired height of a jump (also used in
-	                   //the death sequence)
+	int m_jumpCounter; /*Counts down from the desired height of a jump (also used in
+	                     the death sequence)*/
 
 	//Member functions
 	void player_set_state(u32 state);
 
 	//constructor
 	CPlayer();
-	
+
 	void Init(T_LEVELSTATE *ls);
 	void Update();
-	void DeInit();
 	void ResetPlayer();
 };
 

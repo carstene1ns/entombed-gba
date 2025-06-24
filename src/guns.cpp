@@ -19,16 +19,16 @@ void init_guns(T_LEVELSTATE *ls)
 	//to be added.
 	//NB: Guns may be added or removed during map sequences
 	guns.clear();
-	for(const auto& obj : ls->mapObjects)
+	for (const auto& obj : ls->mapObjects)
 	{
 		tile = ls->mapData[1][(obj.y * 80) + obj.x].tileIndex;
 
 		if (((tile == TILE_GUN_L) || (tile == TILE_GUN_R) || (tile == TILE_BALLGUN_L)
-		  || (tile == TILE_BALLGUN_R)) && (obj.properties[0] != 0))
+		     || (tile == TILE_BALLGUN_R)) && (obj.properties[0] != 0))
 		{
 			//Convert from tile coordinates to map coordinates
-			gun.xPos = obj.x*32;
-			gun.yPos = obj.y*16;
+			gun.xPos = obj.x * 32;
+			gun.yPos = obj.y * 16;
 			gun.bullets = obj.properties[0];
 			gun.interval = obj.properties[1];
 			gun.timer = obj.properties[1];
@@ -47,14 +47,14 @@ void update_guns(T_LEVELSTATE *ls)
 {
 	POINT distFromViewport; //Gun's distance from centre of map viewport
 
-	for(auto& gun : guns)
+	for (auto& gun : guns)
 	{
 		//Check if the gun has any bullets to fire
 		if (gun.bullets != 0)
 		{
 			//If the gun is in range of the viewport, reduce it's timer and shoot
 			//a bullet if necessary
-			distFromViewport.x = gun.xPos + ((gun.dir == 0) ? 24:8) - (ls->vp.x + 120);
+			distFromViewport.x = gun.xPos + ((gun.dir == 0) ? 24 : 8) - (ls->vp.x + 120);
 			distFromViewport.y = gun.yPos - (ls->vp.y + 80);
 			//Within ... pixels off the screen horizontally or vertically
 			//TODO: I may need to adjust the range.
@@ -73,11 +73,13 @@ void update_guns(T_LEVELSTATE *ls)
 						//Shoot the correct type of bullet depending on the gun type, blowgun or ball gun.
 						if (gun.type == 0)
 						{
-							add_projectile(ls, gun.xPos - ls->vp.x + 23, gun.yPos - ls->vp.y + 7,-GUN_BULLET_SPEED,0,2,gun.lifespan, 1);
+							add_projectile(ls, gun.xPos - ls->vp.x + 23, gun.yPos - ls->vp.y + 7, -GUN_BULLET_SPEED, 0, 2,
+							               gun.lifespan, 1);
 						}
 						else
 						{
-							add_projectile(ls, gun.xPos - ls->vp.x + 23, gun.yPos - ls->vp.y + 7,-GUN_BULLET_SPEED,0,4,gun.lifespan, 1);
+							add_projectile(ls, gun.xPos - ls->vp.x + 23, gun.yPos - ls->vp.y + 7, -GUN_BULLET_SPEED, 0, 4,
+							               gun.lifespan, 1);
 						}
 						//Play a sound
 						mmEffect(SFX_BULLET);
@@ -88,11 +90,13 @@ void update_guns(T_LEVELSTATE *ls)
 						//Shoot the correct type of bullet depending on the gun type, blowgun or ball gun.
 						if (gun.type == 0)
 						{
-							add_projectile(ls, gun.xPos - ls->vp.x + 9, gun.yPos - ls->vp.y + 7,GUN_BULLET_SPEED,0,2,gun.lifespan, gun.weight);
+							add_projectile(ls, gun.xPos - ls->vp.x + 9, gun.yPos - ls->vp.y + 7, GUN_BULLET_SPEED, 0, 2,
+							               gun.lifespan, gun.weight);
 						}
 						else
 						{
-							add_projectile(ls, gun.xPos - ls->vp.x + 9, gun.yPos - ls->vp.y + 7,GUN_BULLET_SPEED,0,4,gun.lifespan, gun.weight);
+							add_projectile(ls, gun.xPos - ls->vp.x + 9, gun.yPos - ls->vp.y + 7, GUN_BULLET_SPEED, 0, 4,
+							               gun.lifespan, gun.weight);
 						}
 						//Play a sound
 						mmEffect(SFX_BULLET);
@@ -124,9 +128,9 @@ void add_gun(TGun gun)
 
 void delete_gun(int x, int y)
 {
-	for(std::vector<TGun>::iterator it = guns.begin(); it != guns.end();)
+	for (std::vector<TGun>::iterator it = guns.begin(); it != guns.end();)
 	{
-		if ((it->xPos*32 == x) && (it->yPos*16 == y))
+		if ((it->xPos * 32 == x) && (it->yPos * 16 == y))
 		{
 			it = guns.erase(it);
 		}

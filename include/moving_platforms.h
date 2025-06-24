@@ -9,10 +9,10 @@
 class CPlatform
 {
 private:
-	bool IsInRange(); //Check whether this platform is within range of the player.
-	                  //If not then it doesn't need to be processed.
+	bool IsInRange(); /*Check whether this platform is within range of the player.
+	                    If not then it doesn't need to be processed.*/
 public:
-    T_LEVELSTATE* m_ls;
+	T_LEVELSTATE* m_ls;
 
 	FIXED x, y;
 	FIXED dx, dy;
@@ -23,7 +23,8 @@ public:
 	bool playerTouchingPlatform; //True if the player is touching this platform
 
 	//constructor
-	CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _xMin, int _xMax, int _obj_index);
+	CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _xMin, int _xMax,
+	          int _obj_index);
 	void Update();
 };
 
@@ -32,6 +33,6 @@ void add_visible_platform(T_LEVELSTATE *ls, int x, int y);
 void update_platforms(T_LEVELSTATE *ls);
 void scroll_platforms(int x, int y);
 void reset_platforms(T_LEVELSTATE *ls);
-std::vector <CPlatform>& getPlatforms();
+std::vector <CPlatform> &getPlatforms();
 
 #endif

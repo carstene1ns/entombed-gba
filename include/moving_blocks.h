@@ -14,10 +14,10 @@
 class CBlock
 {
 private:
-	bool IsInRange(); //Check whether this block is within range of the player.
-	                  //If not then it doesn't need to be processed.
+	bool IsInRange(); /*Check whether this block is within range of the player.
+	                    If not then it doesn't need to be processed.*/
 public:
-    T_LEVELSTATE* m_ls;
+	T_LEVELSTATE* m_ls;
 
 	FIXED x, y;
 	FIXED dx, dy;
@@ -30,7 +30,8 @@ public:
 	int obj_index; //A reference to the object in the mapSprites array
 
 	//constructor
-	CBlock(T_LEVELSTATE* ls, FIXED _x, FIXED _y, int _type, int _startDir, int _lifespan, int _movingDown, int _obj_index);
+	CBlock(T_LEVELSTATE* ls, FIXED _x, FIXED _y, int _type, int _startDir, int _lifespan,
+	       int _movingDown, int _obj_index);
 	void Update();
 };
 
@@ -39,6 +40,6 @@ void add_visible_block(T_LEVELSTATE *ls, int x, int y);
 void update_blocks(T_LEVELSTATE *ls);
 void scroll_blocks(int x, int y);
 void reset_blocks(T_LEVELSTATE *ls);
-std::vector <CBlock>& getBlocks();
+std::vector <CBlock> &getBlocks();
 
 #endif

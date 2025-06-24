@@ -14,4 +14,3 @@ extern const char* map_description[1];
 extern const unsigned int map_dataOffsets[30];
 
 #endif
-

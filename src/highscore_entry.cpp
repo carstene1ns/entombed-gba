@@ -11,12 +11,11 @@
 
 //Declarations
 
-
 //implementation of member functions
 
 CHighScore::CHighScore() //Constructor
 {
-    //Set initial member variables
+	//Set initial member variables
 	m_paletteBuffer = 0;
 	m_keyDelayCount = 0;
 	m_highScorePosition = 0;
@@ -49,8 +48,8 @@ void CHighScore::Init()
 			{
 				for (m = 9; m > n; m--)
 				{
-					g_highScores[m].score = g_highScores[m-1].score;
-					strcpy(g_highScores[m].name, g_highScores[m-1].name);
+					g_highScores[m].score = g_highScores[m - 1].score;
+					strcpy(g_highScores[m].name, g_highScores[m - 1].name);
 					//g_highScores[m].name = g_highScores[m-1].name;
 				}
 				g_highScores[n].score = g_score;
@@ -75,9 +74,9 @@ void CHighScore::Init()
 	m_nameEntered = false;
 
 	//Set all text layer tiles to black (space characters)
-	for (iy = 0; iy < 256; iy+= 8)
+	for (iy = 0; iy < 256; iy += 8)
 	{
-		for (ix = 0; ix < 256; ix+= 8)
+		for (ix = 0; ix < 256; ix += 8)
 		{
 			txt_putc(ix, iy, 32); //Space(Black)
 		}
@@ -85,38 +84,38 @@ void CHighScore::Init()
 
 	//***Show the scores***
 	txt_puts(72, 16, "TOMB TONKERS");
-	for (n=0; n<10;n++)
+	for (n = 0; n < 10; n++)
 	{
 		//write 6 0's first
 		txt_puts(24, 48 + (n * 8), "000000");
 		//Get the first digit position
 		m = (g_highScores[n].score < 10 ? 5 :
-			(g_highScores[n].score < 100 ? 4 :
-			(g_highScores[n].score < 1000 ? 3 :
-			(g_highScores[n].score < 10000 ? 2 :
-			(g_highScores[n].score < 100000 ? 1 :
-			( 0 ))))));
+		     (g_highScores[n].score < 100 ? 4 :
+		      (g_highScores[n].score < 1000 ? 3 :
+		       (g_highScores[n].score < 10000 ? 2 :
+		        (g_highScores[n].score < 100000 ? 1 :
+		         (0))))));
 		if (n != m_highScorePosition)
 		{
 			//Print the current score
 			itoa(g_highScores[n].score, tempStr, 10);
-			strcat(tempStr,"......");
-			strcat(tempStr,g_highScores[n].name);
-			txt_puts(24 + (m*8), 48 + (n * 8), tempStr);
+			strcat(tempStr, "......");
+			strcat(tempStr, g_highScores[n].name);
+			txt_puts(24 + (m * 8), 48 + (n * 8), tempStr);
 		}
 		else
 		{
 			//Print the player's score with a blank name (First letter A)
 			itoa(g_highScores[n].score, tempStr, 10);
-			strcat(tempStr,"......A___________");
-			txt_puts(24 + (m*8), 48 + (n * 8), tempStr);
+			strcat(tempStr, "......A___________");
+			txt_puts(24 + (m * 8), 48 + (n * 8), tempStr);
 		}
 	}
 
 	//Print the high score entry instructions at the bottom
-	txt_puts(8,136,"Left/Right: Change character.");
-	txt_puts(8,144,"A:Add letter, B:Del letter");
-	txt_puts(8,152,"Start: Accept name.");
+	txt_puts(8, 136, "Left/Right: Change character.");
+	txt_puts(8, 144, "A:Add letter, B:Del letter");
+	txt_puts(8, 152, "Start: Accept name.");
 
 	//Fade in
 	FadeToPalette(m_paletteBuffer, 30);
@@ -129,33 +128,34 @@ int CHighScore::Update()
 	int n;
 
 	//Check input
-    key_poll();
-	if(key_hit(KEY_A)) //Add selected character
+	key_poll();
+	if (key_hit(KEY_A)) //Add selected character
 	{
 		if (m_letterPosition < 11)
 		{
 
 			m_enteredName[m_letterPosition] = m_selectedLetter;
-			txt_putc(120 + (m_letterPosition*8), 48 + (m_highScorePosition * 8), m_selectedLetter);
+			txt_putc(120 + (m_letterPosition * 8), 48 + (m_highScorePosition * 8), m_selectedLetter);
 
 			//Move to next letter and display the selected letter at that
 			//position.
 			m_letterPosition++;
 
 			//Set the current character position to the selected character
-			m_enteredName[m_letterPosition] = m_enteredName[m_letterPosition-1];
-			m_selectedLetter = m_enteredName[m_letterPosition-1];
+			m_enteredName[m_letterPosition] = m_enteredName[m_letterPosition - 1];
+			m_selectedLetter = m_enteredName[m_letterPosition - 1];
 
-			txt_putc(120 + (m_letterPosition*8), 48 + (m_highScorePosition * 8), m_selectedLetter);
+			txt_putc(120 + (m_letterPosition * 8), 48 + (m_highScorePosition * 8), m_selectedLetter);
 		}
 	}
-	if(key_hit(KEY_B)) //Backspace
+	if (key_hit(KEY_B)) //Backspace
 	{
 		if (m_letterPosition > 0)
 		{
 			//Set the current character to _ and go left a character
 			m_enteredName[m_letterPosition] = '_';
-			txt_putc(120 + (m_letterPosition*8), 48 + (m_highScorePosition * 8), m_enteredName[m_letterPosition]);
+			txt_putc(120 + (m_letterPosition * 8), 48 + (m_highScorePosition * 8),
+			         m_enteredName[m_letterPosition]);
 			m_letterPosition--;
 			m_selectedLetter = m_enteredName[m_letterPosition];
 		}
@@ -164,34 +164,43 @@ int CHighScore::Update()
 			m_selectedLetter = m_enteredName[0];
 		}
 	}
-	if(key_hit(KEY_LEFT))
+	if (key_hit(KEY_LEFT))
 	{
 		//Go back a character in the font
 		m_selectedLetter--;
-		if (m_selectedLetter < FIRST_CHARACTER) {m_selectedLetter = LAST_CHARACTER;}
+		if (m_selectedLetter < FIRST_CHARACTER)
+		{
+			m_selectedLetter = LAST_CHARACTER;
+		}
 		//Display the new character and set a delay value
-		txt_putc(120 + (m_letterPosition*8), 48 + (m_highScorePosition * 8), m_selectedLetter);
+		txt_putc(120 + (m_letterPosition * 8), 48 + (m_highScorePosition * 8), m_selectedLetter);
 		m_keyDelayCount = LETTERS_INITIAL_DELAY;
 
 	}
-	if(key_hit(KEY_RIGHT))
+	if (key_hit(KEY_RIGHT))
 	{
 		//Go forward a character in the font
 		m_selectedLetter++;
-		if (m_selectedLetter > LAST_CHARACTER) {m_selectedLetter = FIRST_CHARACTER;}
+		if (m_selectedLetter > LAST_CHARACTER)
+		{
+			m_selectedLetter = FIRST_CHARACTER;
+		}
 		//Display the new character and set a delay value
-		txt_putc(120 + (m_letterPosition*8), 48 + (m_highScorePosition * 8), m_selectedLetter);
+		txt_putc(120 + (m_letterPosition * 8), 48 + (m_highScorePosition * 8), m_selectedLetter);
 		m_keyDelayCount = LETTERS_INITIAL_DELAY;
 	}
-	if(key_is_down(KEY_LEFT))
+	if (key_is_down(KEY_LEFT))
 	{
 		//Go back a character in the font if delay is 0
 		if (m_keyDelayCount <= 0)
 		{
 			m_selectedLetter--;
-			if (m_selectedLetter < FIRST_CHARACTER) {m_selectedLetter = LAST_CHARACTER;}
+			if (m_selectedLetter < FIRST_CHARACTER)
+			{
+				m_selectedLetter = LAST_CHARACTER;
+			}
 			//Display the new character and set a delay value
-			txt_putc(120 + (m_letterPosition*8), 48 + (m_highScorePosition * 8), m_selectedLetter);
+			txt_putc(120 + (m_letterPosition * 8), 48 + (m_highScorePosition * 8), m_selectedLetter);
 			m_keyDelayCount = LETTERS_SCROLL_DELAY;
 		}
 		else
@@ -199,15 +208,18 @@ int CHighScore::Update()
 			m_keyDelayCount--;
 		}
 	}
-	if(key_is_down(KEY_RIGHT))
+	if (key_is_down(KEY_RIGHT))
 	{
 		//Go forward a character in the font if delay is 0
 		if (m_keyDelayCount <= 0)
 		{
 			m_selectedLetter++;
-			if (m_selectedLetter > LAST_CHARACTER) {m_selectedLetter = FIRST_CHARACTER;}
+			if (m_selectedLetter > LAST_CHARACTER)
+			{
+				m_selectedLetter = FIRST_CHARACTER;
+			}
 			//Display the new character and set a delay value
-			txt_putc(120 + (m_letterPosition*8), 48 + (m_highScorePosition * 8), m_selectedLetter);
+			txt_putc(120 + (m_letterPosition * 8), 48 + (m_highScorePosition * 8), m_selectedLetter);
 			m_keyDelayCount = LETTERS_SCROLL_DELAY;
 		}
 		else
@@ -215,7 +227,7 @@ int CHighScore::Update()
 			m_keyDelayCount--;
 		}
 	}
-	if(key_hit(KEY_START))
+	if (key_hit(KEY_START))
 	{
 		//Set the current character position in the name to the
 		//selected character.
@@ -225,14 +237,14 @@ int CHighScore::Update()
 		//them to spaces
 		if (m_letterPosition < 11)
 		{
-			for (n = m_letterPosition+1; n < 12; n++)
+			for (n = m_letterPosition + 1; n < 12; n++)
 			{
 				m_enteredName[n] = ' ';
 			}
 		}
 
 		//Set the global high score name to the name that was entered
-		strcpy (g_highScores[m_highScorePosition].name,m_enteredName);
+		strcpy(g_highScores[m_highScorePosition].name, m_enteredName);
 
 		//Fade out
 		FadeToBlack(30);
@@ -281,34 +293,31 @@ int CHighScore::SaveScores()
 	return 0;
 }
 
-
 int HighScoreMain(CHighScore* HighScore, u16 *palBuffer)
 {
-    int done = 0;
-    
-    VBlankIntrWait();
+	int done = 0;
 
-    HighScore->m_paletteBuffer = palBuffer;
-    HighScore->Init();
-    
-    while (!done)
-    {
-        
-        //Update the high score entry screen, if the update routine returns true then the loop
-        //will end
-    	if (HighScore->Update())
-    	{
-    		done = 1;
-    	}
-    }
+	VBlankIntrWait();
 
-    //Save the high scores
-    HighScore->SaveScores();
+	HighScore->m_paletteBuffer = palBuffer;
+	HighScore->Init();
+
+	while (!done)
+	{
+
+		//Update the high score entry screen, if the update routine returns true then the loop
+		//will end
+		if (HighScore->Update())
+		{
+			done = 1;
+		}
+	}
+
+	//Save the high scores
+	HighScore->SaveScores();
 
 	//Set the game state to the title screen
 	g_GameState = GS_TITLEBEGIN;
 
-    
-    return 0;
+	return 0;
 }
-
