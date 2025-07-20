@@ -8,7 +8,7 @@
 #include "globalvars.h"
 #include "text.h"
 #include "fade.h"
-#include "itoa.h"
+#include "posprintf.h"
 #include "enemies.h"
 #include "projectiles.h"
 #include "moving_platforms.h"
@@ -66,9 +66,6 @@ void CMap::Init(T_LEVELSTATE *ls)
 	//Initialise the text system (background 0, SBB 26, prio 0)
 	txt_init(0, 26, 0); //Text
 
-	//Set the display register
-	REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_BG1 | DCNT_BG2 | DCNT_OBJ | DCNT_OBJ_1D;
-
 	//Set the hourglass digit oam data, but set to hidden. We can do this because
 	//these sprites will never change position and can have the tile and hidden
 	//status changed when needed
@@ -91,11 +88,8 @@ void CMap::Update()
 	vp_center(&m_ls->vp, (m_ls->mapOffset.x >> 8), m_ls->mapOffset.y >> 8);
 
 	//Display the score
-	//First display six zeros
-	txt_puts(8, 144, "000000");
-	//Display the score right justified
-	itoa(g_score, m_str, 10);
-	txt_puts(8 + (48 - (strlen(m_str) * 8)), 144, m_str);
+	posprintf(m_str, "%06l", g_score);
+	txt_puts(8, 144, m_str);
 
 	//Display lives
 	for (i = 0; i < g_lives; i++)
@@ -124,19 +118,9 @@ void CMap::Update()
 		txt_putc(144 + (i * 8), 144, 99 + 32); //Key tile
 	}
 
-	//Display selected seconds
-	//First display two zeros and a forward slash
-	txt_puts(192, 144, "00/");
-	//Display the total seconds right justified
-	itoa(m_ls->selectedSeconds, m_str, 10);
-	txt_puts(192 + (16 - (strlen(m_str) * 8)), 144, m_str);
-
-	//Display total seconds
-	//First display two zeros
-	txt_puts(216, 144, "00");
-	//Display the total seconds right justified
-	itoa(m_ls->seconds, m_str, 10);
-	txt_puts(216 + (16 - (strlen(m_str) * 8)), 144, m_str);
+	//Display selected/total seconds
+	posprintf(m_str, "%02d/%02d", m_ls->selectedSeconds, m_ls->seconds);
+	txt_puts(192, 144, m_str);
 
 	//If an urn has already been hit(flashing or breaking), process it here.
 	//m_urnBreakFrame is fixed point.

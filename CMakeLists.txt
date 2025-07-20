@@ -19,8 +19,8 @@ message(STATUS "Build type is set to ${CMAKE_BUILD_TYPE}.")
 add_executable(entombed
 	ext/fade.c
 	ext/fade.h
-	ext/itoa.cpp
-	ext/itoa.h
+	ext/posprintf.h
+	ext/posprintf.S
 	generated/layer2tileLUT.c
 	generated/layer2tileLUT.h
 	generated/level_data.c

@@ -85,6 +85,9 @@ int main(void)
 	//Try to load the high score data from SRAM
 	n = LoadScores();
 
+	//Set the display register
+	REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_BG1 | DCNT_BG2 | DCNT_OBJ | DCNT_OBJ_1D;
+
 	//Main game loop
 	while (true)
 	{
@@ -222,7 +225,7 @@ int LoadScores()
 	{
 		//Scores are 32 bit so bit shifting needed
 		g_highScores[n].score = 0;
-		g_highScores[n].score += (*src++ << 24) ;
+		g_highScores[n].score += (*src++ << 24);
 		g_highScores[n].score += (*src++ << 16);
 		g_highScores[n].score += (*src++ << 8);
 		g_highScores[n].score += *src++;

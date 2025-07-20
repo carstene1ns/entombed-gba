@@ -7,7 +7,7 @@
 #include "globalvars.h"
 #include "text.h"
 #include "fade.h"
-#include "itoa.h"
+#include "posprintf.h"
 
 //Declarations
 
@@ -22,10 +22,6 @@ CHighScore::CHighScore() //Constructor
 	m_letterPosition = 0;
 	m_selectedLetter = 33; //Position of capital A.
 	m_nameEntered = false;
-}
-
-CHighScore::~CHighScore() //Destructor
-{
 }
 
 void CHighScore::Init()
@@ -50,7 +46,6 @@ void CHighScore::Init()
 				{
 					g_highScores[m].score = g_highScores[m - 1].score;
 					strcpy(g_highScores[m].name, g_highScores[m - 1].name);
-					//g_highScores[m].name = g_highScores[m-1].name;
 				}
 				g_highScores[n].score = g_score;
 				m_highScorePosition = n;
@@ -86,30 +81,17 @@ void CHighScore::Init()
 	txt_puts(72, 16, "TOMB TONKERS");
 	for (n = 0; n < 10; n++)
 	{
-		//write 6 0's first
-		txt_puts(24, 48 + (n * 8), "000000");
-		//Get the first digit position
-		m = (g_highScores[n].score < 10 ? 5 :
-		     (g_highScores[n].score < 100 ? 4 :
-		      (g_highScores[n].score < 1000 ? 3 :
-		       (g_highScores[n].score < 10000 ? 2 :
-		        (g_highScores[n].score < 100000 ? 1 :
-		         (0))))));
 		if (n != m_highScorePosition)
 		{
 			//Print the current score
-			itoa(g_highScores[n].score, tempStr, 10);
-			strcat(tempStr, "......");
-			strcat(tempStr, g_highScores[n].name);
-			txt_puts(24 + (m * 8), 48 + (n * 8), tempStr);
+			posprintf(tempStr, "%06l......%s", g_highScores[n].score, g_highScores[n].name);
 		}
 		else
 		{
 			//Print the player's score with a blank name (First letter A)
-			itoa(g_highScores[n].score, tempStr, 10);
-			strcat(tempStr, "......A___________");
-			txt_puts(24 + (m * 8), 48 + (n * 8), tempStr);
+			posprintf(tempStr, "%06l......A___________", g_highScores[n].score);
 		}
+		txt_puts(24, 48 + (n * 8), tempStr);
 	}
 
 	//Print the high score entry instructions at the bottom

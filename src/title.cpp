@@ -7,7 +7,7 @@
 #include "globalvars.h"
 #include "text.h"
 #include "fade.h"
-#include "itoa.h"
+#include "posprintf.h"
 #include "sfx.h"
 
 //Graphics data
@@ -58,9 +58,6 @@ void CTitle::Init()
 {
 	//Load sprite data for the intro sequence
 	LZ77UnCompVram(spr_title_gfx, tile_mem[4]);
-
-	//Set registers
-	REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_BG1 | DCNT_BG2 | DCNT_OBJ | DCNT_OBJ_1D;
 
 	//Load the help text
 	InitHelpText();
@@ -160,7 +157,7 @@ void CTitle::Update()
 
 void CTitle::UpdateTitleScreen()
 {
-	int n, m, ix, iy;
+	int n, ix, iy;
 	char tempStr[25];
 
 	//Fades from black with bar near top of screen.
@@ -287,20 +284,8 @@ void CTitle::UpdateTitleScreen()
 			txt_puts(72, 16, "TOMB TONKERS");
 			for (n = 0; n < 10; n++)
 			{
-				//write 6 0's first
-				txt_puts(24, 48 + (n * 8), "000000");
-				//Get the first digit position
-				m = (m_highScores[n].score < 10 ? 5 :
-				     (m_highScores[n].score < 100 ? 4 :
-				      (m_highScores[n].score < 1000 ? 3 :
-				       (m_highScores[n].score < 10000 ? 2 :
-				        (m_highScores[n].score < 100000 ? 1 :
-				         (0))))));
-
-				itoa(m_highScores[n].score, tempStr, 10);
-				strcat(tempStr, "......");
-				strcat(tempStr, m_highScores[n].name);
-				txt_puts(24 + (m * 8), 48 + (n * 8), tempStr);
+				posprintf(tempStr, "%06l......%s", m_highScores[n].score, m_highScores[n].name);
+				txt_puts(24, 48 + (n * 8), tempStr);
 			}
 
 			//Fade in

@@ -32,8 +32,6 @@ public:
 	//member functions
 	//constructor
 	CHighScore();
-	//destructor
-	~CHighScore();
 	void Init(); //Initialises the high score entry screen
 	int Update(); //Updates the high score entry screen
 	int SaveScores();

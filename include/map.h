@@ -31,8 +31,8 @@ private:
 	int m_urnHitPoints;
 
 	//Member functions
-	void vp_center(VIEWPORT *vp, FIXED x, FIXED y);
-	void vp_set_pos(VIEWPORT *vp, FIXED x, FIXED y);
+	void vp_center(VIEWPORT *vp, int x, int y);
+	void vp_set_pos(VIEWPORT *vp, int x, int y);
 	void bgt_init(BGTYPE *bgt, int bgnr, u32 ctrl, const unsigned char* map, u32 map_width,
 	              u32 map_height, u32 layer);
 	void getGBATiles(int left, int top, int width, int height, int layer);
