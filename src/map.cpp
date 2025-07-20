@@ -7,7 +7,7 @@
 #include "gameDefines.h" //Global game defines
 #include "globalvars.h"
 #include "text.h"
-#include "fade.h"
+#include "fader.h"
 #include "posprintf.h"
 #include "enemies.h"
 #include "projectiles.h"
@@ -28,7 +28,6 @@
 CMap::CMap()
 {
 	m_ls = 0;
-	//m_paletteBuffer = 0;
 	m_tileAnimCounter = 0;
 	m_tileAnimFrame = 0;
 	m_urnFlashCount = -1;

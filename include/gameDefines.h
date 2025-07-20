@@ -3,6 +3,7 @@
 
 #include <tonc.h>
 #include <vector>
+#include <memory>
 
 //Game states
 #define GS_WAIT 0
@@ -281,5 +282,7 @@ typedef struct T_LEVELSTATE
 
 	int levelStatus; //The game status during a level
 } T_LEVELSTATE;
+
+class CFader;
 
 #endif

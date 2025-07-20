@@ -14,3 +14,4 @@ extern bool g_completedLevels[5]; //Lets the game know which levels have been co
 extern THighScore g_highScores[10]; //List of high scores
 extern OBJ_ATTR g_obj_buffer[128]; /*Buffer to store OAM data for sprites,
                                      copied to OAM once per VBL*/
+extern std::unique_ptr<CFader>g_fader; //For fading the palette

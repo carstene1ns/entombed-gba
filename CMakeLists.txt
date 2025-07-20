@@ -17,8 +17,6 @@ message(STATUS "Build type is set to ${CMAKE_BUILD_TYPE}.")
 
 # exe
 add_executable(entombed
-	ext/fade.c
-	ext/fade.h
 	ext/posprintf.h
 	ext/posprintf.S
 	generated/layer2tileLUT.c
@@ -28,6 +26,7 @@ add_executable(entombed
 	generated/objPropertiesLUT.c
 	generated/objPropertiesLUT.h
 	include/enemies.h
+	include/fader.h
 	include/gameDefines.h
 	include/globalvars.h
 	include/guns.h
@@ -45,6 +44,7 @@ add_executable(entombed
 	include/text.h
 	include/title.h
 	src/enemies.cpp
+	src/fader.cpp
 	src/guns.cpp
 	src/highscore_entry.cpp
 	src/level.cpp

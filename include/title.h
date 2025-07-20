@@ -22,7 +22,6 @@ private:
 
 public:
 	//Properties
-	u16* m_paletteBuffer;
 	THighScore* m_highScores;
 	bool m_gameStarted;
 	int m_titleSection; /*Whether we're on the title screen,
@@ -64,6 +63,6 @@ public:
 
 //Non-class function prototypes
 //Main loop for when at the title screen
-int TitleMain(CTitle *Title, u16 *palBuffer, THighScore* highScores);
+int TitleMain(CTitle *Title, THighScore* highScores);
 
 #endif

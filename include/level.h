@@ -27,7 +27,6 @@ private:
 public:
 
 	//Properties
-	u16* m_paletteBuffer;
 	bool m_fadedIn;
 	bool m_teleported;
 	bool m_levelEnded;
@@ -46,6 +45,6 @@ public:
 };
 
 //Non-class function prototypes
-int LevelMain(CLevel* Level, int mapNum, u16 *palBuffer); //Main loop for when in the game
+int LevelMain(CLevel* Level, int mapNum); //Main loop for when in the game
 
 #endif

@@ -10,29 +10,7 @@ void txt_init(int bgnr, int sbb, int prio)
 	//Copy palbank 15 to palbank 14 but with faded values. This way
 	//we can have faded text on the level selector for levels that
 	//have been completed and use txt_puts_faded.
-	u16 *Src = pal_bg_mem + 240; //Palbank 15
-	u16 *Dest = pal_bg_mem + 224; //Palbank 14
-
-	u16 color;
-	s16 r, g, b;
-	int n;
-
-	for (n = 240; n < 256; n++)
-	{
-
-		color = *(Src++);
-		r = (color & 0x1f);				// get component
-		g = (color >> 5 & 0x1f);
-		b = (color >> 10 & 0x1f);
-
-		//Fade the color, divide by 2
-		r = r >> 1;
-		g = g >> 1;
-		b = b >> 1;
-
-		color = (r) | (g << 5) | (b << 10);
-		*(Dest++) = color;
-	}
+	clr_fade_fast(pal_bg_bank[15], CLR_BLACK, pal_bg_bank[14], 16, 15);
 
 	REG_BGCNT[bgnr] = BG_CBB(2) | BG_SBB(sbb) | BG_PRIO(prio);
 }

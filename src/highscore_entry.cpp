@@ -6,7 +6,7 @@
 #include "gameDefines.h"
 #include "globalvars.h"
 #include "text.h"
-#include "fade.h"
+#include "fader.h"
 #include "posprintf.h"
 
 //Declarations
@@ -16,7 +16,6 @@
 CHighScore::CHighScore() //Constructor
 {
 	//Set initial member variables
-	m_paletteBuffer = 0;
 	m_keyDelayCount = 0;
 	m_highScorePosition = 0;
 	m_letterPosition = 0;
@@ -100,8 +99,7 @@ void CHighScore::Init()
 	txt_puts(8, 152, "Start: Accept name.");
 
 	//Fade in
-	FadeToPalette(m_paletteBuffer, 30);
-
+	g_fader->apply(FadeType::IN, 30);
 }
 
 int CHighScore::Update()
@@ -229,7 +227,7 @@ int CHighScore::Update()
 		strcpy(g_highScores[m_highScorePosition].name, m_enteredName);
 
 		//Fade out
-		FadeToBlack(30);
+		g_fader->apply(FadeType::OUT, 30);
 
 		return 1;
 	}
@@ -275,13 +273,12 @@ int CHighScore::SaveScores()
 	return 0;
 }
 
-int HighScoreMain(CHighScore* HighScore, u16 *palBuffer)
+int HighScoreMain(CHighScore* HighScore)
 {
 	int done = 0;
 
 	VBlankIntrWait();
 
-	HighScore->m_paletteBuffer = palBuffer;
 	HighScore->Init();
 
 	while (!done)

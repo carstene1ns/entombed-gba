@@ -13,6 +13,7 @@
 #include "sequences.h"
 #include "text.h"
 #include "sfx.h"
+#include "fader.h"
 
 //Lookup table for object property counts
 #include "objPropertiesLUT.h"

@@ -26,7 +26,6 @@ public:
 	int m_selectedLevel;
 	u32 m_selectPos; //Level that the player sprite is next to
 	u32 m_page; //Level page number. There are up to 3 levels per page.
-	u16* m_paletteBuffer;
 	u32 m_endScreenPage;
 
 	//member functions
@@ -42,6 +41,6 @@ public:
 //Non-class function prototypes
 
 //Main loop for when at the level selector
-int LevelSelectorMain(CLevelSelector *LevelSelector, u16 *palBuffer);
+int LevelSelectorMain(CLevelSelector *LevelSelector);
 
 #endif

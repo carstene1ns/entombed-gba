@@ -21,7 +21,6 @@ private:
 
 public:
 	//Properties
-	u16* m_paletteBuffer;
 	int m_highScorePosition;
 	int m_letterPosition;
 	int m_keyDelayCount;
@@ -39,6 +38,6 @@ public:
 
 //Non-class function prototypes
 //Main loop for when at the high score entry screen
-int HighScoreMain(CHighScore *HighScore, u16 *palBuffer);
+int HighScoreMain(CHighScore *HighScore);
 
 #endif

@@ -6,7 +6,7 @@
 #include "gameDefines.h"
 #include "globalvars.h"
 #include "text.h"
-#include "fade.h"
+#include "fader.h"
 #include "sfx.h"
 
 //Graphics data
@@ -23,7 +23,6 @@ CLevelSelector::CLevelSelector() //Constructor
 	m_selectedLevel = -1;
 	m_selectPos = 0;
 	m_page = 0;
-	m_paletteBuffer = 0;
 	m_endScreenPage = 0;
 
 }
@@ -66,7 +65,7 @@ void CLevelSelector::Init()
 	}
 
 	//Fade in
-	FadeToPalette(m_paletteBuffer, 30);
+	g_fader->apply(FadeType::IN, 30);
 }
 
 void CLevelSelector::Update()
@@ -163,11 +162,11 @@ void CLevelSelector::Update()
 					if (m_endScreenPage == 0)
 					{
 						//Fade out
-						FadeToBlack(30);
+						g_fader->apply(FadeType::OUT, 30);
 						m_endScreenPage++;
 						ShowEndScreen(m_endScreenPage);
 						//Fade in
-						FadeToPalette(m_paletteBuffer, 30);
+						g_fader->apply(FadeType::IN, 30);
 					}
 					else
 					{
@@ -196,11 +195,9 @@ void CLevelSelector::Update()
 	}
 }
 
-int LevelSelectorMain(CLevelSelector* LevelSelector, u16 *palBuffer)
+int LevelSelectorMain(CLevelSelector* LevelSelector)
 {
 	int done = 0;
-
-	LevelSelector->m_paletteBuffer = palBuffer;
 
 	VBlankIntrWait();
 
@@ -235,8 +232,8 @@ int LevelSelectorMain(CLevelSelector* LevelSelector, u16 *palBuffer)
 		g_GameState = GS_LEVELBEGIN;
 	}
 
-	///Fade to black
-	FadeToBlack(30);
+	//Fade to black
+	g_fader->apply(FadeType::OUT, 30);
 
 	return 0;
 }

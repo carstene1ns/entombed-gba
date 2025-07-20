@@ -16,7 +16,7 @@
 #include "moving_blocks.h"
 #include "sequences.h"
 #include "text.h"
-#include "fade.h" //For fading the palette on game start, end and between lives
+#include "fader.h"
 #include "level_data.h"
 #include "sfx.h"
 
@@ -49,12 +49,9 @@ CLevel::CLevel()
 
 	g_levelState.levelStatus = ST_PLAYING_LEVEL;
 
-	m_paletteBuffer = 0;
 	m_fadedIn = false;
 	m_teleported = false;
-
 	m_cheatSelected = 0;
-
 }
 
 CLevel::~CLevel() //Destructor
@@ -62,7 +59,6 @@ CLevel::~CLevel() //Destructor
 	//Delete the class instances
 	delete Map;
 	delete Player;
-
 }
 
 void CLevel::Init()
@@ -172,7 +168,7 @@ void CLevel::Update()
 			mmEffectCancelAll();
 			mmEffect(SFX_TELEPORT);
 
-			FadeToBlack(10);
+			g_fader->apply(FadeType::OUT, 10);
 			//Set the player to standing and reset jump counter
 			Player->m_jumpCounter = 0;
 			Player->player_set_state(PLAYER_STATE_STAND);
@@ -219,7 +215,7 @@ void CLevel::Update()
 		{
 			m_fadedIn = true;
 			//Fade into the level palette data
-			FadeToPalette(m_paletteBuffer, 30);
+			g_fader->apply(FadeType::IN, 30);
 		}
 
 		//Fade the palette in from black after a teleport
@@ -227,7 +223,7 @@ void CLevel::Update()
 		{
 			m_teleported = false;
 			//Fade into the level palette data
-			FadeToPalette(m_paletteBuffer, 10);
+			g_fader->apply(FadeType::IN, 10);
 		}
 	}
 	else
@@ -371,7 +367,7 @@ void CLevel::Reset()
 	std::vector <CSequence> &sequences = getSequences();
 
 	//Fade the palette to black
-	FadeToBlack(30);
+	g_fader->apply(FadeType::OUT, 30);
 
 	//Reset sprite data
 	reset_projectiles(&g_levelState);
@@ -428,14 +424,13 @@ void CLevel::Reset()
 	m_fadedIn = false;
 }
 
-int LevelMain(CLevel* Level, int mapNum, u16 *palBuffer)
+int LevelMain(CLevel* Level, int mapNum)
 {
 	int done = 0;
 	int n;
 	int gameover_y = -32 << 8;
 
 	//Set the level number in levelstate
-	Level->m_paletteBuffer = palBuffer;
 	g_levelState.levelNum = mapNum;
 
 	//Call the init procedure
@@ -527,7 +522,7 @@ int LevelMain(CLevel* Level, int mapNum, u16 *palBuffer)
 				oam_copy(oam_mem, g_obj_buffer, MAX_SPRITES);
 
 				//Fade out
-				FadeToBlack(30);
+				g_fader->apply(FadeType::OUT, 30);
 
 				//If we got a high score, set the game state to the
 				//high score entry

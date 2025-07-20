@@ -1,5 +1,5 @@
 /*********************************************************************************
-c * Includes
+ * Includes
  ********************************************************************************/
 #include "main.h"
 
@@ -13,6 +13,7 @@ c * Includes
 #include "level.h"
 #include "highscore_entry.h"
 #include "sfx.h"
+#include "fader.h"
 
 //Background and sprite palettes.
 #include "pal_bg.h"
@@ -31,6 +32,7 @@ int g_currentLevel; //The level number currently being played
 bool g_completedLevels[5]; //Lets the game know which levels have been completed.
 THighScore g_highScores[10]; //List of high scores
 OBJ_ATTR g_obj_buffer[128]; // Buffer to store OAM data for sprites, copied to OAM once per VBL
+std::unique_ptr<CFader> g_fader; //For fading the palette
 
 /*********************************************************************************
  * Program entry point
@@ -60,6 +62,7 @@ int main(void)
 	{
 		*(Dest++) = *(Src++);
 	}
+	g_fader = std::make_unique<CFader>(m_palBuffer);
 
 	//Reset the completed levels global array
 	//TODO: In the future allow for more levels
@@ -102,7 +105,7 @@ int main(void)
 				g_GameState = GS_WAIT;
 
 				//Run the titlescreen main loop
-				TitleMain(Title, m_palBuffer, g_highScores);
+				TitleMain(Title, g_highScores);
 
 				//Delete the title class instance
 				delete Title;
@@ -116,7 +119,7 @@ int main(void)
 				g_GameState = GS_WAIT;
 
 				//Run the level selector main loop
-				LevelSelectorMain(LevelSelector, m_palBuffer);
+				LevelSelectorMain(LevelSelector);
 
 				//Delete the level selector class instance
 				delete LevelSelector;
@@ -130,11 +133,10 @@ int main(void)
 				g_GameState = GS_WAIT;
 
 				//Run the game main loop
-				LevelMain(Level, g_currentLevel, m_palBuffer);
+				LevelMain(Level, g_currentLevel);
 
 				//Delete the level class instance
 				delete Level;
-
 				break;
 
 			case GS_ENTERHIGHSCORE:
@@ -145,7 +147,7 @@ int main(void)
 				g_GameState = GS_WAIT;
 
 				//Run the highscore entry main loop
-				HighScoreMain(HighScore, m_palBuffer);
+				HighScoreMain(HighScore);
 
 				//Delete the highscore entry class instance
 				delete HighScore;

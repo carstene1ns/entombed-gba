@@ -6,7 +6,7 @@
 #include "gameDefines.h"
 #include "globalvars.h"
 #include "text.h"
-#include "fade.h"
+#include "fader.h"
 #include "posprintf.h"
 #include "sfx.h"
 
@@ -34,7 +34,6 @@ CTitle::CTitle() //Constructor
 	m_scrollCounter = 0;
 	m_nextLine = 0;
 	m_scrollPos = 0;
-	m_paletteBuffer = 0;
 	m_highScores = 0;
 	blankLine = "";
 	m_spriteCount = 0;
@@ -51,7 +50,6 @@ CTitle::CTitle() //Constructor
 	m_cheatModeSeq[6] = 2;
 	m_cheatModeSeq[7] = 3;
 	m_cheatModePos = 0;
-
 }
 
 void CTitle::Init()
@@ -163,8 +161,8 @@ void CTitle::UpdateTitleScreen()
 	//Fades from black with bar near top of screen.
 	if (m_titleBarAppeared == false)
 	{
-		//Fade to black
-		FadeToBlack(5);
+		//reset palette
+		g_fader->clear();
 
 		//Set all text layer tiles to black (space characters)
 		for (iy = 0; iy < 256; iy += 8)
@@ -193,7 +191,7 @@ void CTitle::UpdateTitleScreen()
 		oam_copy(oam_mem, g_obj_buffer, 8);
 
 		//Fade in
-		FadeToPalette(m_paletteBuffer, 30);
+		g_fader->apply(FadeType::IN, 30);
 
 		//Place the title sprites just out of the top of the screen
 		//Loop for ENTOMB, then E, D.
@@ -265,7 +263,7 @@ void CTitle::UpdateTitleScreen()
 		{
 			//Title animation has ended and the timer has counted down
 			//Fade out and set up the high score display
-			FadeToBlack(30);
+			g_fader->apply(FadeType::OUT, 30);
 
 			//Remove the sprites
 			for (n = 0; n < 18; n++)
@@ -289,7 +287,7 @@ void CTitle::UpdateTitleScreen()
 			}
 
 			//Fade in
-			FadeToPalette(m_paletteBuffer, 30);
+			g_fader->apply(FadeType::IN, 30);
 
 			m_waitTime = 300;
 			m_titleSection = SECTION_HIGHSCORES;
@@ -309,7 +307,7 @@ void CTitle::UpdateHighScoreScreen()
 	else
 	{
 		//Fade out and setup the help screen
-		FadeToBlack(30);
+		g_fader->apply(FadeType::OUT, 30);
 
 		//Set all text layer tiles to black (space characters)
 		for (iy = 0; iy < 256; iy += 8)
@@ -337,7 +335,7 @@ void CTitle::UpdateHighScoreScreen()
 		oam_copy(oam_mem, g_obj_buffer, 3);
 
 		//Fade in
-		FadeToPalette(m_paletteBuffer, 30);
+		g_fader->apply(FadeType::IN, 30);
 
 		m_nextLine = 31; //Used for the scrolling help text.
 		m_scrollCounter = 0; //Controls the text scoll speed
@@ -439,7 +437,7 @@ void CTitle::UpdateHelpScreen()
 		else
 		{
 			//Return to the tilte screen
-			FadeToBlack(25);
+			g_fader->apply(FadeType::OUT, 25);
 			m_titleBarAppeared = false;
 			m_animDone = false;
 			m_waitTime = 0;
@@ -462,7 +460,7 @@ void CTitle::UpdateScoreResetScreen()
 	if (key_hit(KEY_L))
 	{
 		//Return to the tilte screen
-		FadeToBlack(25);
+		g_fader->apply(FadeType::OUT, 25);
 		m_titleBarAppeared = false;
 		m_animDone = false;
 		m_waitTime = 0;
@@ -476,7 +474,7 @@ void CTitle::UpdateScoreResetScreen()
 	{
 		//Reset the high scores and return to the title screen
 		ResetScores();
-		FadeToBlack(25);
+		g_fader->apply(FadeType::OUT, 25);
 		m_titleBarAppeared = false;
 		m_animDone = false;
 		m_waitTime = 0;
@@ -487,7 +485,7 @@ void CTitle::UpdateScoreResetScreen()
 	}
 }
 
-int TitleMain(CTitle* Title, u16 *palBuffer, THighScore* highScores)
+int TitleMain(CTitle* Title, THighScore* highScores)
 {
 	int n = 0;
 	int done = 0;
@@ -495,7 +493,6 @@ int TitleMain(CTitle* Title, u16 *palBuffer, THighScore* highScores)
 	mmFrame();
 	VBlankIntrWait();
 
-	Title->m_paletteBuffer = palBuffer;
 	Title->m_highScores = highScores;
 	Title->Init();
 
@@ -518,7 +515,7 @@ int TitleMain(CTitle* Title, u16 *palBuffer, THighScore* highScores)
 			}
 
 			//Fade to black
-			FadeToBlack(30);
+			g_fader->apply(FadeType::OUT, 30);
 
 			//Reset the background scroll register
 			REG_BG_OFS[0].y = 0;
@@ -611,7 +608,6 @@ void CTitle::InitHelpText()
 	helpText[57] = "R: Use hourglass       ";
 	helpText[58] = "   Seconds.            ";
 	helpText[59] = "Start: Pause/Unpause   ";
-
 }
 
 void CTitle::PlaceSprite(int oam, int sprite, int x, int y)
