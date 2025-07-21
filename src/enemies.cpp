@@ -4,11 +4,11 @@
 #include <vector>
 
 #include "gameDefines.h" //Global game defines
-#include "globalvars.h"
+#include "main.h"
 #include "projectiles.h"
 #include "sfx.h"
 
-std::vector <CEnemy> enemies; //Visible enemies class instance vector
+static std::vector<CEnemy> enemies; //Visible enemies class instance vector
 
 CEnemy::CEnemy(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _type, int _xMin,
                int _xMax, int _hitPoints, int _fireRate,  int _obj_index)
@@ -103,7 +103,7 @@ void CEnemy::Update()
 	int arrowXPoint;
 	POINT distFromViewport; //Enemy's distance from centre of map viewport
 	OBJ_ATTR *obj =  &g_obj_buffer[oam_index];
-	std::vector <CProjectile> &projectiles = getProjectiles();
+	std::vector<CProjectile> &projectiles = Projectiles::get();
 
 	//If the enemy went out of visible range, deactivate it and
 	//set the position in ls->mapSprites to it's last known position
@@ -192,14 +192,14 @@ void CEnemy::Update()
 					if (dx < 0)
 					{
 						//Shoot left
-						add_projectile(m_ls, (x >> 8) - 4, (y >> 8) + 12, -SNAKE_BULLET_SPEED, 0, 3, -1, 1);
+						Projectiles::add(m_ls, (x >> 8) - 4, (y >> 8) + 12, -SNAKE_BULLET_SPEED, 0, 3, -1, 1);
 						//Play a sound
 						mmEffect(SFX_BULLET);
 					}
 					else
 					{
 						//Shoot right
-						add_projectile(m_ls, (x >> 8) + 32, (y >> 8) + 12, SNAKE_BULLET_SPEED, 0, 3, -1, 1);
+						Projectiles::add(m_ls, (x >> 8) + 32, (y >> 8) + 12, SNAKE_BULLET_SPEED, 0, 3, -1, 1);
 						//Play a sound
 						mmEffect(SFX_BULLET);
 					}
@@ -318,7 +318,10 @@ void CEnemy::Update()
 
 }
 
-void update_enemies(T_LEVELSTATE *ls)
+namespace Enemies
+{
+
+void update(T_LEVELSTATE *ls)
 {
 	//Loop through ls->mapSprites for  enemy sprites and see if any of the enemy
 	//positions have now come within visible range. If so, add the enemy to the visible enemy
@@ -380,7 +383,7 @@ void update_enemies(T_LEVELSTATE *ls)
 	}
 }
 
-void scroll_enemies(int x, int y)
+void scroll(int x, int y)
 {
 	//Update the projectiles positions by x and y, which will be got from map.cpp and is the amount
 	//the map scrolled on this vbl.
@@ -392,7 +395,7 @@ void scroll_enemies(int x, int y)
 	}
 }
 
-void reset_enemies(T_LEVELSTATE *ls)
+void reset(T_LEVELSTATE *ls)
 {
 	int n;
 
@@ -405,7 +408,9 @@ void reset_enemies(T_LEVELSTATE *ls)
 	}
 }
 
-std::vector <CEnemy> &getEnemies()
+std::vector <CEnemy> &get()
 {
 	return enemies;
+}
+
 }

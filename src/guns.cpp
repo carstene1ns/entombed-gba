@@ -8,9 +8,12 @@
 #include "projectiles.h"
 #include "sfx.h"
 
-std::vector <TGun> guns; //Guns vector
+namespace Guns
+{
 
-void init_guns(T_LEVELSTATE *ls)
+static std::vector<TGun> guns; //Guns vector
+
+void init(T_LEVELSTATE *ls)
 {
 	int tile;
 	TGun gun;
@@ -43,7 +46,7 @@ void init_guns(T_LEVELSTATE *ls)
 	}
 }
 
-void update_guns(T_LEVELSTATE *ls)
+void update(T_LEVELSTATE *ls)
 {
 	POINT distFromViewport; //Gun's distance from centre of map viewport
 
@@ -73,13 +76,13 @@ void update_guns(T_LEVELSTATE *ls)
 						//Shoot the correct type of bullet depending on the gun type, blowgun or ball gun.
 						if (gun.type == 0)
 						{
-							add_projectile(ls, gun.xPos - ls->vp.x + 23, gun.yPos - ls->vp.y + 7, -GUN_BULLET_SPEED, 0, 2,
-							               gun.lifespan, 1);
+							Projectiles::add(ls, gun.xPos - ls->vp.x + 23, gun.yPos - ls->vp.y + 7, -GUN_BULLET_SPEED, 0, 2,
+							                 gun.lifespan, 1);
 						}
 						else
 						{
-							add_projectile(ls, gun.xPos - ls->vp.x + 23, gun.yPos - ls->vp.y + 7, -GUN_BULLET_SPEED, 0, 4,
-							               gun.lifespan, 1);
+							Projectiles::add(ls, gun.xPos - ls->vp.x + 23, gun.yPos - ls->vp.y + 7, -GUN_BULLET_SPEED, 0, 4,
+							                 gun.lifespan, 1);
 						}
 						//Play a sound
 						mmEffect(SFX_BULLET);
@@ -90,13 +93,13 @@ void update_guns(T_LEVELSTATE *ls)
 						//Shoot the correct type of bullet depending on the gun type, blowgun or ball gun.
 						if (gun.type == 0)
 						{
-							add_projectile(ls, gun.xPos - ls->vp.x + 9, gun.yPos - ls->vp.y + 7, GUN_BULLET_SPEED, 0, 2,
-							               gun.lifespan, gun.weight);
+							Projectiles::add(ls, gun.xPos - ls->vp.x + 9, gun.yPos - ls->vp.y + 7, GUN_BULLET_SPEED, 0, 2,
+							                 gun.lifespan, gun.weight);
 						}
 						else
 						{
-							add_projectile(ls, gun.xPos - ls->vp.x + 9, gun.yPos - ls->vp.y + 7, GUN_BULLET_SPEED, 0, 4,
-							               gun.lifespan, gun.weight);
+							Projectiles::add(ls, gun.xPos - ls->vp.x + 9, gun.yPos - ls->vp.y + 7, GUN_BULLET_SPEED, 0, 4,
+							                 gun.lifespan, gun.weight);
 						}
 						//Play a sound
 						mmEffect(SFX_BULLET);
@@ -117,7 +120,7 @@ void update_guns(T_LEVELSTATE *ls)
 	}
 }
 
-void add_gun(TGun gun)
+void add(TGun gun)
 {
 	std::vector<TGun>::iterator it;
 
@@ -126,7 +129,7 @@ void add_gun(TGun gun)
 	guns[guns.end() - it].timer = gun.timer;
 }
 
-void delete_gun(int x, int y)
+void remove(int x, int y)
 {
 	for (std::vector<TGun>::iterator it = guns.begin(); it != guns.end();)
 	{
@@ -139,4 +142,6 @@ void delete_gun(int x, int y)
 			++it;
 		}
 	}
+}
+
 }

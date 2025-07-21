@@ -28,6 +28,9 @@ public:
 	u32 m_page; //Level page number. There are up to 3 levels per page.
 	u32 m_endScreenPage;
 
+	//Main loop for when at the level selector
+	static void Main();
+
 	//member functions
 	//constructor
 	CLevelSelector();
@@ -37,10 +40,5 @@ public:
 	void DisplayLevels();
 	void ShowEndScreen(int page); //After level 5 is complete, shows the ending text
 };
-
-//Non-class function prototypes
-
-//Main loop for when at the level selector
-int LevelSelectorMain(CLevelSelector *LevelSelector);
 
 #endif

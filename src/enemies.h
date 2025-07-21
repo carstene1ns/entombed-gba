@@ -47,12 +47,20 @@ public:
 	CEnemy(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _type, int _xMin, int _xMax,
 	       int _hitPoints, int _fireRate, int _obj_index);
 	void Update();
+
+protected:
+	CEnemy() = default;
 };
 
+namespace Enemies
+{
+
 //Non-class function prototypes
-void update_enemies(T_LEVELSTATE *ls);
-void scroll_enemies(int x, int y);
-void reset_enemies(T_LEVELSTATE *ls);
-std::vector <CEnemy> &getEnemies();
+void update(T_LEVELSTATE *ls);
+void scroll(int x, int y);
+void reset(T_LEVELSTATE *ls);
+std::vector<CEnemy> &get();
+
+}
 
 #endif

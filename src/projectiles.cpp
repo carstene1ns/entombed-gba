@@ -6,12 +6,11 @@
 #include <vector>
 
 #include "gameDefines.h" //Global game defines
-#include "globalvars.h"
+#include "main.h"
 #include "sfx.h"
 
-std::vector <CProjectile> projectiles; //Projectiles class instance vector
-
-int ballCollisionSoundCounter; //Allows us to space out the ball collision sounds
+static std::vector<CProjectile> projectiles; //Projectiles class instance vector
+static int ballCollisionSoundCounter; //Allows us to space out the ball collision sounds
 
 CProjectile::CProjectile(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _type,
                          int _lifespan, int _weight)
@@ -413,8 +412,11 @@ void CProjectile::Update()
 	}
 }
 
-void add_projectile(T_LEVELSTATE *ls, int _x, int _y, int _dx, int _dy, int _type, int _lifespan,
-                    int _weight)
+namespace Projectiles
+{
+
+void add(T_LEVELSTATE *ls, int _x, int _y, int _dx, int _dy, int _type, int _lifespan,
+         int _weight)
 {
 	//If we already have the maximum number of projectiles,
 	//erase the oldest one
@@ -432,7 +434,7 @@ void add_projectile(T_LEVELSTATE *ls, int _x, int _y, int _dx, int _dy, int _typ
 	projectiles.push_back(CProjectile(ls, _x, _y, _dx, _dy, _type, _lifespan, _weight));
 }
 
-void update_projectiles(T_LEVELSTATE *ls)
+void update(T_LEVELSTATE *ls)
 {
 	(void) ls;
 
@@ -466,7 +468,7 @@ void update_projectiles(T_LEVELSTATE *ls)
 	}
 }
 
-void scroll_projectiles(int x, int y)
+void scroll(int x, int y)
 {
 	//Update the projectiles positions by x and y, which will be got from map.cpp and is the amount
 	//the map scrolled on this vbl.
@@ -478,7 +480,7 @@ void scroll_projectiles(int x, int y)
 	}
 }
 
-void reset_projectiles(T_LEVELSTATE *ls)
+void reset(T_LEVELSTATE *ls)
 {
 	int n;
 
@@ -494,7 +496,9 @@ void reset_projectiles(T_LEVELSTATE *ls)
 	ballCollisionSoundCounter = 0;
 }
 
-std::vector <CProjectile> &getProjectiles()
+std::vector<CProjectile> &get()
 {
 	return projectiles;
+}
+
 }

@@ -18,8 +18,8 @@ class CLevel
 private:
 
 	//Properties
-	CPlayer* Player; //Player class instance
-	CMap* Map; //Game map class instance
+	std::unique_ptr<CPlayer>Player; //Player class instance
+	std::unique_ptr<CMap>Map; //Game map class instance
 
 	//Member functions
 	void SetupLevel(int mapNum);
@@ -33,18 +33,16 @@ public:
 	int m_cheatSelected;
 	std::vector <CProjectile> projectiles; //Projectiles class instance vector
 
+	//Main loop for when in the game
+	static void Main(int mapNum);
+
 	//constructor
 	CLevel();
-	//destructor
-	~CLevel();
 
 	//Member functions
 	void Init();
 	void Update();
 	void Reset();
 };
-
-//Non-class function prototypes
-int LevelMain(CLevel* Level, int mapNum); //Main loop for when in the game
 
 #endif

@@ -6,18 +6,23 @@
 #include <memory>
 
 //Game states
-#define GS_WAIT 0
-#define GS_TITLEBEGIN 1
-#define GS_LEVELSELECT 2
-#define GS_LEVELBEGIN 3
-#define GS_SHOWHIGHSCORES 4
-#define GS_ENTERHIGHSCORE 5
+enum class GameState
+{
+	WAIT = 0,
+	TITLEBEGIN,
+	LEVELSELECT,
+	LEVELBEGIN,
+	ENTERHIGHSCORE
+};
 
 //Level status defines
-#define ST_PLAYING_LEVEL 0
-#define ST_LIFE_LOST 1
-#define ST_ALL_LIVES_LOST 2
-#define ST_LEVEL_COMPLETED 3
+enum class LevelStatus
+{
+	PLAYING_LEVEL = 0,
+	LIFE_LOST,
+	ALL_LIVES_LOST,
+	LEVEL_COMPLETED
+};
 
 //Background numbers
 #define TEXTBGNO 0
@@ -69,43 +74,44 @@
                                       when loading a checkpoint*/
 
 //Layer 2 tile defines
-#define TILE_SPEARS 9
-#define TILE_ANKH 10
-#define TILE_BOW 11
-#define TILE_COIN 12
-#define TILE_HOURGLASS 13
-#define TILE_KEY 14
-#define TILE_QUIVER 15
-#define TILE_CHEST 16
-#define TILE_DOOR_CLOSED_TOP 17
-#define TILE_URN_TOP 18
-#define TILE_SNAKE 19 //Sprite layer
-#define TILE_SPHINX 20 //Sprite layer
-#define TILE_GUN_L 21
-#define TILE_GUN_R 22
-#define TILE_SWITCH 23
-#define TILE_PLATFORM1 24
-#define TILE_PLATFORM2 25
-#define TILE_MOVING_PLATFORM 26 //Sprite layer
-#define TILE_LADDER 27
-#define TILE_EXIT_TOP 28
-#define TILE_WOOD_FRAME_TOP 29
-#define TILE_WOOD_FRAME 30
-
-//Level 5 tile defines
-#define TILE_TELEPORTER 31
-#define TILE_BALLGUN_L 32
-#define TILE_BALLGUN_R 33
-#define TILE_BLOCK 34 //Sprite layer
-
-//Misc tiles
-#define TILE_DOOR_OPEN_TOP 35
-#define TILE_DOOR_CLOSED_BOTTOM 36
-#define TILE_URN_BOTTOM 37
-#define TILE_EXIT_BOTTOM 38
-#define TILE_DOOR_OPEN_BOTTOM 39
-#define TILE_URN_FLASH_TOP 40
-#define TILE_URN_FLASH_BOTTOM 41
+enum Layer2Tiles
+{
+	TILE_SPEARS = 9,
+	TILE_ANKH,
+	TILE_BOW,
+	TILE_COIN,
+	TILE_HOURGLASS,
+	TILE_KEY,
+	TILE_QUIVER,
+	TILE_CHEST,
+	TILE_DOOR_CLOSED_TOP,
+	TILE_URN_TOP,
+	TILE_SNAKE, //Sprite layer
+	TILE_SPHINX, //Sprite layer
+	TILE_GUN_L,
+	TILE_GUN_R,
+	TILE_SWITCH,
+	TILE_PLATFORM1,
+	TILE_PLATFORM2,
+	TILE_MOVING_PLATFORM, //Sprite layer
+	TILE_LADDER,
+	TILE_EXIT_TOP,
+	TILE_WOOD_FRAME_TOP,
+	TILE_WOOD_FRAME,
+	//Level 5 tile defines
+	TILE_TELEPORTER,
+	TILE_BALLGUN_L,
+	TILE_BALLGUN_R,
+	TILE_BLOCK, //Sprite layer
+	//Misc tiles
+	TILE_DOOR_OPEN_TOP,
+	TILE_DOOR_CLOSED_BOTTOM,
+	TILE_URN_BOTTOM,
+	TILE_EXIT_BOTTOM,
+	TILE_DOOR_OPEN_BOTTOM,
+	TILE_URN_FLASH_TOP,
+	TILE_URN_FLASH_BOTTOM
+};
 
 //TYPEDEFS
 
@@ -280,7 +286,7 @@ typedef struct T_LEVELSTATE
 	//Array of free oam indices for moving blocks
 	bool blockOamIsFree[MAX_VISIBLE_BLOCKS];
 
-	int levelStatus; //The game status during a level
+	LevelStatus levelStatus; //The game status during a level
 } T_LEVELSTATE;
 
 class CFader;

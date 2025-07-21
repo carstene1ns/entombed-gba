@@ -15,14 +15,8 @@
 
 class CTitle
 {
-private:
-	//Properties
-
-	//Member functions
-
 public:
 	//Properties
-	THighScore* m_highScores;
 	bool m_gameStarted;
 	int m_titleSection; /*Whether we're on the title screen,
 	                     high scores or instructions.*/
@@ -45,6 +39,9 @@ public:
 	int m_cheatModePos;
 	int m_selectHeldFrames;
 
+	//Main loop for when at the title screen
+	static void Main();
+
 	//member functions
 	//constructor
 	CTitle();
@@ -58,11 +55,6 @@ public:
 	void UpdateScoreResetScreen();
 	void PlaceSprite(int oam, int sprite, int x, int y);
 	void CheatTest();
-	void ResetScores();
 };
-
-//Non-class function prototypes
-//Main loop for when at the title screen
-int TitleMain(CTitle *Title, THighScore* highScores);
 
 #endif

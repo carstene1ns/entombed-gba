@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "gameDefines.h"
-#include "globalvars.h"
+#include "main.h"
 #include "text.h"
 #include "fader.h"
 #include "sfx.h"
@@ -174,12 +174,12 @@ void CLevelSelector::Update()
 						//high score entry
 						if (g_score > g_highScores[9].score)
 						{
-							g_GameState = GS_ENTERHIGHSCORE;
+							g_GameState = GameState::ENTERHIGHSCORE;
 						}
 						else
 						{
 							//else set the game state to the title screen
-							g_GameState = GS_TITLEBEGIN;
+							g_GameState = GameState::TITLEBEGIN;
 						}
 						m_selectedLevel = 0; //Set to >= 0 so the main loop is exited.
 						done = 1;
@@ -195,8 +195,10 @@ void CLevelSelector::Update()
 	}
 }
 
-int LevelSelectorMain(CLevelSelector* LevelSelector)
+void CLevelSelector::Main()
 {
+	auto LevelSelector = std::make_unique<CLevelSelector>();
+
 	int done = 0;
 
 	VBlankIntrWait();
@@ -229,13 +231,11 @@ int LevelSelectorMain(CLevelSelector* LevelSelector)
 	if ((LevelSelector->m_selectedLevel >= 0) && (g_completedLevels[4] == false))
 	{
 		//Set the game state to begin the selected level
-		g_GameState = GS_LEVELBEGIN;
+		g_GameState = GameState::LEVELBEGIN;
 	}
 
 	//Fade to black
 	g_fader->apply(FadeType::OUT, 30);
-
-	return 0;
 }
 
 void CLevelSelector::InitLevelText()

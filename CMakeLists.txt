@@ -25,40 +25,39 @@ add_executable(entombed
 	generated/level_data.h
 	generated/objPropertiesLUT.c
 	generated/objPropertiesLUT.h
-	include/enemies.h
-	include/fader.h
-	include/gameDefines.h
-	include/globalvars.h
-	include/guns.h
-	include/highscore_entry.h
-	include/level.h
-	include/level_selector.h
-	include/main.h
-	include/map.h
-	include/moving_blocks.h
-	include/moving_platforms.h
-	include/player.h
-	include/projectiles.h
-	include/sequences.h
-	include/sfx.h
-	include/text.h
-	include/title.h
 	src/enemies.cpp
+	src/enemies.h
 	src/fader.cpp
+	src/fader.h
+	src/gameDefines.h
 	src/guns.cpp
+	src/guns.h
 	src/highscore_entry.cpp
+	src/highscore_entry.h
 	src/level.cpp
+	src/level.h
 	src/level_selector.cpp
+	src/level_selector.h
 	src/main.cpp
+	src/main.h
 	src/map.cpp
+	src/map.h
 	src/moving_blocks.cpp
+	src/moving_blocks.h
 	src/moving_platforms.cpp
+	src/moving_platforms.h
 	src/player.cpp
+	src/player.h
 	src/projectiles.cpp
+	src/projectiles.h
 	src/sequences.cpp
+	src/sequences.h
 	src/sfx.cpp
+	src/sfx.h
 	src/text.c
-	src/title.cpp)
+	src/text.h
+	src/title.cpp
+	src/title.h)
 target_include_directories(entombed PRIVATE ext generated include)
 target_compile_options(entombed PRIVATE
 	-Wall -Wextra
@@ -182,7 +181,7 @@ if(ASTYLE_EXECUTABLE)
 		--align-pointer=type --align-reference=name")
 	add_custom_target(source-format
 		COMMAND ${ASTYLE_EXECUTABLE} ${ASTYLE_OPTIONS}
-			"${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+			"${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 			"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 			"${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
 		COMMENT "Applying source code format..." VERBATIM)

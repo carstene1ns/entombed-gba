@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "gameDefines.h" //Global game defines
-#include "globalvars.h"
+#include "main.h"
 #include "objPropertiesLUT.h"
 #include "map.h"
 #include "guns.h"
@@ -14,7 +14,7 @@
 //Level data
 #include "level_data.h"
 
-std::vector <CSequence> sequences; //Sequences class instance vector
+static std::vector<CSequence> sequences; //Sequences class instance vector
 
 CSequence::CSequence(T_LEVELSTATE* ls, int _seqNum, int seqDataLen,
                      int _loop, int _alwaysOn, int _dataPos, bool _instant)
@@ -345,7 +345,7 @@ void CSequence::ReadChanges(bool finalise)
 						//If this was a gun, remove it from the guns vector
 						if ((type == TILE_GUN_L) || (type == TILE_GUN_R))
 						{
-							delete_gun(x, y);
+							Guns::remove(x, y);
 						}
 					}
 
@@ -405,7 +405,7 @@ void CSequence::ReadChanges(bool finalise)
 							gun.type = ((type == TILE_GUN_L) || (type == TILE_GUN_R)) ? 0 : 1; //0 = blowgun, 1 = ball gun.
 							gun.lifespan = (gun.type == 1) ? tempObject.properties[2] : 0;
 							gun.weight = (gun.type == 1) ? tempObject.properties[3] : 1;
-							add_gun(gun);
+							Guns::add(gun);
 						}
 					}
 				}
@@ -436,9 +436,12 @@ void CSequence::ReadChanges(bool finalise)
 		m_dataPos -= m_stageDataLen; //Go back to the start of the stage data
 		m_dataPos += 5; //Go forward to the start of the change data.
 	}
-
 }
-void initiate_sequence(T_LEVELSTATE *ls, int seqNum, bool instant)
+
+namespace Sequences
+{
+
+void initiate(T_LEVELSTATE *ls, int seqNum, bool instant)
 {
 	//The instant parameter is used when starting from a checkpoint
 	//with sequences that need to be pre-initiated.
@@ -479,7 +482,7 @@ void initiate_sequence(T_LEVELSTATE *ls, int seqNum, bool instant)
 	}
 }
 
-void update_sequences(T_LEVELSTATE *ls)
+void update(T_LEVELSTATE *ls)
 {
 	(void) ls;
 
@@ -500,7 +503,7 @@ void update_sequences(T_LEVELSTATE *ls)
 	}
 }
 
-void initiate_checkpoint_sequences(T_LEVELSTATE *ls)
+void initiate_checkpoint(T_LEVELSTATE *ls)
 {
 	//This procedure will do the following:
 	//1. Look up the sequence data, if any, for the given checkpoint from the level data.
@@ -528,7 +531,7 @@ void initiate_checkpoint_sequences(T_LEVELSTATE *ls)
 	{
 		if (ls->checkpoint.sequences[n] >= 0)
 		{
-			initiate_sequence(ls, ls->checkpoint.sequences[n], true);
+			initiate(ls, ls->checkpoint.sequences[n], true);
 			n++;
 		}
 		else
@@ -539,7 +542,7 @@ void initiate_checkpoint_sequences(T_LEVELSTATE *ls)
 
 }
 
-void initiate_always_on_sequences(T_LEVELSTATE *ls)
+void initiate_always_on(T_LEVELSTATE *ls)
 {
 
 	//Called at the start of a level. Initiates all
@@ -580,7 +583,7 @@ void initiate_always_on_sequences(T_LEVELSTATE *ls)
 			seqLength = map_sequences[dataPos];
 			if (map_sequences[dataPos + 3])
 			{
-				initiate_sequence(ls, seqNum, false);
+				initiate(ls, seqNum, false);
 			}
 			//Go to the start of the next sequence data
 			dataPos += seqLength;
@@ -589,7 +592,7 @@ void initiate_always_on_sequences(T_LEVELSTATE *ls)
 	}
 }
 
-void delay_sequences(int seconds)
+void delay(int seconds)
 {
 	for (auto& sequence : sequences)
 	{
@@ -600,7 +603,9 @@ void delay_sequences(int seconds)
 	}
 }
 
-std::vector <CSequence> &getSequences()
+std::vector<CSequence> &get()
 {
 	return sequences;
+}
+
 }

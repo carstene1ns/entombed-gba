@@ -6,7 +6,7 @@
 #include <maxmod.h>
 #include <vector>
 #include "gameDefines.h" //Global game defines
-#include "globalvars.h"
+#include "main.h"
 
 // === CONSTANTS ======================================================
 

@@ -19,9 +19,14 @@ typedef struct TGun
 
 #define GUN_BULLET_SPEED 0x100
 
-void init_guns(T_LEVELSTATE *ls);
-void update_guns(T_LEVELSTATE *ls);
-void add_gun(TGun gun);
-void delete_gun(int x, int y);
+namespace Guns
+{
+
+void init(T_LEVELSTATE *ls);
+void update(T_LEVELSTATE *ls);
+void add(TGun gun);
+void remove(int x, int y);
+
+}
 
 #endif

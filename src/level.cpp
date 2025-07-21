@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 #include "gameDefines.h" //Global game defines
-#include "globalvars.h"
+#include "main.h"
 #include "moving_platforms.h"
 #include "player.h"
 #include "map.h"
@@ -39,26 +39,19 @@ EWRAM_DATA T_LEVELSTATE g_levelState; //Takes up 20kb so put in EWRAM
 CLevel::CLevel()
 {
 	//Create the Map instance
-	Map = new CMap;
+	Map = std::make_unique<CMap>();
 
 	//Create the Player instance
-	Player = new CPlayer;
+	Player = std::make_unique<CPlayer>();
 
 	//Initialise member properties
 	m_levelEnded = false;
 
-	g_levelState.levelStatus = ST_PLAYING_LEVEL;
+	g_levelState.levelStatus = LevelStatus::PLAYING_LEVEL;
 
 	m_fadedIn = false;
 	m_teleported = false;
 	m_cheatSelected = 0;
-}
-
-CLevel::~CLevel() //Destructor
-{
-	//Delete the class instances
-	delete Map;
-	delete Player;
 }
 
 void CLevel::Init()
@@ -138,16 +131,16 @@ void CLevel::Init()
 	Map->Init(&g_levelState);
 
 	//Reset the sprite data
-	reset_projectiles(&g_levelState);
-	reset_enemies(&g_levelState);
-	reset_platforms(&g_levelState);
-	reset_blocks(&g_levelState);
+	Projectiles::reset(&g_levelState);
+	Enemies::reset(&g_levelState);
+	Platforms::reset(&g_levelState);
+	Blocks::reset(&g_levelState);
 
 	//Initialise the guns
-	init_guns(&g_levelState);
+	Guns::init(&g_levelState);
 
 	//Initiate any sequences that are always on
-	initiate_always_on_sequences(&g_levelState);
+	Sequences::initiate_always_on(&g_levelState);
 
 	//Fade the palette in from black after the first level update
 	m_fadedIn = false;
@@ -190,22 +183,22 @@ void CLevel::Update()
 		Map->Update();
 
 		//Update the projectile movements
-		update_projectiles(&g_levelState);
+		Projectiles::update(&g_levelState);
 
 		//Update the enemies
-		update_enemies(&g_levelState);
+		Enemies::update(&g_levelState);
 
 		//Update the moving platforms
-		update_platforms(&g_levelState);
+		Platforms::update(&g_levelState);
 
 		//Update guns
-		update_guns(&g_levelState);
+		Guns::update(&g_levelState);
 
 		//Update moving blocks
-		update_blocks(&g_levelState);
+		Blocks::update(&g_levelState);
 
 		//Update the sequences (Sequence counters etc)
-		update_sequences(&g_levelState);
+		Sequences::update(&g_levelState);
 
 		//Copy the OAM data
 		oam_copy(oam_mem, g_obj_buffer, MAX_SPRITES);
@@ -292,7 +285,7 @@ void CLevel::Update()
 			if (key_is_down(KEY_SELECT))
 			{
 				//Set the level state to life lost.
-				g_levelState.levelStatus = ST_LIFE_LOST;
+				g_levelState.levelStatus = LevelStatus::LIFE_LOST;
 			}
 			//Set the pause menu text to transparent characters
 			for (ix = 96; ix <= 200; ix += 8)
@@ -364,16 +357,16 @@ void CLevel::Reset()
 	bool sequencesDone;
 	//Get a reference to the sequences vector so we can
 	//process any checkpoint sequences.
-	std::vector <CSequence> &sequences = getSequences();
+	std::vector<CSequence> &sequences = Sequences::get();
 
 	//Fade the palette to black
 	g_fader->apply(FadeType::OUT, 30);
 
 	//Reset sprite data
-	reset_projectiles(&g_levelState);
-	reset_enemies(&g_levelState);
-	reset_platforms(&g_levelState);
-	reset_blocks(&g_levelState);
+	Projectiles::reset(&g_levelState);
+	Enemies::reset(&g_levelState);
+	Platforms::reset(&g_levelState);
+	Blocks::reset(&g_levelState);
 
 	//Reset the coin score sprites
 	for (n = 0; n < 5; n++)
@@ -390,7 +383,7 @@ void CLevel::Reset()
 	//Initiate any sequences activated by the current checkpoint
 	if (g_levelState.checkpoint.sequences[0] > -1)
 	{
-		initiate_checkpoint_sequences(&g_levelState);
+		Sequences::initiate_checkpoint(&g_levelState);
 
 		//If any checkpoint sequences were initiated, update them
 		//until all stages for each one are done.
@@ -402,7 +395,7 @@ void CLevel::Reset()
 			                        be reset to false*/
 			if (sequences.size() > 0)
 			{
-				update_sequences(&g_levelState);
+				Sequences::update(&g_levelState);
 				Map->processMapChanges();
 				sequencesDone = false;
 			}
@@ -410,10 +403,10 @@ void CLevel::Reset()
 	}
 
 	//Reset the guns
-	init_guns(&g_levelState);
+	Guns::init(&g_levelState);
 
 	//Initiate any sequences that are always on
-	initiate_always_on_sequences(&g_levelState);
+	Sequences::initiate_always_on(&g_levelState);
 
 	//Copy the sprite objects
 	mmFrame();
@@ -424,8 +417,10 @@ void CLevel::Reset()
 	m_fadedIn = false;
 }
 
-int LevelMain(CLevel* Level, int mapNum)
+void CLevel::Main(int mapNum)
 {
+	auto Level = std::make_unique<CLevel>();
+
 	int done = 0;
 	int n;
 	int gameover_y = -32 << 8;
@@ -441,12 +436,12 @@ int LevelMain(CLevel* Level, int mapNum)
 	{
 		switch (g_levelState.levelStatus)
 		{
-			case ST_PLAYING_LEVEL:
+			case LevelStatus::PLAYING_LEVEL:
 				//Update the level
 				Level->Update();
 				break;
 
-			case ST_LIFE_LOST:
+			case LevelStatus::LIFE_LOST:
 				//Reduce the player's lives if the cheat is disabled
 				if (g_cheatEnabled[1] == false)
 				{
@@ -461,28 +456,28 @@ int LevelMain(CLevel* Level, int mapNum)
 				//If not then end the game (High score check, return to title screen)
 				if (g_lives < 0)
 				{
-					g_levelState.levelStatus = ST_ALL_LIVES_LOST;
+					g_levelState.levelStatus = LevelStatus::ALL_LIVES_LOST;
 				}
 				else
 				{
 					//Otherwise return to the last checkpoint
 					Level->Reset();
-					g_levelState.levelStatus = ST_PLAYING_LEVEL;
+					g_levelState.levelStatus = LevelStatus::PLAYING_LEVEL;
 				}
 				break;
 
-			case ST_LEVEL_COMPLETED:
+			case LevelStatus::LEVEL_COMPLETED:
 				//Mark the level as completed in the array
 				g_completedLevels[g_levelState.levelNum] = true;
 
 				//Set the game state to the level selector
-				g_GameState = GS_LEVELSELECT;
+				g_GameState = GameState::LEVELSELECT;
 
 				//End the loop
 				done = 1;
 				break;
 
-			case ST_ALL_LIVES_LOST:
+			case LevelStatus::ALL_LIVES_LOST:
 
 				//Show the game over sprite
 				for (n = 0; n < 3; n++)
@@ -528,12 +523,12 @@ int LevelMain(CLevel* Level, int mapNum)
 				//high score entry
 				if (g_score > g_highScores[9].score)
 				{
-					g_GameState = GS_ENTERHIGHSCORE;
+					g_GameState = GameState::ENTERHIGHSCORE;
 				}
 				else
 				{
 					//else set the game state to the title screen
-					g_GameState = GS_TITLEBEGIN;
+					g_GameState = GameState::TITLEBEGIN;
 				}
 
 				done = 1;
@@ -551,8 +546,7 @@ int LevelMain(CLevel* Level, int mapNum)
 			//complete. If so then show an end sequence. Otherwise go to the
 			//level selector.
 
-			//Set g_GameState to GS_TITLEBEGIN
-			g_GameState = GS_TITLEBEGIN;
+			g_GameState = GameState::TITLEBEGIN;
 
 			//Delete the class instances (In deconstructor later)
 
@@ -560,6 +554,4 @@ int LevelMain(CLevel* Level, int mapNum)
 			done = 1;
 		}
 	}
-
-	return 0;
 }

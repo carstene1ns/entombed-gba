@@ -4,7 +4,7 @@
 #include <tonc.h>
 
 #include "gameDefines.h" //Global game defines
-#include "globalvars.h"
+#include "main.h"
 #include "map.h"
 #include "projectiles.h"
 #include "enemies.h"
@@ -276,7 +276,7 @@ void CPlayer::player_input()
 		//and running sequences that are not always on.
 		if (m_ls->selectedSeconds > 0)
 		{
-			delay_sequences(m_ls->selectedSeconds);
+			Sequences::delay(m_ls->selectedSeconds);
 
 			//Set secondsCounter and currentSecond to display the seconds digits on screen
 			m_ls->secondsCounter = 60;
@@ -524,7 +524,7 @@ void CPlayer::player_move()
 	//If we've moved out of the screen, set the m_ls->levelStatus to ST_LIFE_LOST
 	if ((m_ls->playerPos.y >> 8) - m_ls->vp.y > 160)
 	{
-		m_ls->levelStatus = ST_LIFE_LOST;
+		m_ls->levelStatus = LevelStatus::LIFE_LOST;
 	}
 }
 
@@ -726,13 +726,13 @@ void CPlayer::player_ani_fireArrow()
 	{
 		if (m_dir == LOOK_LEFT)
 		{
-			add_projectile(m_ls, ((m_ls->playerPos.x >> 8) - m_ls->vp.x) - 8,
-			               ((m_ls->playerPos.y >> 8) - m_ls->vp.y) + 20, -ARROW_SPEED, 0, 0, -1, 1);
+			Projectiles::add(m_ls, ((m_ls->playerPos.x >> 8) - m_ls->vp.x) - 8,
+			                 ((m_ls->playerPos.y >> 8) - m_ls->vp.y) + 20, -ARROW_SPEED, 0, 0, -1, 1);
 		}
 		else //RIGHT
 		{
-			add_projectile(m_ls, ((m_ls->playerPos.x >> 8) - m_ls->vp.x) + 24,
-			               ((m_ls->playerPos.y >> 8) - m_ls->vp.y) + 20, ARROW_SPEED, 0, 1, -1, 1);
+			Projectiles::add(m_ls, ((m_ls->playerPos.x >> 8) - m_ls->vp.x) + 24,
+			                 ((m_ls->playerPos.y >> 8) - m_ls->vp.y) + 20, ARROW_SPEED, 0, 1, -1, 1);
 		}
 		player_set_state(PLAYER_STATE_STAND);
 	}
@@ -773,10 +773,10 @@ void CPlayer::player_test_collisions()
 	int bulCentreX, bulCentreY; //Centre position of the various bullets.
 	//Used in projectile collision testing
 
-	std::vector <CProjectile> &projectiles = getProjectiles();
-	std::vector <CEnemy> &enemies = getEnemies();
-	std::vector <CPlatform> &platforms = getPlatforms();
-	std::vector <CBlock> &blocks = getBlocks();
+	std::vector<CProjectile> &projectiles = Projectiles::get();
+	std::vector<CEnemy> &enemies = Enemies::get();
+	std::vector<CPlatform> &platforms = Platforms::get();
+	std::vector<CBlock> &blocks = Blocks::get();
 
 	//Walls collision checks
 	//First reset the m_blockedDirs[4] values to zero
@@ -1613,7 +1613,7 @@ void CPlayer::ProcessLayer2Collisions()
 					mmEffect(SFX_EXIT);
 
 					//Set the level as cleared
-					m_ls->levelStatus = ST_LEVEL_COMPLETED;
+					m_ls->levelStatus = LevelStatus::LEVEL_COMPLETED;
 
 					//Delay until the sound has stopped (2 seconds)
 					for (i = 0; i < 120; i++)
@@ -1633,7 +1633,7 @@ void CPlayer::ProcessLayer2Collisions()
 					{
 						if (m_ls->mapObjects[objIndex].properties[0] >= 0)
 						{
-							initiate_sequence(m_ls, m_ls->mapObjects[objIndex].properties[0], false);
+							Sequences::initiate(m_ls, m_ls->mapObjects[objIndex].properties[0], false);
 
 							//Set the switch's property to -1 since we've activated it
 							//In the future could have another property indicating whether

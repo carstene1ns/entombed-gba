@@ -4,7 +4,7 @@
 #include <tonc.h>
 
 #include "gameDefines.h"
-#include "globalvars.h"
+#include "main.h"
 #include "text.h"
 #include "fader.h"
 #include "posprintf.h"
@@ -13,7 +13,7 @@
 
 //implementation of member functions
 
-CHighScore::CHighScore() //Constructor
+CHighScore_Entry::CHighScore_Entry() //Constructor
 {
 	//Set initial member variables
 	m_keyDelayCount = 0;
@@ -23,7 +23,7 @@ CHighScore::CHighScore() //Constructor
 	m_nameEntered = false;
 }
 
-void CHighScore::Init()
+void CHighScore_Entry::Init()
 {
 	int ix, iy;
 	int n, m;
@@ -102,7 +102,7 @@ void CHighScore::Init()
 	g_fader->apply(FadeType::IN, 30);
 }
 
-int CHighScore::Update()
+int CHighScore_Entry::Update()
 {
 
 	int n;
@@ -236,7 +236,125 @@ int CHighScore::Update()
 	return 0;
 }
 
-int CHighScore::SaveScores()
+void CHighScore_Entry::Main()
+{
+	auto HighScore_Entry = std::make_unique<CHighScore_Entry>();
+	int done = 0;
+
+	VBlankIntrWait();
+
+	HighScore_Entry->Init();
+
+	while (!done)
+	{
+
+		//Update the high score entry screen, if the update routine returns true then the loop
+		//will end
+		if (HighScore_Entry->Update())
+		{
+			done = 1;
+		}
+	}
+
+	//Save the high scores
+	HighScores::Save();
+
+	//Set the game state to the title screen
+	g_GameState = GameState::TITLEBEGIN;
+}
+
+namespace HighScores
+{
+
+bool Load()
+{
+	int n, m;
+
+	//Start at byte position 5 in sram because the first byte of sram can sometimes
+	//become corrupted when powering on/off.
+
+	//Check for magic number
+	if ((*(u8*)(sram_mem + 4) != 'E') ||
+	    (*(u8*)(sram_mem + 5) != 'N') ||
+	    (*(u8*)(sram_mem + 6) != 'T') ||
+	    (*(u8*)(sram_mem + 7) != 'D'))
+	{
+		//Magic number not found, so set the high scores to default values and return.
+		Reset();
+
+		return false;
+	}
+
+	//If we got here then load place the SRAM data in the relevant places
+	//The high score data is saved in in SRAM in the following format: First there are
+	//the 10 Name values at 12 bytes each. After that there are the 10 score values at
+	//4 bytes each
+	u8 *src = sram_mem + 8;
+
+	//Load the names
+	for (n = 0; n < 10; n++)
+	{
+		for (m = 0; m < 12; m++)
+		{
+			g_highScores[n].name[m] = *src++;
+
+			//If the character is out of range for some reason(save corruption?), change it to a space.
+			if ((g_highScores[n].name[m] < 32) || (g_highScores[n].name[m] > 90))
+			{
+				g_highScores[n].name[m] = 32;
+			}
+		}
+	}
+
+	//Load the scores
+	for (n = 0; n < 10; n ++)
+	{
+		//Scores are 32 bit so bit shifting needed
+		g_highScores[n].score = 0;
+		g_highScores[n].score += (*src++ << 24);
+		g_highScores[n].score += (*src++ << 16);
+		g_highScores[n].score += (*src++ << 8);
+		g_highScores[n].score += *src++;
+
+		//If for some reason the score is out of range then put it back in range
+		if (g_highScores[n].score > 999999)
+		{
+			g_highScores[n].score = 999999;
+		}
+	}
+
+	return true;
+}
+
+void Reset()
+{
+	//Use default values
+	strcpy(g_highScores[0].name, "KING TUT-TUT");
+	g_highScores[0].score = 100000;
+	strcpy(g_highScores[1].name, "RUBBERTITI");
+	g_highScores[1].score = 90000;
+	strcpy(g_highScores[2].name, "INDY JONES");
+	g_highScores[2].score = 80000;
+	strcpy(g_highScores[3].name, "DOC PHIBES");
+	g_highScores[3].score = 70000;
+	strcpy(g_highScores[4].name, "PTEPIC");
+	g_highScores[4].score = 60000;
+	strcpy(g_highScores[5].name, "RICK O'BRIEN");
+	g_highScores[5].score = 50000;
+	strcpy(g_highScores[6].name, "ALAN PARSONS");
+	g_highScores[6].score = 40000;
+	strcpy(g_highScores[7].name, "ALBERT SPEER");
+	g_highScores[7].score = 30000;
+	strcpy(g_highScores[8].name, "DUB VULTURE");
+	g_highScores[8].score = 15000;
+	strcpy(g_highScores[9].name, "ZOB");
+	g_highScores[9].score = 5000;
+
+	//Overwrite sram
+	Save();
+}
+
+void Save()
 {
 	//Save the high score table to the sram
 	int n, m;
@@ -269,34 +387,6 @@ int CHighScore::SaveScores()
 		*dst++ = (u8)(g_highScores[n].score >> 8) & 0xff;
 		*dst++ = (u8)g_highScores[n].score & 0xff;
 	}
-
-	return 0;
 }
 
-int HighScoreMain(CHighScore* HighScore)
-{
-	int done = 0;
-
-	VBlankIntrWait();
-
-	HighScore->Init();
-
-	while (!done)
-	{
-
-		//Update the high score entry screen, if the update routine returns true then the loop
-		//will end
-		if (HighScore->Update())
-		{
-			done = 1;
-		}
-	}
-
-	//Save the high scores
-	HighScore->SaveScores();
-
-	//Set the game state to the title screen
-	g_GameState = GS_TITLEBEGIN;
-
-	return 0;
 }

@@ -40,15 +40,23 @@ public:
 	          int _alwaysOn, int _dataPos, bool _instant);
 	void Update();
 	void ReadChanges(bool finalise);
+
+protected:
+	CSequence() = default;
 };
 
+namespace Sequences
+{
+
 //Non-class function prototypes
-void initiate_sequence(T_LEVELSTATE *ls, int seqNum, bool instant);
-void update_sequences(T_LEVELSTATE *ls);
-void initiate_checkpoint_sequences(T_LEVELSTATE *ls);
-void initiate_always_on_sequences(T_LEVELSTATE *ls);
-void reset_sequences();
-void delay_sequences(int seconds);
-std::vector <CSequence> &getSequences();
+void initiate(T_LEVELSTATE *ls, int seqNum, bool instant);
+void update(T_LEVELSTATE *ls);
+void initiate_checkpoint(T_LEVELSTATE *ls);
+void initiate_always_on(T_LEVELSTATE *ls);
+void reset();
+void delay(int seconds);
+std::vector<CSequence> &get();
+
+}
 
 #endif

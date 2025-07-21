@@ -26,13 +26,21 @@ public:
 	CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _xMin, int _xMax,
 	          int _obj_index);
 	void Update();
+
+protected:
+	CPlatform() = default;
 };
 
+namespace Platforms
+{
+
 //Non-class function prototypes
-void add_visible_platform(T_LEVELSTATE *ls, int x, int y);
-void update_platforms(T_LEVELSTATE *ls);
-void scroll_platforms(int x, int y);
-void reset_platforms(T_LEVELSTATE *ls);
-std::vector <CPlatform> &getPlatforms();
+void add_visible(T_LEVELSTATE *ls, int x, int y);
+void update(T_LEVELSTATE *ls);
+void scroll(int x, int y);
+void reset(T_LEVELSTATE *ls);
+std::vector<CPlatform> &get();
+
+}
 
 #endif

@@ -1,10 +1,13 @@
+#ifndef MAIN_H
+#define MAIN_H
+
 #include <tonc.h>
 #include "gameDefines.h"
 
 /**********************************************************************************
  * Globals
  ********************************************************************************/
-extern int g_GameState; //The game initially begins at the title screen
+extern GameState g_GameState; //The game initially begins at the title screen
 extern int g_lives;
 extern unsigned int g_score; /*These must be set before the game starts and during the game so
                                they have to be global*/
@@ -15,3 +18,5 @@ extern THighScore g_highScores[10]; //List of high scores
 extern OBJ_ATTR g_obj_buffer[128]; /*Buffer to store OAM data for sprites,
                                      copied to OAM once per VBL*/
 extern std::unique_ptr<CFader>g_fader; //For fading the palette
+
+#endif /* MAIN_H */

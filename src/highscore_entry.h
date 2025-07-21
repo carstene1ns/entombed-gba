@@ -12,13 +12,8 @@
 #define FIRST_CHARACTER 32
 #define LAST_CHARACTER 90
 
-class CHighScore
+class CHighScore_Entry
 {
-private:
-	//Properties
-
-	//Member functions
-
 public:
 	//Properties
 	int m_highScorePosition;
@@ -28,16 +23,25 @@ public:
 	char m_enteredName[13];
 	bool m_nameEntered;
 
+	//Main loop for when at the high score entry screen
+	static void Main();
+
 	//member functions
 	//constructor
-	CHighScore();
+	CHighScore_Entry();
 	void Init(); //Initialises the high score entry screen
 	int Update(); //Updates the high score entry screen
-	int SaveScores();
 };
 
 //Non-class function prototypes
-//Main loop for when at the high score entry screen
-int HighScoreMain(CHighScore *HighScore);
+
+namespace HighScores
+{
+
+bool Load();
+void Reset();
+void Save();
+
+}
 
 #endif

@@ -5,7 +5,7 @@
 #include <tonc.h>
 
 #include "gameDefines.h" //Global game defines
-#include "globalvars.h"
+#include "main.h"
 #include "text.h"
 #include "fader.h"
 #include "posprintf.h"
@@ -305,16 +305,16 @@ void CMap::vp_set_pos(VIEWPORT *vp, int x, int y)
 	//sprites by the difference. This way they move with the scrolling map.
 	if ((oldX != vp->x) || (oldY != vp->y))
 	{
-		scroll_projectiles(vp->x - oldX, vp->y - oldY);
+		Projectiles::scroll(vp->x - oldX, vp->y - oldY);
 
 		//Scroll the enemies
-		scroll_enemies(vp->x - oldX, vp->y - oldY);
+		Enemies::scroll(vp->x - oldX, vp->y - oldY);
 
 		//Scroll the moving platforms
-		scroll_platforms(vp->x - oldX, vp->y - oldY);
+		Platforms::scroll(vp->x - oldX, vp->y - oldY);
 
 		//Scroll the moving blocks
-		scroll_blocks(vp->x - oldX, vp->y - oldY);
+		Blocks::scroll(vp->x - oldX, vp->y - oldY);
 	}
 }
 
@@ -1587,9 +1587,9 @@ void CMap::Teleport()
 	int ix, tx, ty;
 
 	//Get a reference to the in-range sprite vectors.
-	std::vector <CEnemy> &enemies = getEnemies();
-	std::vector <CPlatform> &platforms = getPlatforms();
-	std::vector <CBlock> &blocks = getBlocks();
+	std::vector<CEnemy> &enemies = Enemies::get();
+	std::vector<CPlatform> &platforms = Platforms::get();
+	std::vector<CBlock> &blocks = Blocks::get();
 
 	objIndex = LookupMapObject(m_ls, m_ls->teleporterTouched.x, m_ls->teleporterTouched.y, 1);
 	if (objIndex >= 0)

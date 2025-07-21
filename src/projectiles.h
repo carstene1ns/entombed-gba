@@ -27,14 +27,21 @@ public:
 	CProjectile(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _type, int _lifespan,
 	            int _weight);
 	void Update();
+
+protected:
+	CProjectile() = default;
 };
 
+namespace Projectiles
+{
+
 //Non-class function prototypes
-void add_projectile(T_LEVELSTATE *ls, int x, int y, int dx, int dy, int type, int lifespan,
-                    int _weight);
-void update_projectiles(T_LEVELSTATE *ls);
-void scroll_projectiles(int x, int y);
-void reset_projectiles(T_LEVELSTATE *ls);
-std::vector <CProjectile> &getProjectiles();
+void add(T_LEVELSTATE *ls, int x, int y, int dx, int dy, int type, int lifespan, int _weight);
+void update(T_LEVELSTATE *ls);
+void scroll(int x, int y);
+void reset(T_LEVELSTATE *ls);
+std::vector<CProjectile> &get();
+
+}
 
 #endif

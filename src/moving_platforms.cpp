@@ -6,9 +6,9 @@
 #include <vector>
 
 #include "gameDefines.h" //Global game defines
-#include "globalvars.h"
+#include "main.h"
 
-std::vector <CPlatform> platforms; //Visible moving platforms class instance vector
+static std::vector<CPlatform> platforms; //Visible moving platforms class instance vector
 
 CPlatform::CPlatform(T_LEVELSTATE* ls, FIXED _x, FIXED _y, FIXED _dx, FIXED _dy, int _xMin,
                      int _xMax, int _obj_index)
@@ -140,7 +140,10 @@ void CPlatform::Update()
 	}
 }
 
-void update_platforms(T_LEVELSTATE *ls)
+namespace Platforms
+{
+
+void update(T_LEVELSTATE *ls)
 {
 	int n;
 	int x, y;
@@ -209,7 +212,7 @@ void update_platforms(T_LEVELSTATE *ls)
 	}
 }
 
-void scroll_platforms(int x, int y)
+void scroll(int x, int y)
 {
 	//Update the moving platform positions by x and y, which will be got from map.cpp and is the amount
 	//the map scrolled on this vbl.
@@ -221,7 +224,7 @@ void scroll_platforms(int x, int y)
 	}
 }
 
-void reset_platforms(T_LEVELSTATE *ls)
+void reset(T_LEVELSTATE *ls)
 {
 	int n;
 
@@ -234,7 +237,9 @@ void reset_platforms(T_LEVELSTATE *ls)
 	}
 }
 
-std::vector <CPlatform> &getPlatforms()
+std::vector<CPlatform> &get()
 {
 	return platforms;
+}
+
 }

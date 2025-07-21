@@ -14,10 +14,10 @@
 
 //The blocks are sprites and will have type and starting dir properties,
 
-std::vector <CBlock> blocks; //Visible moving blocks class instance vector
+static std::vector<CBlock> blocks; //Visible moving blocks class instance vector
 
-CBlock::CBlock(T_LEVELSTATE* ls, FIXED _x, FIXED _y, int _type, int _startDir, int _lifespan,
-               int _movingDown, int _obj_index)
+CBlock::CBlock(T_LEVELSTATE* ls, FIXED _x, FIXED _y, BlockType _type, int _startDir,
+               int _lifespan, int _movingDown, int _obj_index)
 {
 	x = _x << 8;
 	y = _y << 8;
@@ -77,7 +77,7 @@ CBlock::CBlock(T_LEVELSTATE* ls, FIXED _x, FIXED _y, int _type, int _startDir, i
 	             ATTR1_SIZE_32,            // 32x16p
 	             ATTR2_PALBANK(0) |
 	             ATTR2_PRIO(2) |
-	             ATTR2_ID(SPRTILES_BLOCKS + (type * 8)));
+	             ATTR2_ID(SPRTILES_BLOCKS + (static_cast<int>(type) * 8)));
 
 	//Set object coords
 	obj_set_pos(obj, x >> 8, y >> 8);
@@ -125,7 +125,7 @@ void CBlock::Update()
 		tilePos.y = ((y >> 8) + m_ls->vp.y) / 16;
 
 		//Erase any fixture layer tiles if necessary
-		if (type == BLOCK_ROCK)
+		if (type == BlockType::ROCK)
 		{
 			//Rocks erase spikes and spears, which are tiles 5 to 9.
 			if ((m_ls->mapData[1][(tilePos.y * 80) + tilePos.x].tileIndex >= 5) &&
@@ -153,7 +153,7 @@ void CBlock::Update()
 				}
 			}
 		}
-		if (type == BLOCK_HOT)
+		if (type == BlockType::HOT)
 		{
 			//Hot blocks erase wooden platforms and ladders
 			if ((m_ls->mapData[1][(tilePos.y * 80) + tilePos.x].tileIndex == TILE_PLATFORM1) ||
@@ -188,18 +188,18 @@ void CBlock::Update()
 
 		//Change the block type if necessary if in fire/water
 		//Rock turns to hot in fire. Hot turns to wall1 in water. Cold turns to wall1 in fire.
-		if (type == BLOCK_ROCK)
+		if (type == BlockType::ROCK)
 		{
 			//See if the block entered a fire tile. Turns into hot block if it did.
 			if (((m_ls->mapData[1][((tilePos.y) * 80) + tilePos.x].tileIndex) == 1) ||
 			    ((m_ls->mapData[1][((tilePos.y) * 80) + tilePos.x].tileIndex) == 2))
 			{
 				//Change the block to the hot type
-				type = BLOCK_HOT;
+				type = BlockType::HOT;
 				BFN_SET(obj->attr2, SPRTILES_BLOCKS + (8 * 1), ATTR2_ID);
 			}
 		}
-		if (type == BLOCK_HOT)
+		if (type == BlockType::HOT)
 		{
 			//See if the block entered a water tile. Turns into wall1 if it did.
 			if (((m_ls->mapData[1][((tilePos.y) * 80) + tilePos.x].tileIndex) == 3) ||
@@ -222,7 +222,7 @@ void CBlock::Update()
 				m_ls->mapChangeCount++;
 			}
 		}
-		if (type == BLOCK_COLD)
+		if (type == BlockType::COLD)
 		{
 			//See if the block entered a fire tile. Turns into wall1 if it did.
 			if (((m_ls->mapData[1][((tilePos.y) * 80) + tilePos.x].tileIndex) == 1) ||
@@ -277,7 +277,7 @@ void CBlock::Update()
 			//collisions.
 
 			//Rock and cold blocks are blocked in downward direction by wooden platforms
-			if (type != BLOCK_HOT)
+			if (type != BlockType::HOT)
 			{
 				if (((m_ls->mapData[1][((tilePos.y + 1) * 80) + tilePos.x].tileIndex) == TILE_PLATFORM1)
 				    || ((m_ls->mapData[1][((tilePos.y + 1) * 80) + tilePos.x].tileIndex) == TILE_PLATFORM2))
@@ -286,7 +286,7 @@ void CBlock::Update()
 				}
 			}
 			//Hot and cold blocks are blocked by spikes/spears
-			if (type != BLOCK_ROCK)
+			if (type != BlockType::ROCK)
 			{
 				if (((m_ls->mapData[1][(tilePos.y * 80) + tilePos.x - 1].tileIndex) >= 5) &&
 				    ((m_ls->mapData[1][(tilePos.y * 80) + tilePos.x - 1].tileIndex) <= 9))
@@ -421,7 +421,10 @@ void CBlock::Update()
 	obj_set_pos(obj, x >> 8, y >> 8);
 }
 
-void update_blocks(T_LEVELSTATE *ls)
+namespace Blocks
+{
+
+void update(T_LEVELSTATE *ls)
 {
 	int n;
 	int x, y;
@@ -450,7 +453,7 @@ void update_blocks(T_LEVELSTATE *ls)
 					//The initial movement value is obnly used if the block went out of range and
 					//then came back in range. It uses the spare property variable [3] and stores.
 					//the block's last movement in the lats 2 bits.
-					blocks.push_back(CBlock(ls, x, y, ls->mapSprites[n].properties[0],
+					blocks.push_back(CBlock(ls, x, y, static_cast<BlockType>(ls->mapSprites[n].properties[0]),
 					                        ls->mapSprites[n].properties[1], ls->mapSprites[n].properties[2],
 					                        ls->mapSprites[n].properties[3], n));
 					ls->mapSprites[n].visible = true;
@@ -481,7 +484,7 @@ void update_blocks(T_LEVELSTATE *ls)
 	}
 }
 
-void scroll_blocks(int x, int y)
+void scroll(int x, int y)
 {
 	//Update the moving block positions by x and y, which will be got from map.cpp and is the amount
 	//the map scrolled on this vbl.
@@ -493,7 +496,7 @@ void scroll_blocks(int x, int y)
 	}
 }
 
-void reset_blocks(T_LEVELSTATE *ls)
+void reset(T_LEVELSTATE *ls)
 {
 	int n;
 
@@ -506,7 +509,9 @@ void reset_blocks(T_LEVELSTATE *ls)
 	}
 }
 
-std::vector <CBlock> &getBlocks()
+std::vector <CBlock> &get()
 {
 	return blocks;
+}
+
 }

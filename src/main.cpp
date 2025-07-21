@@ -24,7 +24,7 @@
  * Globals
  ********************************************************************************/
 bool g_NewFrame = true;
-int g_GameState = GS_TITLEBEGIN; //The game initially begins at the title screen
+GameState g_GameState = GameState::TITLEBEGIN; //The game initially begins at the title screen
 int g_lives;          //These must be set before the game starts and during the game so
 unsigned int g_score; //they have to be global
 bool g_cheatEnabled[4] = {false, false, false, false};
@@ -40,12 +40,6 @@ std::unique_ptr<CFader> g_fader; //For fading the palette
 int main(void)
 {
 	int n;
-
-	//Declare class instances
-	CTitle* Title; //Title sequence class instance
-	CHighScore *HighScore; //High score entry screen class
-	CLevelSelector* LevelSelector; //Level selector class instance
-	CLevel* Level; //Game level class instance
 
 	//Set the palettes
 	memcpy16(pal_bg_mem, pal_bg, pal_bg_size / 2);
@@ -86,7 +80,7 @@ int main(void)
 	oam_init(g_obj_buffer, 128);
 
 	//Try to load the high score data from SRAM
-	n = LoadScores();
+	HighScores::Load();
 
 	//Set the display register
 	REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_BG1 | DCNT_BG2 | DCNT_OBJ | DCNT_OBJ_1D;
@@ -97,145 +91,41 @@ int main(void)
 		//**********Main game structure here*******
 		switch (g_GameState) //Check the global game state
 		{
-			case GS_TITLEBEGIN:
-				//Initialize the title screen class
-				Title = new CTitle;
-
+			case GameState::TITLEBEGIN:
 				//Change the game state to GS_WAIT
-				g_GameState = GS_WAIT;
+				g_GameState = GameState::WAIT;
 
 				//Run the titlescreen main loop
-				TitleMain(Title, g_highScores);
-
-				//Delete the title class instance
-				delete Title;
+				CTitle::Main();
 				break;
 
-			case GS_LEVELSELECT:
-				//Initialize the level selector class
-				LevelSelector = new CLevelSelector;
-
+			case GameState::LEVELSELECT:
 				//Change the game state to GS_WAIT
-				g_GameState = GS_WAIT;
+				g_GameState = GameState::WAIT;
 
 				//Run the level selector main loop
-				LevelSelectorMain(LevelSelector);
-
-				//Delete the level selector class instance
-				delete LevelSelector;
+				CLevelSelector::Main();
 				break;
 
-			case GS_LEVELBEGIN:
-				//Initialize the level class
-				Level = new CLevel;
-
+			case GameState::LEVELBEGIN:
 				//Change the game state to GS_WAIT
-				g_GameState = GS_WAIT;
+				g_GameState = GameState::WAIT;
 
 				//Run the game main loop
-				LevelMain(Level, g_currentLevel);
-
-				//Delete the level class instance
-				delete Level;
+				CLevel::Main(g_currentLevel);
 				break;
 
-			case GS_ENTERHIGHSCORE:
-				//Initialize the highscore entry class
-				HighScore = new CHighScore;
-
+			case GameState::ENTERHIGHSCORE:
 				//Change the game state to GS_WAIT
-				g_GameState = GS_WAIT;
+				g_GameState = GameState::WAIT;
 
 				//Run the highscore entry main loop
-				HighScoreMain(HighScore);
-
-				//Delete the highscore entry class instance
-				delete HighScore;
+				CHighScore_Entry::Main();
 				break;
 
-			case GS_WAIT:
+			case GameState::WAIT:
 				//Dummy state. Should never actually be reached.
 				break;
-		}
-	}
-
-	return 0;
-}
-
-int LoadScores()
-{
-	int n, m;
-	u8 *src;
-
-	//Start at byte position 5 in sram because the first byte of sram can sometimes
-	//become corrupted when powering on/off.
-
-	//Check for magic number
-	if ((*(u8*)(sram_mem + 4) != 'E') ||
-	    (*(u8*)(sram_mem + 5) != 'N') ||
-	    (*(u8*)(sram_mem + 6) != 'T') ||
-	    (*(u8*)(sram_mem + 7) != 'D'))
-	{
-		//Magic number not found, so set the high scores to default values and return.
-		strcpy(g_highScores[0].name, "KING TUT-TUT");
-		g_highScores[0].score = 100000;
-		strcpy(g_highScores[1].name, "RUBBERTITI");
-		g_highScores[1].score = 90000;
-		strcpy(g_highScores[2].name, "INDY JONES");
-		g_highScores[2].score = 80000;
-		strcpy(g_highScores[3].name, "DOC PHIBES");
-		g_highScores[3].score = 70000;
-		strcpy(g_highScores[4].name, "PTEPIC");
-		g_highScores[4].score = 60000;
-		strcpy(g_highScores[5].name, "RICK O'BRIEN");
-		g_highScores[5].score = 50000;
-		strcpy(g_highScores[6].name, "ALAN PARSONS");
-		g_highScores[6].score = 40000;
-		strcpy(g_highScores[7].name, "ALBERT SPEER");
-		g_highScores[7].score = 30000;
-		strcpy(g_highScores[8].name, "DUB VULTURE");
-		g_highScores[8].score = 15000;
-		strcpy(g_highScores[9].name, "ZOB");
-		g_highScores[9].score = 5000;
-
-		return 1;
-	}
-
-	//If we got here then load place the SRAM data in the relevant places
-	//The high score data is saved in in SRAM in the following format: First there are
-	//the 10 Name values at 12 bytes each. After that there are the 10 score values at
-	//4 bytes each
-	src = sram_mem + 8;
-
-	//Load the names
-	for (n = 0; n < 10; n++)
-	{
-		for (m = 0; m < 12; m++)
-		{
-			g_highScores[n].name[m] = *src++;
-
-			//If the character is out of range for some reason(save corruption?), change it to a space.
-			if ((g_highScores[n].name[m] < 32) || (g_highScores[n].name[m] > 90))
-			{
-				g_highScores[n].name[m] = 32;
-			}
-		}
-	}
-
-	//Load the scores
-	for (n = 0; n < 10; n ++)
-	{
-		//Scores are 32 bit so bit shifting needed
-		g_highScores[n].score = 0;
-		g_highScores[n].score += (*src++ << 24);
-		g_highScores[n].score += (*src++ << 16);
-		g_highScores[n].score += (*src++ << 8);
-		g_highScores[n].score += *src++;
-
-		//If for some reason the score is out of range then put it back in range
-		if (g_highScores[n].score > 999999)
-		{
-			g_highScores[n].score = 999999;
 		}
 	}
 

@@ -6,9 +6,12 @@
 #include "gameDefines.h" //Global game defines
 
 //Defines
-#define BLOCK_ROCK 0
-#define BLOCK_HOT 1
-#define BLOCK_COLD 2
+enum class BlockType
+{
+	ROCK = 0,
+	HOT,
+	COLD
+};
 
 //Class definition for the moving blocks class
 class CBlock
@@ -22,7 +25,7 @@ public:
 	FIXED x, y;
 	FIXED dx, dy;
 	int lastXDir; //The block's previous horizontal direction. 0=left, 1=right.
-	int type;
+	BlockType type;
 	int lifespan; //frames before it disappears after initial movement.
 	int lifespanCounter;
 	int oam_index;
@@ -30,16 +33,24 @@ public:
 	int obj_index; //A reference to the object in the mapSprites array
 
 	//constructor
-	CBlock(T_LEVELSTATE* ls, FIXED _x, FIXED _y, int _type, int _startDir, int _lifespan,
-	       int _movingDown, int _obj_index);
+	CBlock(T_LEVELSTATE* ls, FIXED _x, FIXED _y, BlockType _type, int _startDir,
+	       int _lifespan, int _movingDown, int _obj_index);
 	void Update();
+
+protected:
+	CBlock() = default;
 };
 
+namespace Blocks
+{
+
 //Non-class function prototypes
-void add_visible_block(T_LEVELSTATE *ls, int x, int y);
-void update_blocks(T_LEVELSTATE *ls);
-void scroll_blocks(int x, int y);
-void reset_blocks(T_LEVELSTATE *ls);
-std::vector <CBlock> &getBlocks();
+void add_visible(T_LEVELSTATE *ls, int x, int y);
+void update(T_LEVELSTATE *ls);
+void scroll(int x, int y);
+void reset(T_LEVELSTATE *ls);
+std::vector<CBlock> &get();
+
+}
 
 #endif

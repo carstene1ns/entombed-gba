@@ -4,7 +4,8 @@
 #include <tonc.h>
 
 #include "gameDefines.h"
-#include "globalvars.h"
+#include "main.h"
+#include "highscore_entry.h"
 #include "text.h"
 #include "fader.h"
 #include "posprintf.h"
@@ -34,7 +35,6 @@ CTitle::CTitle() //Constructor
 	m_scrollCounter = 0;
 	m_nextLine = 0;
 	m_scrollPos = 0;
-	m_highScores = 0;
 	blankLine = "";
 	m_spriteCount = 0;
 	m_selectHeldFrames = 0; //Frames that select is held for. Used for
@@ -282,7 +282,7 @@ void CTitle::UpdateTitleScreen()
 			txt_puts(72, 16, "TOMB TONKERS");
 			for (n = 0; n < 10; n++)
 			{
-				posprintf(tempStr, "%06l......%s", m_highScores[n].score, m_highScores[n].name);
+				posprintf(tempStr, "%06l......%s", g_highScores[n].score, g_highScores[n].name);
 				txt_puts(24, 48 + (n * 8), tempStr);
 			}
 
@@ -473,7 +473,7 @@ void CTitle::UpdateScoreResetScreen()
 	if (key_hit(KEY_R))
 	{
 		//Reset the high scores and return to the title screen
-		ResetScores();
+		HighScores::Reset();
 		g_fader->apply(FadeType::OUT, 25);
 		m_titleBarAppeared = false;
 		m_animDone = false;
@@ -485,15 +485,16 @@ void CTitle::UpdateScoreResetScreen()
 	}
 }
 
-int TitleMain(CTitle* Title, THighScore* highScores)
+void CTitle::Main()
 {
+	auto Title = std::make_unique<CTitle>();
+
 	int n = 0;
 	int done = 0;
 
 	mmFrame();
 	VBlankIntrWait();
 
-	Title->m_highScores = highScores;
 	Title->Init();
 
 	while (!done)
@@ -537,10 +538,8 @@ int TitleMain(CTitle* Title, THighScore* highScores)
 	if (Title->m_gameStarted == true)
 	{
 		//Set the game state to the level selector
-		g_GameState = GS_LEVELSELECT;
+		g_GameState = GameState::LEVELSELECT;
 	}
-
-	return 0;
 }
 
 void CTitle::InitHelpText()
@@ -656,63 +655,5 @@ void CTitle::CheatTest()
 		{
 			m_cheatModePos = 0;
 		}
-	}
-}
-
-void CTitle::ResetScores()
-{
-	//I'm recycling code from main.cpp and highscore_entry.cpp to reset
-	//and save the high scores.
-	int n, m;
-
-	strcpy(g_highScores[0].name, "KING TUT-TUT");
-	g_highScores[0].score = 100000;
-	strcpy(g_highScores[1].name, "RUBBERTITI");
-	g_highScores[1].score = 90000;
-	strcpy(g_highScores[2].name, "INDY JONES");
-	g_highScores[2].score = 80000;
-	strcpy(g_highScores[3].name, "DOC PHIBES");
-	g_highScores[3].score = 70000;
-	strcpy(g_highScores[4].name, "PTEPIC");
-	g_highScores[4].score = 60000;
-	strcpy(g_highScores[5].name, "RICK O'BRIEN");
-	g_highScores[5].score = 50000;
-	strcpy(g_highScores[6].name, "ALAN PARSONS");
-	g_highScores[6].score = 40000;
-	strcpy(g_highScores[7].name, "ALBERT SPEER");
-	g_highScores[7].score = 30000;
-	strcpy(g_highScores[8].name, "DUB VULTURE");
-	g_highScores[8].score = 15000;
-	strcpy(g_highScores[9].name, "ZOB");
-	g_highScores[9].score = 5000;
-
-	//Save the high score table to the sram
-	//Start at byte position 5 in sram because the first byte of sram can sometimes
-	//become corrupted when powering on/off.
-	u8 *dst = sram_mem + 4;
-
-	//First write the magic number
-	*dst++ = 'E';
-	*dst++ = 'N';
-	*dst++ = 'T';
-	*dst++ = 'D';
-
-	//Write the names
-	for (n = 0; n < 10; n++)
-	{
-		for (m = 0; m < 12; m++)
-		{
-			*dst++ = g_highScores[n].name[m];
-		}
-	}
-
-	//Write the scores
-	//Type is unsigned integer so bit shifting is needed
-	for (n = 0; n < 10; n++)
-	{
-		*dst++ = (u8)(g_highScores[n].score >> 24) & 0xff;
-		*dst++ = (u8)(g_highScores[n].score >> 16) & 0xff;
-		*dst++ = (u8)(g_highScores[n].score >> 8) & 0xff;
-		*dst++ = (u8)g_highScores[n].score & 0xff;
 	}
 }
