@@ -21,9 +21,11 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
+          # quickfix backports EOL
+          rm /etc/apt/sources.list.d/bullseye-backports.list
           sudo apt-get update -qq
           sudo apt-get install -yqq ninja-build
-          # quickfix
+          # quickfix broken option
           sudo sed "s/GRIT_NO_PAL)/GRIT_NO_PALETTE)/" -i ${DEVKITPRO}/cmake/dkp-gba-ds-utils.cmake
 
       - name: Checkout
