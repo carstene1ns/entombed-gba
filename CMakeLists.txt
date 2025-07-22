@@ -54,7 +54,7 @@ add_executable(entombed
 	src/sequences.h
 	src/sfx.cpp
 	src/sfx.h
-	src/text.c
+	src/text.cpp
 	src/text.h
 	src/title.cpp
 	src/title.h)
@@ -192,7 +192,6 @@ if(ASTYLE_EXECUTABLE)
 		COMMAND ${ASTYLE_EXECUTABLE} ${ASTYLE_OPTIONS}
 			"${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
 			"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-			"${CMAKE_CURRENT_SOURCE_DIR}/src/*.c"
 		COMMENT "Applying source code format..." VERBATIM)
 else()
 	add_custom_target(source-format

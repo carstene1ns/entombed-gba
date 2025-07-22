@@ -149,9 +149,7 @@ void CLevel::Init()
 
 void CLevel::Update()
 {
-	int ix;
-
-	if (g_levelState.game_paused == false)
+	if (!g_levelState.game_paused)
 	{
 		//If a teleport was touched, fade the screen call the teleport
 		//procedure and let the program know we need to fade in again.
@@ -204,7 +202,7 @@ void CLevel::Update()
 		oam_copy(oam_mem, g_obj_buffer, MAX_SPRITES);
 
 		//Fade the palette in from black during the first level update
-		if (m_fadedIn == false)
+		if (!m_fadedIn)
 		{
 			m_fadedIn = true;
 			//Fade into the level palette data
@@ -212,7 +210,7 @@ void CLevel::Update()
 		}
 
 		//Fade the palette in from black after a teleport
-		if (m_teleported == true)
+		if (m_teleported)
 		{
 			m_teleported = false;
 			//Fade into the level palette data
@@ -227,51 +225,34 @@ void CLevel::Update()
 		//Display pause menu
 		txt_puts(96, 80, "PAUSED");
 		//Display cheat text if cheats enabled
-		if (g_cheatEnabled[0] == true)
+		if (g_cheatEnabled[0])
 		{
+			txt_clear_rect(96, 72, 112, 8);
 			switch (m_cheatSelected)
 			{
 				case 0: //Lives
-					if (g_cheatEnabled[1] == false)
-					{
-						txt_puts(96, 72, "INF LIVES OFF");
-					}
-					else
-					{
-						txt_puts(96, 72, "INF LIVES ON ");
-					}
+					txt_puts(96, 72, "Inf Lifes: ");
+					txt_write(g_cheatEnabled[1] ? "On" : "Off");
 					break;
 				case 1:
-					txt_puts(96, 72, "ADD BOW      ");
+					txt_puts(96, 72, "Add Bow");
 					break;
 				case 2:
-					txt_puts(96, 72, "ADD ARROW    ");
+					txt_puts(96, 72, "Add Arrow");
 					break;
 				case 3:
-					txt_puts(96, 72, "ADD KEY      ");
+					txt_puts(96, 72, "Add Key");
 					break;
 				case 4:
-					txt_puts(96, 72, "ADD SECOND   ");
+					txt_puts(96, 72, "Add Second");
 					break;
 				case 5: //Big jumps
-					if (g_cheatEnabled[2] == false)
-					{
-						txt_puts(96, 72, "BIG JUMPS OFF");
-					}
-					else
-					{
-						txt_puts(96, 72, "BIG JUMPS ON ");
-					}
+					txt_puts(96, 72, "Big Jumps: ");
+					txt_write(g_cheatEnabled[2] ? "On" : "Off");
 					break;
 				case 6:
-					if (g_cheatEnabled[3] == false)
-					{
-						txt_puts(96, 72, "NO HIT OFF   ");
-					}
-					else
-					{
-						txt_puts(96, 72, "NO HIT ON    ");
-					}
+					txt_puts(96, 72, "No Hit: ");
+					txt_write(g_cheatEnabled[3] ? "On" : "Off");
 					break;
 			}
 		}
@@ -287,17 +268,13 @@ void CLevel::Update()
 				//Set the level state to life lost.
 				g_levelState.levelStatus = LevelStatus::LIFE_LOST;
 			}
-			//Set the pause menu text to transparent characters
-			for (ix = 96; ix <= 200; ix += 8)
-			{
-				txt_putc(ix, 72, (111 + 32)); //Cheat text
-				txt_putc(ix, 80, (111 + 32)); //Paused text
-			}
+			//Clear the pause menu text
+			txt_clear_rect(96, 72, 112, 16);
 			//Reset the looking down mode in case B was held when pausing.
 			Player->m_lookingDown = false;
 			g_levelState.game_paused = false;
 		}
-		if ((key_hit(KEY_L)) && (g_cheatEnabled[0] == true))
+		if ((key_hit(KEY_L)) && (g_cheatEnabled[0]))
 		{
 			//Move to the next cheat
 			m_cheatSelected++;
@@ -306,13 +283,12 @@ void CLevel::Update()
 				m_cheatSelected = 0;
 			}
 		}
-		if ((key_hit(KEY_R)) && (g_cheatEnabled[0] == true))
+		if ((key_hit(KEY_R)) && (g_cheatEnabled[0]))
 		{
 			switch (m_cheatSelected)
 			{
 				case 0: //Lives
-					g_cheatEnabled[1] == false ? g_cheatEnabled[1] = true
-					    : g_cheatEnabled[1] = false;
+					g_cheatEnabled[1] = !g_cheatEnabled[1];
 					break;
 				case 1: //Add Bow
 					if (g_levelState.bows < 5)
@@ -339,12 +315,10 @@ void CLevel::Update()
 					}
 					break;
 				case 5: //Big jumps
-					g_cheatEnabled[2] == false ? g_cheatEnabled[2] = true
-					    : g_cheatEnabled[2] = false;
+					g_cheatEnabled[2] = !g_cheatEnabled[2];
 					break;
 				case 6: //No hit (enemy/spikes/fire/water/bullets don't kill)
-					g_cheatEnabled[3] == false ? g_cheatEnabled[3] = true
-					    : g_cheatEnabled[3] = false;
+					g_cheatEnabled[3] = !g_cheatEnabled[3];
 					break;
 			}
 		}
@@ -448,7 +422,7 @@ void CLevel::Main(int mapNum)
 
 			case LevelStatus::LIFE_LOST:
 				//Reduce the player's lives if the cheat is disabled
-				if (g_cheatEnabled[1] == false)
+				if (!g_cheatEnabled[1])
 				{
 					g_lives -= 1;
 				}
@@ -542,7 +516,7 @@ void CLevel::Main(int mapNum)
 		}
 
 		//Check if the game was ended
-		if (Level->m_levelEnded == true)
+		if (Level->m_levelEnded)
 		{
 			//I'll check if we lost all lives or we completed the level
 			//If all lives are lost then we'll check for a high score.

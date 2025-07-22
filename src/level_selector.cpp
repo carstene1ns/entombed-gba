@@ -14,6 +14,70 @@
 
 //Declarations
 
+static const char* level5_text =
+    R"( So This Is The Tomb You Want
+          To Die In
+
+Tomb 5: The Tomb of B'Stard
+The tomb that put the
+'Aaargh!'  into  architecture,
+this  underground  pyramid and
+associated rooms of certain -
+or at  least  highly  likely -
+death  is a delight  for those
+lucky enough  not to be in it.
+Tomb Trivia: This building was
+the  winner  of  the 1873 B.C.
+Ideal Tomb Exhibition.
+Hints:  Rocks  destroy spikes,
+hot bricks  burn  through wood
+and  cool down  in water, cool
+bricks heat up in fire.
+Spikes obstruct hot and cold
+bricks.)";
+
+static const char* end_text[2] =
+{
+	R"(   EXTREMELY WELL DONE!!!!!
+ (Or as the Ancient Egyptians
+ would have put it, 'Y JMMY
+ SD!'
+
+So, you've battled your way
+through five levels so
+cunning you could cleave
+coconuts with them and what do
+you get for your efforts? Just
+two pages of text.
+
+Ah well, that's life. You put
+fifty quid in a fruit machine
+and all you get is a yellow
+plastic token. And yellow
+isn't even your favourite
+colour.
+
+          NEXT PAGE)",
+	R"(
+  It's at times like this when
+I'm sure we can all appreciate
+that old Egyptian saying: 'The
+man who sleeps in a stone
+pryamid may get a sore back,
+but at least his razor will be
+sharp in the morning.'
+
+Anyroad, onto the high-score
+table now - and hey, lets keep
+it clean. NC)"
+};
+
+static bool all_levels_completed()
+{
+	return (g_completedLevels[0] && g_completedLevels[1] && g_completedLevels[2]
+	        && g_completedLevels[3]);
+}
+
 //implementation of member functions
 
 CLevelSelector::CLevelSelector() //Constructor
@@ -24,12 +88,10 @@ CLevelSelector::CLevelSelector() //Constructor
 	m_selectPos = 0;
 	m_page = 0;
 	m_endScreenPage = 0;
-
 }
 
 void CLevelSelector::Init()
 {
-
 	//Cancel any sounds that are playing
 	mmEffectCancelAll();
 
@@ -39,7 +101,7 @@ void CLevelSelector::Init()
 	//If level 5 is not completed yet, show the level selector
 	//otherwise we'll be showing the ending screen instead.
 
-	if (g_completedLevels[4] == false)
+	if (!g_completedLevels[4])
 	{
 		//Init but hide the sprites
 		//Down arrow
@@ -79,14 +141,13 @@ void CLevelSelector::Update()
 
 		//If levels 1-4 are not all completed then show them and allow the
 		//user to select levels.
-		if ((g_completedLevels[0] == false) || (g_completedLevels[1] == false) ||
-		    (g_completedLevels[2] == false) || (g_completedLevels[3] == false))
+		if (!all_levels_completed())
 		{
 			if ((key_is_down(KEY_A)) || (key_is_down(KEY_B)) || (key_hit(KEY_START)))
 			{
 				//Exit the while loop if this level has not already
 				//been completed
-				if (g_completedLevels[m_selectPos] == false)
+				if (!g_completedLevels[m_selectPos])
 				{
 					done = 1;
 				}
@@ -150,7 +211,7 @@ void CLevelSelector::Update()
 				//If level 5 is not yet completed, begin that level.
 				//Otherwise we're at the end screen and we'll check for
 				//a high score or go to the title screen.
-				if (g_completedLevels[4] == false)
+				if (!g_completedLevels[4])
 				{
 					//Set the selected level
 					m_selectedLevel = 4;
@@ -215,7 +276,7 @@ void CLevelSelector::Main()
 		{
 			//If level 5 is completed, we'll be returning to the
 			//high score table or the title after this.
-			if (g_completedLevels[4] == false)
+			if (!g_completedLevels[4])
 			{
 				g_currentLevel = LevelSelector->m_selectedLevel;
 			}
@@ -228,7 +289,7 @@ void CLevelSelector::Main()
 	//Begin the selected level. If selected level is -1 then that means
 	//we completed all 5 levels and we'll be going to the high score
 	//table or the title screen.
-	if ((LevelSelector->m_selectedLevel >= 0) && (g_completedLevels[4] == false))
+	if ((LevelSelector->m_selectedLevel >= 0) && (!g_completedLevels[4]))
 	{
 		//Set the game state to begin the selected level
 		g_GameState = GameState::LEVELBEGIN;
@@ -246,45 +307,44 @@ void CLevelSelector::InitLevelText()
 	m_levelText.clear();
 
 	//If first 4 levels are not complete, show the text for those
-	if ((g_completedLevels[0] == false) || (g_completedLevels[1] == false) ||
-	    (g_completedLevels[2] == false) || (g_completedLevels[3] == false))
+	if (!all_levels_completed())
 	{
 		//Level 1
-		tempText.lines[0] = "Tomb 1:                    ";
-		tempText.lines[1] = "The tomb Of Hrxmyoply II   ";
-		tempText.lines[2] = "This tomb is an early      ";
-		tempText.lines[3] = "design and is best         ";
-		tempText.lines[4] = "described as 'tame'.       ";
+		tempText.lines[0] = "Tomb 1:";
+		tempText.lines[1] = "The tomb Of Hrxmyoply II";
+		tempText.lines[2] = "This tomb is an early";
+		tempText.lines[3] = "design and is best";
+		tempText.lines[4] = "described as 'tame'.";
 		m_levelText.push_back(tempText);
 		//Level 2
-		tempText.lines[0] = "Tomb 2:                    ";
-		tempText.lines[1] = "The Tomb Of Bathsheba      ";
-		tempText.lines[2] = "A Tomb which contains some ";
-		tempText.lines[3] = "lovely Ancient Egyptian    ";
-		tempText.lines[4] = "plumbing.                  ";
+		tempText.lines[0] = "Tomb 2:";
+		tempText.lines[1] = "The Tomb Of Bathsheba";
+		tempText.lines[2] = "A Tomb which contains some";
+		tempText.lines[3] = "lovely Ancient Egyptian";
+		tempText.lines[4] = "plumbing.";
 		m_levelText.push_back(tempText);
 		//Level 3
-		tempText.lines[0] = "Tomb 3:                    ";
-		tempText.lines[1] = "The Tomb Of Skewr          ";
-		tempText.lines[2] = "Festooned with lots of     ";
-		tempText.lines[3] = "pointy bits, impaling for  ";
-		tempText.lines[4] = "the use of.                ";
+		tempText.lines[0] = "Tomb 3:";
+		tempText.lines[1] = "The Tomb Of Skewr";
+		tempText.lines[2] = "Festooned with lots of";
+		tempText.lines[3] = "pointy bits, impaling for";
+		tempText.lines[4] = "the use of.";
 		m_levelText.push_back(tempText);
 		//Level 4
-		tempText.lines[0] = "Tomb 4:                    ";
-		tempText.lines[1] = "The Tomb Of Nazti          ";
+		tempText.lines[0] = "Tomb 4:";
+		tempText.lines[1] = "The Tomb Of Nazti";
 		tempText.lines[2] = "Almost as much fun as being";
-		tempText.lines[3] = "bitten by an asp, but not  ";
-		tempText.lines[4] = "quite.                     ";
+		tempText.lines[3] = "bitten by an asp, but not";
+		tempText.lines[4] = "quite.";
 		m_levelText.push_back(tempText);
 		//Level 5 (When cheat mode enabled)
-		if (g_cheatEnabled[0] == true)
+		if (g_cheatEnabled[0])
 		{
-			tempText.lines[0] = "Tomb 5:                    ";
-			tempText.lines[1] = "                           ";
-			tempText.lines[2] = "                           ";
-			tempText.lines[3] = "                           ";
-			tempText.lines[4] = "                           ";
+			tempText.lines[0] = "Tomb 5:";
+			tempText.lines[1] = "The tomb of the Cheaters";
+			tempText.lines[2] = "";
+			tempText.lines[3] = "Well, maybe you are just";
+			tempText.lines[4] = "debugging like me... :)";
 			m_levelText.push_back(tempText);
 		}
 	}
@@ -295,24 +355,15 @@ void CLevelSelector::DisplayLevels()
 
 	u32 n, m;
 	int x;
-	int ix, iy;
 	std::vector<TLevelText>::iterator it;
 
-	//Set all text layer tiles to black (space characters)
-	for (iy = 0; iy < 256; iy += 8)
-	{
-		for (ix = 0; ix < 256; ix += 8)
-		{
-			txt_putc(ix, iy, 32); //Space(Black)
-		}
-	}
+	txt_clear_screen();
 
 	//Show level 1 to 4 if they're not all completed
-	if ((g_completedLevels[0] == false) || (g_completedLevels[1] == false) ||
-	    (g_completedLevels[2] == false) || (g_completedLevels[3] == false))
+	if (!all_levels_completed())
 	{
-		txt_puts(0, 0, "   Select The Tomb You Want   ");
-		txt_puts(0, 8, "          To Die In           ");
+		txt_puts(24, 0, "Select The Tomb You Want");
+		txt_puts(80, 8, "To Die In");
 
 		//Display the current "page" of levels. A page is
 		//a set of 3 levels. I do it this way to allow for
@@ -327,7 +378,7 @@ void CLevelSelector::DisplayLevels()
 			{
 				//Display regular text if the level is not yet complete, or
 				//faded text if it is complete.
-				if (g_completedLevels[n] == false)
+				if (!g_completedLevels[n])
 				{
 					txt_puts(24, 24 + ((n % 3) * 48) + (x * 8), it->lines[x]);
 				}
@@ -371,75 +422,12 @@ void CLevelSelector::DisplayLevels()
 	else
 	{
 		//Show level 5 text only
-		txt_puts(0, 0,   " So This Is The Tomb You Want ");
-		txt_puts(0, 8,   "          To Die In           ");
-		txt_puts(0, 16,  "                              ");
-		txt_puts(0, 24,  "Tomb 5: The Tomb of B'Stard   ");
-		txt_puts(0, 32,  "The tomb that put the         ");
-		txt_puts(0, 40,  "'Aaargh!'  into  architecture,");
-		txt_puts(0, 48,  "this  underground  pyramid and");
-		txt_puts(0, 56,  "associated rooms of certain - ");
-		txt_puts(0, 64,  "or at  least  highly  likely -");
-		txt_puts(0, 72,  "death  is a delight  for those");
-		txt_puts(0, 80,  "lucky enough  not to be in it.");
-		txt_puts(0, 88,  "Tomb Trivia: This building was");
-		txt_puts(0, 96,  "the  winner  of  the 1873 B.C.");
-		txt_puts(0, 104, "Ideal Tomb Exhibition.        ");
-		txt_puts(0, 112, "Hints:  Rocks  destroy spikes,");
-		txt_puts(0, 120, "hot bricks  burn  through wood");
-		txt_puts(0, 128, "and  cool down  in water, cool");
-		txt_puts(0, 136, "bricks heat up in fire.       ");
-		txt_puts(0, 144, "Spikes obstruct hot and cold  ");
-		txt_puts(0, 152, "bricks.                       ");
+		txt_puts(0, 0, level5_text);
 	}
 }
 
 void CLevelSelector::ShowEndScreen(int page)
 {
-	if (page == 0)
-	{
-		txt_puts(0, 0,   "   EXTREMELY WELL DONE!!!!!   ");
-		txt_puts(0, 8,   " (Or as the Ancient Egyptians ");
-		txt_puts(0, 16,  " would have put it, 'Y JMMY   ");
-		txt_puts(0, 24,  " SD!')                        ");
-		txt_puts(0, 32,  "                              ");
-		txt_puts(0, 40,  "So, you've battled your way   ");
-		txt_puts(0, 48,  "through five levels so        ");
-		txt_puts(0, 56,  "cunning you could cleave      ");
-		txt_puts(0, 64,  "coconuts with them and what do");
-		txt_puts(0, 72,  "you get for your efforts? Just");
-		txt_puts(0, 80,  "two pages of text.            ");
-		txt_puts(0, 88,  "                              ");
-		txt_puts(0, 96,  "Ah well, that's life. You put ");
-		txt_puts(0, 104, "fifty quid in a fruit machine ");
-		txt_puts(0, 112, "and all you get is a yellow   ");
-		txt_puts(0, 120, "plastic token. And yellow     ");
-		txt_puts(0, 128, "isn't even your favourite     ");
-		txt_puts(0, 136, "colour.                       ");
-		txt_puts(0, 144, "                              ");
-		txt_puts(0, 152, "          NEXT PAGE           ");
-	}
-	else
-	{
-		txt_puts(0, 0,   "                              ");
-		txt_puts(0, 8,   "  It's at times like this when");
-		txt_puts(0, 16,  "I'm sure we can all appreciate");
-		txt_puts(0, 24,  "that old Egyptian saying: 'The");
-		txt_puts(0, 32,  "man who sleeps in a stone     ");
-		txt_puts(0, 40,  "pryamid may get a sore back,  ");
-		txt_puts(0, 48,  "but at least his razor will be");
-		txt_puts(0, 56,  "sharp in the morning.'        ");
-		txt_puts(0, 64,  "                              ");
-		txt_puts(0, 72,  "Anyroad, onto the high-score  ");
-		txt_puts(0, 80,  "table now - and hey, lets keep");
-		txt_puts(0, 88,  "it clean. NC");
-		txt_puts(0, 96,  "                              ");
-		txt_puts(0, 104, "                              ");
-		txt_puts(0, 112, "                              ");
-		txt_puts(0, 120, "                              ");
-		txt_puts(0, 128, "                              ");
-		txt_puts(0, 136, "                              ");
-		txt_puts(0, 144, "                              ");
-		txt_puts(0, 152, "                              ");
-	}
+	txt_clear_screen();
+	txt_puts(0, 0, end_text[page]);
 }

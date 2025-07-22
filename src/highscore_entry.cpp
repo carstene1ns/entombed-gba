@@ -11,6 +11,11 @@
 
 //Declarations
 
+static const char* instructions_text =
+    R"(Left/Right: Change character.
+A:Add letter, B:Del letter
+Start: Accept name.)";
+
 //implementation of member functions
 
 CHighScore_Entry::CHighScore_Entry() //Constructor
@@ -25,7 +30,6 @@ CHighScore_Entry::CHighScore_Entry() //Constructor
 
 void CHighScore_Entry::Init()
 {
-	int ix, iy;
 	int n, m;
 	char tempStr[25];
 
@@ -67,14 +71,7 @@ void CHighScore_Entry::Init()
 	m_selectedLetter = 65; //'A'
 	m_nameEntered = false;
 
-	//Set all text layer tiles to black (space characters)
-	for (iy = 0; iy < 256; iy += 8)
-	{
-		for (ix = 0; ix < 256; ix += 8)
-		{
-			txt_putc(ix, iy, 32); //Space(Black)
-		}
-	}
+	txt_clear_screen();
 
 	//***Show the scores***
 	txt_puts(72, 16, "TOMB TONKERS");
@@ -94,9 +91,9 @@ void CHighScore_Entry::Init()
 	}
 
 	//Print the high score entry instructions at the bottom
-	txt_puts(8, 136, "Left/Right: Change character.");
-	txt_puts(8, 144, "A:Add letter, B:Del letter");
-	txt_puts(8, 152, "Start: Accept name.");
+	txt_margin_left(8);
+	txt_puts(8, 136, instructions_text);
+	txt_default_margins();
 
 	//Fade in
 	g_fader->apply(FadeType::IN, 30);

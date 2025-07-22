@@ -43,14 +43,12 @@ CPlayer::CPlayer()
 
 void CPlayer::Init(T_LEVELSTATE *ls)
 {
-	OBJ_ATTR *obj = &g_obj_buffer[0];
-
 	//Load the player sprite palette and tiles
 	/*Use CBB (Character Base Block) 4 for the sprites. We'll put the player
 	  tiles in from the first tile. ([4][0]). The player graphics have 512 tiles*/
 	LZ77UnCompVram(spr_player_gfx, tile_mem[4]);
 
-	obj_set_attr(obj,
+	obj_set_attr(&g_obj_buffer[m_obj_id],
 	             ATTR0_SQUARE |              // Square, regular sprite
 	             ATTR0_4BPP |                //16 colours
 	             ATTR0_MODE(0),              //Un-hide the sprite
@@ -119,7 +117,7 @@ void CPlayer::player_input()
 	//We can't move while firing an arrow on the ground
 	if ((key_is_down(KEY_RIGHT)) && (m_state != PLAYER_STATE_FIRING))
 	{
-		if ((m_blockedDirs[1] == 0) && (m_blockedByDoor[1] == false))
+		if ((m_blockedDirs[1] == 0) && (!m_blockedByDoor[1]))
 		{
 			m_vx = PLAYER_SPEED;
 		}
@@ -138,7 +136,7 @@ void CPlayer::player_input()
 	//We can't move while firing an arrow on the ground
 	else if (key_is_down(KEY_LEFT) && (m_state != PLAYER_STATE_FIRING))
 	{
-		if ((m_blockedDirs[0] == 0)  && (m_blockedByDoor[0] == false))
+		if ((m_blockedDirs[0] == 0)  && (!m_blockedByDoor[0]))
 		{
 			m_vx = -PLAYER_SPEED;
 		}
@@ -157,7 +155,7 @@ void CPlayer::player_input()
 	if (key_is_down(KEY_DOWN) && (m_state != PLAYER_STATE_FIRING))
 	{
 		//First check if there's a ladder behind us
-		if (m_touchingLadder == true)
+		if (m_touchingLadder)
 		{
 			//Set status to climbing if we're not already in that state
 			if (m_state != PLAYER_STATE_CLIMB)
@@ -176,8 +174,8 @@ void CPlayer::player_input()
 	{
 		//Check if there's a ladder behind us. Also check for cheat mode.
 		//With the big jumps cheat enabled, holding B while jumping will ignore ladders.
-		if ((m_touchingLadder == true) && ((g_cheatEnabled[2] == false) || (g_cheatEnabled[2]
-		                                   && key_is_down(KEY_B) == false)))
+		if ((m_touchingLadder) && ((!g_cheatEnabled[2]) || (g_cheatEnabled[2]
+		                           && !key_is_down(KEY_B))))
 		{
 			//If above is not blocked AND a top collision point is touching the ladder
 			//then add some upwards velocity
@@ -213,7 +211,7 @@ void CPlayer::player_input()
 				m_jumpCounter = 24;
 			}
 			//If the jump cheat is on, increment jump counter
-			if (g_cheatEnabled[2] == true)
+			if (g_cheatEnabled[2])
 			{
 				m_jumpCounter++;
 			}
@@ -231,7 +229,7 @@ void CPlayer::player_input()
 			m_ls->arrows--;
 
 			//Update the arrows display
-			txt_putc(64 + (m_ls->arrows * 8), 152, 32); //32 = Space tile
+			txt_putc(64 + (m_ls->arrows * 8), 152, HUD_TILE_EMPTY);
 
 			//Set player state to firing
 			player_set_state(PLAYER_STATE_FIRING);
@@ -349,7 +347,7 @@ void CPlayer::player_move()
 		{
 			//Check if we were climbing, but are no longer touching a ladder OR if we
 			//were climbing and are now stood on the ground
-			if (((m_state == PLAYER_STATE_CLIMB) && (m_touchingLadder == false))
+			if (((m_state == PLAYER_STATE_CLIMB) && (!m_touchingLadder))
 			    || ((m_state == PLAYER_STATE_CLIMB) && (m_blockedDirs[3] == 1)))
 			{
 				//Set state to standing
@@ -441,7 +439,7 @@ void CPlayer::player_move()
 
 		//If we're in the process of looking down or reverting from looking down
 		//See if the player y position relative to the map y position is greater than the max
-		if ((m_lookingDown == true) && (((m_ls->playerPos.y >> 8) - m_ls->vp.y) >= (80 - LOOK_DOWN_MAX)))
+		if ((m_lookingDown) && (((m_ls->playerPos.y >> 8) - m_ls->vp.y) >= (80 - LOOK_DOWN_MAX)))
 		{
 			//Make sure we're not already at the bottom of the map view. (768 map height - 160 screen height - 32 for bottom bar - 1)
 			if (m_ls->vp.y < 623)
@@ -450,7 +448,7 @@ void CPlayer::player_move()
 				m_lookDownCounter++;
 			}
 		}
-		if ((m_lookingDown == false) && (m_lookDownCounter > 0)
+		if ((!m_lookingDown) && (m_lookDownCounter > 0)
 		    && (((m_ls->playerPos.y >> 8) - m_ls->vp.y) < 80))
 		{
 			m_ls->mapOffset.y -= LOOK_DOWN_SPEED;
@@ -1077,7 +1075,7 @@ void CPlayer::player_test_collisions()
 				//This bullet intersects the player's bounding box so set the player
 				//state to dying and deactivate the bullet.
 				//Ignore if no hit cheat is on
-				if (g_cheatEnabled[3] == false)
+				if (!g_cheatEnabled[3])
 				{
 					player_set_state(PLAYER_STATE_DYING);
 					m_jumpCounter = 24;
@@ -1092,7 +1090,7 @@ void CPlayer::player_test_collisions()
 	for (const auto& enemy : enemies)
 	{
 		//Make sure the enemy is not in the process of dying
-		if (enemy.isDying == false)
+		if (!enemy.isDying)
 		{
 			//See if the enemy's bounding box intersects the player's bounding box.
 			//If so then set the player state to dying.
@@ -1108,7 +1106,7 @@ void CPlayer::player_test_collisions()
 				//This enemy intersects the player's bounding box so set the player
 				//state to dying.
 				//Ignore if no hit cheat is on
-				if (g_cheatEnabled[3] == false)
+				if (!g_cheatEnabled[3])
 				{
 					player_set_state(PLAYER_STATE_DYING);
 					m_jumpCounter = 24;
@@ -1133,7 +1131,7 @@ void CPlayer::player_test_collisions()
 			//This block intersects the player's bounding box so set the player
 			//state to dying.
 			//Ignore if no hit cheat is on
-			if (g_cheatEnabled[3] == false)
+			if (!g_cheatEnabled[3])
 			{
 				player_set_state(PLAYER_STATE_DYING);
 				m_jumpCounter = 24;
@@ -1187,7 +1185,7 @@ void CPlayer::ProcessLayer2Collisions()
 		{
 			//Kill the player
 			//Ignore if no hit cheat is on
-			if (g_cheatEnabled[3] == false)
+			if (!g_cheatEnabled[3])
 			{
 				player_set_state(PLAYER_STATE_DYING);
 				m_jumpCounter = 24;
@@ -1520,7 +1518,7 @@ void CPlayer::ProcessLayer2Collisions()
 							m_ls->keys--;
 
 							//Update the keys display
-							txt_putc(144 + (m_ls->keys * 8), 144, 32); //Space tile
+							txt_putc(144 + (m_ls->keys * 8), 144, HUD_TILE_EMPTY);
 						}
 					}
 					break;
@@ -1583,7 +1581,7 @@ void CPlayer::ProcessLayer2Collisions()
 							mmEffect(SFX_DOOR);
 
 							//Update the keys display
-							txt_putc(144 + (m_ls->keys * 8), 144, 32); //Space tile
+							txt_putc(144 + (m_ls->keys * 8), 144, HUD_TILE_EMPTY);
 						}
 						else //Otherwise the door blocks the player
 						{

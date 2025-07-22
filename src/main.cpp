@@ -29,7 +29,7 @@ int g_lives;          //These must be set before the game starts and during the 
 unsigned int g_score; //they have to be global
 bool g_cheatEnabled[4] = {false, false, false, false};
 int g_currentLevel; //The level number currently being played
-bool g_completedLevels[5]; //Lets the game know which levels have been completed.
+bool g_completedLevels[5] = {false, false, false, false, false}; //Lets the game know which levels have been completed.
 THighScore g_highScores[10]; //List of high scores
 OBJ_ATTR g_obj_buffer[128]; // Buffer to store OAM data for sprites, copied to OAM once per VBL
 std::unique_ptr<CFader> g_fader; //For fading the palette
@@ -48,9 +48,9 @@ int main(void)
 	//Set the palettes
 	memcpy16(pal_bg_mem, pal_bg, pal_bg_size / 2);
 	memcpy16(pal_obj_mem, pal_oam, pal_oam_size / 2);
-	memcpy16(pal_bg_mem + 240, pal_font, pal_font_size / 2); //Palbank 15
-	//Initialise the text system (background 0, SBB 26, prio 0)
-	txt_init(0, 26, 0); //Text
+	memcpy16(pal_bg_bank[15], pal_font, pal_font_size / 2);
+	//Initialise the text system (background 0, SBB 26)
+	txt_init(BGNO_TEXT, 26);
 
 	u16 m_palBuffer[512];
 	//Save a copy of the palette in m_paletteBuffer
@@ -61,16 +61,6 @@ int main(void)
 		*(Dest++) = *(Src++);
 	}
 	g_fader = std::make_unique<CFader>(m_palBuffer);
-
-	//Reset the completed levels global array
-	//TODO: In the future allow for more levels
-	//perhaps have a total levels value passed
-	//from the map and use a vector of bools for
-	//completed levels.
-	for (n = 0; n < 5; n++)
-	{
-		g_completedLevels[n] = false;
-	}
 
 	//Start VBL Interrupt
 	irq_init(NULL);
@@ -135,5 +125,3 @@ int main(void)
 
 	return 0;
 }
-
-/* END OF FILE */

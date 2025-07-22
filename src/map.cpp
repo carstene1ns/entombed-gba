@@ -28,7 +28,8 @@
 #include "objPropertiesLUT.h" //Lookup table for object property counts
 
 //Mapping table for wall tile data
-static const void *tilemap_walls_gfx[5] = {
+static const void* tilemap_walls_gfx[5] =
+{
 	tilemap_walls1_gfx,
 	tilemap_walls2_gfx,
 	tilemap_walls3_gfx,
@@ -73,9 +74,6 @@ void CMap::Init(T_LEVELSTATE *ls)
 	LZ77UnCompVram(tilemap_walls_gfx[m_ls->wallTiles], tile_mem[0]);
 	LZ77UnCompVram(tilemap_fixtures_gfx, tile_mem[1]);
 
-	//Initialise the text system (background 0, SBB 26, prio 0)
-	txt_init(0, 26, 0); //Text
-
 	//Set the hourglass digit oam data, but set to hidden. We can do this because
 	//these sprites will never change position and can have the tile and hidden
 	//status changed when needed
@@ -87,6 +85,7 @@ void CMap::Init(T_LEVELSTATE *ls)
 	             ATTR0_SQUARE | ATTR0_4BPP | ATTR0_HIDE, ATTR1_SIZE_16, ATTR2_PALBANK(0)
 	             | ATTR2_PRIO(0) | ATTR2_ID(SPRTILES_DIGITS)); //Digit 0, hidden
 	obj_set_pos(&g_obj_buffer[HOURGLASS_DIGIT_OAM + 1], 40, 128);
+	obj_hide(&g_obj_buffer[URN_OAM]);
 }
 
 void CMap::Update()
@@ -101,32 +100,10 @@ void CMap::Update()
 	posprintf(m_str, "%06l", g_score);
 	txt_puts(8, 144, m_str);
 
-	//Display lives
-	for (i = 0; i < g_lives; i++)
-	{
-		txt_putc(8 + (i * 8), 152, 96 + 32); //Life tile
-	}
-
-	//Display bows
-	for (i = 0; i < m_ls->bows; i++)
-	{
-		txt_putc(80 + (i * 8), 144, 97 + 32); //Bow tile
-	}
-
-	//Clear the whole arrow area (I could change this in future to clear a single
-	//arrow character upon firing the bow)
-	//txt_puts(64, 152, "          ");
-	//Display arrows
-	for (i = 0; i < m_ls->arrows; i++)
-	{
-		txt_putc(64 + (i * 8), 152, 98 + 32); //Arrow tile
-	}
-
-	//Display keys
-	for (i = 0; i < m_ls->keys; i++)
-	{
-		txt_putc(144 + (i * 8), 144, 99 + 32); //Key tile
-	}
+	txt_fillc(8, 152, HUD_TILE_LIFE, g_lives); //Display lives
+	txt_fillc(80, 144, HUD_TILE_BOW, m_ls->bows); //Display bows
+	txt_fillc(64, 152, HUD_TILE_ARROW, m_ls->arrows); //Display arrows
+	txt_fillc(144, 144, HUD_TILE_KEY, m_ls->keys); //Display keys
 
 	//Display selected/total seconds
 	posprintf(m_str, "%02d/%02d", m_ls->selectedSeconds, m_ls->seconds);
@@ -501,7 +478,6 @@ void CMap::bgt_colcpy(BGTYPE *bgt, int tx, int ty)
 	getGBATiles(tx, ty, 1, 32, bgt->layer);
 
 	for (iy = y0; iy < 32; iy++)
-
 	{
 		*dstL = *srcL++;
 		dstL += 32;
@@ -548,7 +524,6 @@ void CMap::bgt_update(BGTYPE *bgt, VIEWPORT *vp)
 	// Basically, we need another row/col when the viewport
 	// exposes another row/col, i.e., if the tile coords
 	// have changed
-
 	if (tvx < tbx)		// add on left
 		bgt_colcpy(bgt, tvx, tvy);
 	else if (tvx > tbx)	// add on right
@@ -608,8 +583,8 @@ void CMap::bgt_animate()
 				    ((BFN_GET(dst[(iy * 32) + ix], SE_ID) >= layer2tileLUT[31]) &&
 				     (BFN_GET(dst[(iy * 32) + ix], SE_ID) < layer2tileLUT[31] + 32)))
 				{
-					//If m_tileAnimFrame is above 0 then add 8 to the tile, otherwise
-					//subtract 24
+					//If m_tileAnimFrame is above 0 then advance tile, otherwise
+					//go back 3 tiles
 					if (m_tileAnimFrame > 0)
 					{
 						dst[(iy * 32) + ix] += 8;
@@ -883,9 +858,6 @@ void CMap::CalculateShadows(int left, int top, int width, int height)
 
 void CMap::ResetMap()
 {
-	int n;
-	int ix, iy;
-
 	m_ls->vp.x = m_ls->playerPos.x >> 8; //Start position(Get from map data)
 	m_ls->vp.y = m_ls->playerPos.y >> 8; //Start position(Get from map data)
 	m_ls->mapChangeCount = 0; //No map tile changes yet
@@ -900,7 +872,7 @@ void CMap::ResetMap()
 	m_urnHitPoints = 0;
 
 	//Reset the erased tile array for any tiles erased by moving blocks. (Just set types to 0/0
-	for (n = 0; n < 20; n++)
+	for (int n = 0; n < 20; n++)
 	{
 		m_ls->erasedTiles->type = 0;
 	}
@@ -909,10 +881,10 @@ void CMap::ResetMap()
 	vp_center(&m_ls->vp, m_ls->playerPos.x >> 8, m_ls->playerPos.y >> 8);
 
 	//Setup the wall and fixture layer tiles
-	bgt_init(&m_ls->bg[0], 1, BG_CBB(0) | BG_SBB(29) | BG_PRIO(3), map_layer0,
-	         80, 48, 0); //Layer 0
-	bgt_init(&m_ls->bg[1], 2, BG_CBB(1) | BG_SBB(27) | BG_PRIO(2), map_layer1,
-	         80, 48, 1); //Layer 1
+	bgt_init(&m_ls->bg[0], BGNO_MAP_BG, BG_CBB(0) | BG_SBB(29) | BG_PRIO(3), map_layer0, 80, 48,
+	         0); //Layer 0
+	bgt_init(&m_ls->bg[1], BGNO_MAP_FG, BG_CBB(1) | BG_SBB(27) | BG_PRIO(2), map_layer1, 80, 48,
+	         1); //Layer 1
 
 	//Calculate the initial map shadows
 	//We can ignore the blocks at the very edge of the map
@@ -957,37 +929,22 @@ void CMap::ResetMap()
 	}
 
 	//Draw the map tiles on the GBA screen
-	int tx, ty;
-
 	//Get the tile position, which is the viewpoint coords shifted right by 3,
 	//equivalent to dividing by 8
-	tx = m_ls->vp.x >> 3;
-	ty = m_ls->vp.y >> 3;
+	int tx = m_ls->vp.x >> 3;
+	int ty = m_ls->vp.y >> 3;
 
 	//Draw the whole screen by calling the bgt_colcpy function 32 times. It's easier
 	//doing it this way because the scroll offsets and stuff are taken care of for you
-	for (ix = tx; ix < tx + 32 ; ix++)
+	for (int ix = tx; ix < tx + 32; ix++)
 	{
 		bgt_colcpy(&m_ls->bg[0], ix, ty);
 		bgt_colcpy(&m_ls->bg[1], ix, ty);
 	}
 
-	//Draw the black border using the text background
-	//First set all to transparent
-	for (iy = 0; iy < 256; iy += 8)
-	{
-		for (ix = 0; ix < 256; ix += 8)
-		{
-			txt_putc(ix, iy, (111 + 32)); //Transparent block
-		}
-	}
-	for (iy = 144; iy < 153; iy += 8)
-	{
-		for (ix = 0; ix < 256; ix += 8)
-		{
-			txt_putc(ix, iy, 32); //Space(Black)
-		}
-	}
+	//Draw the bottom black border using the text background (2 rows)
+	txt_clear_screen();
+	txt_fillc(0, SCREEN_HEIGHT - 16, HUD_TILE_EMPTY, 60);
 }
 
 void CMap::LoadLayer1Properties()

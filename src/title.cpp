@@ -16,6 +16,16 @@
 
 //Declarations
 
+static const char* author_text =
+    R"(  (c) 1991 Nick Concannon
+Conversion 2015 Stephen Earl
+ Additions 2025 carstene1ns)";
+
+static const char* reset_highscore_text =
+    R"(DO YOU WANT TO RESET THE
+HIGH SCORES?
+L - NO           R - YES)";
+
 //implementation of member functions
 
 CTitle::CTitle() //Constructor
@@ -37,8 +47,8 @@ CTitle::CTitle() //Constructor
 	m_scrollPos = 0;
 	blankLine = "";
 	m_spriteCount = 0;
-	m_selectHeldFrames = 0; //Frames that select is held for. Used for
-	//resetting the high score table.
+	m_selectHeldFrames = 0; /*Frames that select is held for. Used for
+	                          resetting the high score table.*/
 
 	//Cheat sequence array (UUDDLRLR)
 	m_cheatModeSeq[0] = 0;
@@ -63,7 +73,7 @@ void CTitle::Init()
 
 void CTitle::Update()
 {
-	int n, ix, iy;
+	int n;
 
 	//Check input
 	key_poll();
@@ -106,22 +116,16 @@ void CTitle::Update()
 				}
 				oam_copy(oam_mem, g_obj_buffer, 18);
 
-				//Set all text layer tiles to black (space characters)
-				for (iy = 0; iy < 256; iy += 8)
-				{
-					for (ix = 0; ix < 256; ix += 8)
-					{
-						txt_putc(ix, iy, 32); //Space(Black)
-					}
-				}
 				//Set scroll position to initial values
 				REG_BG_OFS[0].x = 0;
 				REG_BG_OFS[0].y = 9;
 
+				txt_clear_screen();
+
 				//Display the reset scores text
-				txt_puts(16, 64, "DO YOU WANT TO RESET THE");
-				txt_puts(16, 72, "HIGH SCORES?");
-				txt_puts(16, 88, "L - NO           R - YES");
+				txt_margin_left(16);
+				txt_puts(16, 64, reset_highscore_text);
+				txt_default_margins();
 
 				m_titleSection = SECTION_RESET_SCORES;
 			}
@@ -155,23 +159,16 @@ void CTitle::Update()
 
 void CTitle::UpdateTitleScreen()
 {
-	int n, ix, iy;
+	int n;
 	char tempStr[25];
 
 	//Fades from black with bar near top of screen.
-	if (m_titleBarAppeared == false)
+	if (!m_titleBarAppeared)
 	{
 		//reset palette
 		g_fader->clear();
 
-		//Set all text layer tiles to black (space characters)
-		for (iy = 0; iy < 256; iy += 8)
-		{
-			for (ix = 0; ix < 256; ix += 8)
-			{
-				txt_putc(ix, iy, 32); //Space(Black)
-			}
-		}
+		txt_clear_screen();
 
 		//Place the title underline sprites on the screen
 		obj_set_attr(&g_obj_buffer[0], ATTR0_SQUARE | ATTR0_4BPP | ATTR0_MODE(0), ATTR1_SIZE_32,
@@ -213,7 +210,7 @@ void CTitle::UpdateTitleScreen()
 		title_dy = TITLE_FALL_SPEED;
 	}
 
-	if ((m_titleBarAppeared = true) && (!m_animDone) && (m_waitTime == 0))
+	if ((m_titleBarAppeared) && (!m_animDone) && (m_waitTime == 0))
 	{
 		title_dy += title_ay;
 		title_y += title_dy;
@@ -245,8 +242,10 @@ void CTitle::UpdateTitleScreen()
 				obj_set_pos(&g_obj_buffer[17], 104, 94);
 
 				//Write the text at the bottom
-				txt_puts(24, 136, "(c) 1991 Nick Concannon");
-				txt_puts(8, 144, "Conversion 2015 Stephen Earl");
+				txt_margin_left(8);
+				txt_puts(8, 136, author_text);
+				txt_default_margins();
+
 				m_waitTime = 300;
 			}
 		}
@@ -275,8 +274,7 @@ void CTitle::UpdateTitleScreen()
 			oam_copy(oam_mem, g_obj_buffer, 18);
 
 			//Blank out the text from the title screen
-			txt_puts(24, 136, "                       ");
-			txt_puts(8, 144, "                            ");
+			txt_clear_rect(8, 136, 224, 24);
 
 			//***Setup the high score screen***
 			txt_puts(72, 16, "TOMB TONKERS");
@@ -298,7 +296,6 @@ void CTitle::UpdateTitleScreen()
 void CTitle::UpdateHighScoreScreen()
 {
 	int n;
-	int ix, iy;
 	if (m_waitTime > 0)
 	{
 		//Decrement the wait timer
@@ -309,14 +306,8 @@ void CTitle::UpdateHighScoreScreen()
 		//Fade out and setup the help screen
 		g_fader->apply(FadeType::OUT, 30);
 
-		//Set all text layer tiles to black (space characters)
-		for (iy = 0; iy < 256; iy += 8)
-		{
-			for (ix = 0; ix < 256; ix += 8)
-			{
-				txt_putc(ix, iy, 32); //Space(Black)
-			}
-		}
+		// Clear whole text background
+		txt_clear_bg();
 
 		//Set scroll position to initial values
 		REG_BG_OFS[0].x = 0;
@@ -329,9 +320,9 @@ void CTitle::UpdateHighScoreScreen()
 		}
 
 		//Place the initial sprites
-		PlaceSprite(0, 12, 8, 56); //Bow
-		PlaceSprite(1, 13, 8, 120); //Quiver
-		PlaceSprite(2, 14, 8, 152); //Key
+		PlaceSprite(0, TITLE_SPRITE_BOW, 8, 56);
+		PlaceSprite(1, TITLE_SPRITE_QUIVER, 8, 120);
+		PlaceSprite(2, TITLE_SPRITE_KEY, 8, 152);
 		oam_copy(oam_mem, g_obj_buffer, 3);
 
 		//Fade in
@@ -363,17 +354,15 @@ void CTitle::UpdateHelpScreen()
 		{
 			if (m_scrollPos % 8 == 0)
 			{
+				n = m_scrollPos % 264;
+
+				//Clear the line
+				txt_clear_rect(40, n - 8, 184, 8);
+
 				if (m_nextLine <= 59)
 				{
 					//Add the next line to the screenblock, if lines are available
-					//Add a blank line first
-					txt_puts(40, (m_scrollPos % 264) -8, blankLine);
-					txt_puts(40, (m_scrollPos % 264) -8, helpText[m_nextLine]);
-				}
-				else
-				{
-					//Add a blank line to the screenblock
-					txt_puts(40, (m_scrollPos % 264) -8, blankLine);
+					txt_puts(40, n - 8, helpText[m_nextLine]);
 				}
 				m_nextLine++;
 			}
@@ -399,7 +388,8 @@ void CTitle::UpdateHelpScreen()
 					{
 						oam_copy(&g_obj_buffer[m], &g_obj_buffer[m + 1], 1);
 					}
-					g_obj_buffer[m_spriteCount - 1].attr0 |= ATTR0_HIDE;
+					// and hide the last sprite
+					obj_hide(&g_obj_buffer[m_spriteCount - 1]);
 				}
 				m_spriteCount--;
 			}
@@ -413,30 +403,30 @@ void CTitle::UpdateHelpScreen()
 			switch (m_scrollPos)
 			{
 				case 40:
-					PlaceSprite(m_spriteCount, 15, 8, 160); //Coin
+					PlaceSprite(m_spriteCount, TITLE_SPRITE_COIN, 8, 160);
 					m_spriteCount++;
 					break;
 				case 72:
-					PlaceSprite(m_spriteCount, 16, 8, 160); //Hourglass
+					PlaceSprite(m_spriteCount, TITLE_SPRITE_HOURGLASS, 8, 160);
 					m_spriteCount++;
 					break;
 				case 128:
-					PlaceSprite(m_spriteCount, 17, 8, 160); //Chest
+					PlaceSprite(m_spriteCount, TITLE_SPRITE_CHEST, 8, 160);
 					m_spriteCount++;
 					break;
 				case 168:
-					PlaceSprite(m_spriteCount, 18, 8, 160); //Urn
+					PlaceSprite(m_spriteCount, TITLE_SPRITE_URN, 8, 160);
 					m_spriteCount++;
 					break;
 				case 224:
-					PlaceSprite(m_spriteCount, 19, 8, 160); //Ankh
+					PlaceSprite(m_spriteCount, TITLE_SPRITE_ANKH, 8, 160);
 					m_spriteCount++;
 					break;
 			}
 		}
 		else
 		{
-			//Return to the tilte screen
+			//Return to the title screen
 			g_fader->apply(FadeType::OUT, 25);
 			m_titleBarAppeared = false;
 			m_animDone = false;
@@ -459,7 +449,7 @@ void CTitle::UpdateScoreResetScreen()
 
 	if (key_hit(KEY_L))
 	{
-		//Return to the tilte screen
+		//Return to the title screen
 		g_fader->apply(FadeType::OUT, 25);
 		m_titleBarAppeared = false;
 		m_animDone = false;
@@ -489,7 +479,6 @@ void CTitle::Main()
 {
 	auto Title = std::make_unique<CTitle>();
 
-	int n = 0;
 	int done = 0;
 
 	mmFrame();
@@ -504,13 +493,13 @@ void CTitle::Main()
 		Title->Update();
 
 		//Check if the game was started
-		if (Title->m_gameStarted == true)
+		if (Title->m_gameStarted)
 		{
 
 			//Set global variables, 6 lives and 5 levels.
 			g_lives = 6;
 			g_score = 0;
-			for (n = 0; n < 5; n++)
+			for (int n = 0; n < 5; n++)
 			{
 				g_completedLevels[n] = false;
 			}
@@ -522,10 +511,7 @@ void CTitle::Main()
 			REG_BG_OFS[0].y = 0;
 
 			//Hide all sprites
-			for (n = 0; n < MAX_SPRITES; n++)
-			{
-				obj_hide(&g_obj_buffer[n]);
-			}
+			obj_hide_multi(g_obj_buffer, MAX_SPRITES);
 			mmFrame();
 			VBlankIntrWait();
 			oam_copy(oam_mem, g_obj_buffer, MAX_SPRITES);
@@ -535,7 +521,7 @@ void CTitle::Main()
 		}
 	}
 
-	if (Title->m_gameStarted == true)
+	if (Title->m_gameStarted)
 	{
 		//Set the game state to the level selector
 		g_GameState = GameState::LEVELSELECT;
@@ -546,67 +532,58 @@ void CTitle::InitHelpText()
 {
 	//Slightly modified from the original
 	//text to fit on the GBA screen.
-	blankLine    = "                       ";
-	helpText[0]  = blankLine;
-	helpText[1] = blankLine;
+	for (int i = 0; i < 60; i++)
+	{
+		helpText[i] = blankLine;
+	}
+
 	helpText[2]  = "TREASURES OF THE TOMBS ";
-	helpText[3]  = blankLine;
-	helpText[4] = blankLine;
-	helpText[5] = blankLine;
-	helpText[6] = blankLine;
-	helpText[7]  = " Bow:                  ";
+
+	helpText[7]  = " Bow:";
 	helpText[8]  = "  Collect  these so you";
 	helpText[9]  = "  can fire  arrows. The";
 	helpText[10] = "  more   bows collected";
 	helpText[11] = "  the greater your shot";
-	helpText[12] = "  power.               ";
-	helpText[13] = blankLine;
-	helpText[14] = blankLine;
-	helpText[15] = " Quiver:               ";
-	helpText[16] = "  Contains arrows.     ";
-	helpText[17] = blankLine;
-	helpText[18] = blankLine;
-	helpText[19] = " Key:                  ";
+	helpText[12] = "  power.";
+
+	helpText[15] = " Quiver:";
+	helpText[16] = "  Contains arrows.";
+
+	helpText[19] = " Key:";
 	helpText[20] = "  For  unlocking  doors";
-	helpText[21] = "  and chests.          ";
-	helpText[22] = blankLine;
-	helpText[23] = blankLine;
-	helpText[24] = "Gold coin:             ";
+	helpText[21] = "  and chests.";
+
+	helpText[24] = "Gold coin:";
 	helpText[25] = "  Collect  for  points.";
-	helpText[26] = blankLine;
-	helpText[27] = blankLine;
-	helpText[28] = " Hourglass:            ";
+
+	helpText[28] = " Hourglass:";
 	helpText[29] = "  Provides  you  with a";
 	helpText[30] = "  few seconds that  you";
 	helpText[31] = "  can use to delay tomb";
-	helpText[32] = "  changes.             ";
-	helpText[33] = blankLine;
-	helpText[34] = blankLine;
-	helpText[35] = " Chest:                ";
+	helpText[32] = "  changes.";
+
+	helpText[35] = " Chest:";
 	helpText[36] = "  May contain something";
-	helpText[37] = "  of use.              ";
-	helpText[38] = blankLine;
-	helpText[39] = blankLine;
-	helpText[40] = " Urn:                  ";
+	helpText[37] = "  of use.";
+
+	helpText[40] = " Urn:";
 	helpText[41] = "  Fire  arrows at these";
 	helpText[42] = "  to break  them  open.";
 	helpText[43] = "  May contain something";
-	helpText[44] = "  nice or nasty.       ";
-	helpText[45] = blankLine;
-	helpText[46] = blankLine;
-	helpText[47] = " Ankh:                 ";
-	helpText[48] = "  Extra life.          ";
-	helpText[49] = blankLine;
-	helpText[50] = blankLine;
-	helpText[51] = "CONTROLS:              ";
-	helpText[52] = "D-Pad: Move/Climb/Jump.";
-	helpText[53] = "A: Shoot arrow         ";
-	helpText[54] = "B: Look down           ";
-	helpText[55] = "L: Select hourglass    ";
-	helpText[56] = "   seconds.            ";
-	helpText[57] = "R: Use hourglass       ";
-	helpText[58] = "   Seconds.            ";
-	helpText[59] = "Start: Pause/Unpause   ";
+	helpText[44] = "  nice or nasty.";
+
+	helpText[47] = " Ankh:";
+	helpText[48] = "  Extra life.";
+
+	helpText[51] = "CONTROLS:";
+	helpText[52] = "D-Pad: Move/Climb/Jump";
+	helpText[53] = "A: Shoot arrow";
+	helpText[54] = "B: Look down";
+	helpText[55] = "L: Select hourglass";
+	helpText[56] = "   seconds.";
+	helpText[57] = "R: Use hourglass";
+	helpText[58] = "   Seconds.";
+	helpText[59] = "Start: Pause/Unpause";
 }
 
 void CTitle::PlaceSprite(int oam, int sprite, int x, int y)

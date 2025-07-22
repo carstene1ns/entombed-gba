@@ -25,9 +25,12 @@ enum class LevelStatus
 };
 
 //Background numbers
-#define TEXTBGNO 0
-#define MAPBGNO 1
-#define TITLEBGNO 2
+enum
+{
+	BGNO_TEXT = 0,
+	BGNO_MAP_BG,
+	BGNO_MAP_FG
+};
 
 //Sprite graphics tile numbers
 #define SPRTILES_PROJECTILES 512 /*After player tiles. 8 tiles, 4 frames.
@@ -40,6 +43,27 @@ enum class LevelStatus
 #define SPRTILES_COINSCORES 872 //16 tiles, 4 frames, 32x8
 #define SPRTILES_DIGITS 888 //40 tiles, 10 frames, 16x16
 #define SPRTILES_BLOCKS 928 //24 tiles, 3 frames, 32x16
+
+enum
+{
+	HUD_TILE_EMPTY = 32,
+	HUD_TILE_LIFE = HUD_TILE_EMPTY + 96,
+	HUD_TILE_BOW,
+	HUD_TILE_ARROW,
+	HUD_TILE_KEY
+};
+
+enum
+{
+	TITLE_SPRITE_BOW = 12,
+	TITLE_SPRITE_QUIVER,
+	TITLE_SPRITE_KEY,
+	TITLE_SPRITE_COIN,
+	TITLE_SPRITE_HOURGLASS,
+	TITLE_SPRITE_CHEST,
+	TITLE_SPRITE_URN,
+	TITLE_SPRITE_ANKH
+};
 
 //Urn sprite constant
 #define URN_OAM 1
