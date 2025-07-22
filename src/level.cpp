@@ -428,6 +428,11 @@ void CLevel::Main(int mapNum)
 	//Set the level number in levelstate
 	g_levelState.levelNum = mapNum;
 
+	VBlankIntrWait();
+
+	// Enable map backgrounds
+	REG_DISPCNT |= DCNT_BG1 | DCNT_BG2;
+
 	//Call the init procedure
 	Level->Init();
 
@@ -554,4 +559,7 @@ void CLevel::Main(int mapNum)
 			done = 1;
 		}
 	}
+
+	// disable map backgrounds
+	REG_DISPCNT &= ~(DCNT_BG1 | DCNT_BG2);
 }

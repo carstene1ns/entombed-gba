@@ -41,6 +41,10 @@ int main(void)
 {
 	int n;
 
+#if DEBUG
+	g_cheatEnabled[0] = true;
+#endif
+
 	//Set the palettes
 	memcpy16(pal_bg_mem, pal_bg, pal_bg_size / 2);
 	memcpy16(pal_obj_mem, pal_oam, pal_oam_size / 2);
@@ -83,7 +87,7 @@ int main(void)
 	HighScores::Load();
 
 	//Set the display register
-	REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_BG1 | DCNT_BG2 | DCNT_OBJ | DCNT_OBJ_1D;
+	REG_DISPCNT = DCNT_MODE0 | DCNT_BG0 | DCNT_OBJ | DCNT_OBJ_1D;
 
 	//Main game loop
 	while (true)
