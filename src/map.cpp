@@ -16,12 +16,25 @@
 #include "sfx.h"
 
 //Graphics data
-#include "tilemap_walls_gfx.h"
+#include "tilemap_walls1_gfx.h"
+#include "tilemap_walls2_gfx.h"
+#include "tilemap_walls3_gfx.h"
+#include "tilemap_walls4_gfx.h"
+#include "tilemap_walls5_gfx.h"
 #include "tilemap_fixtures_gfx.h"
 
 #include "level_data.h" //Level data
 #include "layer2tileLUT.h" //Lookup table for layer 2 tile mappings
 #include "objPropertiesLUT.h" //Lookup table for object property counts
+
+//Mapping table for wall tile data
+static const void *tilemap_walls_gfx[5] = {
+	tilemap_walls1_gfx,
+	tilemap_walls2_gfx,
+	tilemap_walls3_gfx,
+	tilemap_walls4_gfx,
+	tilemap_walls5_gfx
+};
 
 //******CMap class function implementations******
 //Public
@@ -57,9 +70,7 @@ void CMap::Init(T_LEVELSTATE *ls)
 
 	//Load the background graphics data
 	//Load the wall tiles that correspond to the map property value.
-	u16 wall_tile_tmp[5120];
-	LZ77UnCompWram(tilemap_walls_gfx, wall_tile_tmp);
-	memcpy16(tile_mem[0], &wall_tile_tmp[m_ls->wallTiles * 1024], 1024);
+	LZ77UnCompVram(tilemap_walls_gfx[m_ls->wallTiles], tile_mem[0]);
 	LZ77UnCompVram(tilemap_fixtures_gfx, tile_mem[1]);
 
 	//Initialise the text system (background 0, SBB 26, prio 0)
