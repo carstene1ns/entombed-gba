@@ -27,7 +27,7 @@ jobs:
           sudo sed "s/GRIT_NO_PAL)/GRIT_NO_PALETTE)/" -i ${DEVKITPRO}/cmake/dkp-gba-ds-utils.cmake
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build Entombed
         run: |
